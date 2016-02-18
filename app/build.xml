@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Watson IoT for Electronics" default="build"  basedir=".">
+
+	<property name="ARCHIVE_DIR" value="output" />
+	<property name="warname" value="iot4electronics.war" />
+	
+	<target name="clean">
+		<delete file="${ARCHIVE_DIR}/${warname}" />
+	</target>
+	
+	<target name="build" depends="clean">
+	   <war destfile="${ARCHIVE_DIR}/${warname}" webxml="WebContent/WEB-INF/web.xml">
+	      <fileset dir="WebContent">
+	         <include name="**/*.*"/>
+	      </fileset>
+	   </war>
+	</target>
+
+</project>

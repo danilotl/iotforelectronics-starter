@@ -1,0 +1,37 @@
+{
+    "name": "Watson IoT for Electronics Java Web Starter",
+    "services": [
+        {
+            "name": "iotf-service",
+            "plan": "iotf-service-free"
+        },
+        {
+            "name": "IoT Real-Time Insight",
+            "plan": "Lite"
+        }
+    ],
+    "defaultMemory": 512,
+    "description": "A simple Java app that uses the Watson IoT for Electronics service.",
+    "type": "web",
+    "version": "0.0",
+    "smallIcon": "iotforelectronics-24.png",
+    "icon": "iotforelectronics-32.png",
+    "largeIcon": "iotforelectronics-50.png",
+    "featuredIcon": "iotforelectronics-64.png",
+    "marqueeIcon": "260x100.png",
+    "headingIcon": "500x190.png",
+    "executableFile": "output/webApp.war",
+    "system_tags": ["ibm_created", "ibm_beta"],
+    "source" : {
+  		"scmType" : "git",
+      "url" : "https://github.ibm.com/danilol/iotforelectronics-starter",
+  		"appPath" : "app"
+  	},
+    "docURL": "http://www.ibm.com/internet-of-things/iot-for-electronics.html",
+    "runtime": {
+        "name": "Liberty for Java",
+        "description": "Quickly get started with Java."
+    },
+    "categories": ["boilerplate"],
+    "runtime_template_id": "javaHelloWorld"
+}
