@@ -20,11 +20,11 @@
     "featuredIcon": "iotforelectronics-64.png",
     "marqueeIcon": "260x100.png",
     "headingIcon": "500x190.png",
-    "executableFile": "output/webApp.war",
+    "executableFile": "output/iot4electronics.war",
     "system_tags": ["ibm_created", "ibm_beta"],
     "source" : {
   		"scmType" : "git",
-      "url" : "https://github.ibm.com/danilol/iotforelectronics-starter",
+      "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
   		"appPath" : "app"
   	},
     "docURL": "http://www.ibm.com/internet-of-things/iot-for-electronics.html",
