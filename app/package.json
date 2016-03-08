@@ -1,0 +1,28 @@
+{
+  "name": "WatsonIoTforElectronicsNodejsStarterApp",
+  "version": "0.1.0",
+  "description": "A sample nodejs app for Bluemix that use the Watson IoT for Electronics service.",
+  "dependencies": {
+    "body-parser": "^1.11.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3"
+  },
+  "engines": {
+    "node": ">=0.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/watson-developer-cloud/personality-insights-nodejs.git"
+  },
+  "author": "IBM Corp.",
+  "contributors": [
+    {
+      "name": "Danilo Teixeira Lopes",
+      "email": "danilol@br.ibm.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "node app.js"
+  }
+}

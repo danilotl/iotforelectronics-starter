@@ -1,5 +1,5 @@
 {
-    "name": "Watson IoT for Electronics Java Web Starter",
+    "name": "Watson IoT for Electronics Node.js Web Starter",
     "services": [
         {
             "name": "iotf-service",
@@ -15,27 +15,28 @@
         }
     ],
     "defaultMemory": 512,
-    "description": "A simple Java app that uses the Watson IoT for Electronics service.",
+    "startCommand": "node app.js",
+    "description": "A simple Node.js app that uses the Watson IoT for Electronics service.",
     "type": "web",
-    "version": "0.0",
+    "version": "1.0",
     "smallIcon": "iotforelectronics-24.png",
     "icon": "iotforelectronics-32.png",
     "largeIcon": "iotforelectronics-50.png",
     "featuredIcon": "iotforelectronics-64.png",
     "marqueeIcon": "260x100.png",
     "headingIcon": "500x190.png",
-    "executableFile": "output/iot4electronics.war",
     "system_tags": ["ibm_created", "ibm_beta"],
     "source" : {
   		"scmType" : "git",
-      "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
+        "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
   		"appPath" : "app"
   	},
     "docURL": "http://www.ibm.com/internet-of-things/iot-for-electronics.html",
+    "runtime_id": "763dcb4a-8642-4676-ae17-ca5bd032ad9e",
+    "runtime_template_id": "nodejsHelloWorld",
     "runtime": {
-        "name": "Liberty for Java",
-        "description": "Quickly get started with Java."
+        "name": "SDK for Node.js™",
+        "description": "Quickly get started with SDK for Node.js™."
     },
-    "categories": ["boilerplate"],
-    "runtime_template_id": "javaHelloWorld"
+    "categories": ["boilerplate"]
 }
