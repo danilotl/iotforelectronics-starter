@@ -31,7 +31,7 @@
         "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
   		"appPath" : "app"
   	},
-    "docURL": "http://www.ibm.com/internet-of-things/iot-for-electronics.html",
+    "docURL": "https://console.stage1.ng.bluemix.net/docs/services/IotElectronics/index.html",
     "runtime_id": "763dcb4a-8642-4676-ae17-ca5bd032ad9e",
     "runtime_template_id": "nodejsHelloWorld",
     "runtime": {
