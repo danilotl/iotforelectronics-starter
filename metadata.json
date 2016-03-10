@@ -1,5 +1,5 @@
 {
-    "name": "Watson IoT for Electronics Node.js Web Starter",
+    "name": "IoT for Electronics Node.js Web Starter",
     "services": [
         {
             "name": "iotf-service",
@@ -16,7 +16,7 @@
     ],
     "defaultMemory": 512,
     "startCommand": "node app.js",
-    "description": "A simple Node.js app that uses the Watson IoT for Electronics service.",
+    "description": "A simple Node.js app that uses the IoT for Electronics service.",
     "type": "web",
     "version": "1.0",
     "smallIcon": "iotforelectronics-24.png",
