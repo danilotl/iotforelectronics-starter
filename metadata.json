@@ -12,10 +12,6 @@
         {
             "name": "IoT Real-Time Insight",
             "plan": "Lite"
-        },
-        {
-            "name": "Single Sign On",
-            "plan": "Standard"
         }        
     ],
     "defaultMemory": 512,
