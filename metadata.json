@@ -20,7 +20,7 @@
     ],
     "defaultMemory": 512,
     "startCommand": "node app.js",
-    "description": "A simple app that uses the IoT for Electronics service...",
+    "description": "A simple app that uses the IoT for Electronics service.....",
     "type": "web",
     "version": "1.0",
     "smallIcon": "iotforelectronics-24.png",
