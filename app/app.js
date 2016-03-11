@@ -35,7 +35,7 @@ app.get('/', function(req, res) {
 //VCAP_SERVICES contains all the credentials of services bound to
 //this application. For details of its content, please refer to
 //the document or sample of each service.
-VCAP_SERVICES = {};
+var VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 
