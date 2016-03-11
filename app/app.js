@@ -32,6 +32,28 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+//VCAP_SERVICES contains all the credentials of services bound to
+//this application. For details of its content, please refer to
+//the document or sample of each service.
+VCAP_SERVICES = {};
+if(process.env.VCAP_SERVICES)
+	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
+
+//Get IoT-Platform credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
+	throw "Cannot get IoT-Foundation credentials"
+var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
+
+//Get RTI credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+	throw "Cannot get RTI credentials"
+var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+
+//Get IoT for Electronics credentials
+//if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
+//	throw "Cannot get IoT4E credentials"
+//var ioteCredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port, function(){
 	console.log('Listening on port:', port);
