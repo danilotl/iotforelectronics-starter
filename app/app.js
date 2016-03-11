@@ -17,7 +17,13 @@
 'use strict';
 
 var express      = require('express'),
-	app          = express();
+	q            = require('q'),
+	request      = require('request'),
+	path         = require('path'),
+	cfenv        = require('cfenv'),
+	app          = express(),
+	appEnv       = cfenv.getAppEnv();
+
 
 // Application settings
 require('./config/express')(app);
