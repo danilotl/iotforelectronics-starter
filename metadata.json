@@ -12,7 +12,11 @@
         {
             "name": "IoT Real-Time Insight",
             "plan": "Lite"
-        }        
+        },
+        {
+            "name": "AdvancedMobileAccess",
+            "plan": "Gold"
+        }            
     ],
     "defaultMemory": 512,
     "startCommand": "node app.js",
