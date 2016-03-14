@@ -20,11 +20,7 @@
         {
             "name": "imfpush",
             "plan": "Basic"
-        },
-        {
-            "name": "SingleSignOn",
-            "plan": "standard"
-        }                            
+        }
     ],
     "defaultMemory": 512,
     "startCommand": "node app.js",
