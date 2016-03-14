@@ -33,7 +33,7 @@
     "featuredIcon": "iotforelectronics-64.png",
     "marqueeIcon": "260x100.png",
     "headingIcon": "500x190.png",
-    "system_tags": ["ibm_created", "ibm_beta"],
+    "system_tags": ["ibm_created"],
     "source" : {
   		"scmType" : "git",
         "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
