@@ -16,7 +16,11 @@
         {
             "name": "AdvancedMobileAccess",
             "plan": "Gold"
-        }            
+        },
+        {
+            "name": "imfpush",
+            "plan": "Basic"
+        }                    
     ],
     "defaultMemory": 512,
     "startCommand": "node app.js",
