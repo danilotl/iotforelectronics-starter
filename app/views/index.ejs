@@ -1,21 +1,79 @@
 <html>
 <head>
-	<title>Application powered by IoT for Electronics</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="/style/style.css" />
+  <title><%= title %> - Application powered by IoT for Electronics</title>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.min.css"/>
+  <link rel="stylesheet" href="/styles/style.css" />
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/iotAppMonitorClient.js"></script>
+  <script src="/jquery/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<div class="leftHalf">
-	<img class="newappIcon" src="images/newapp-icon.png">
-					<h1>
-						Welcome to the <span class="blue">IoT for Electronics</span>
-					</h1>
-	        <p class="description">Powered by IBM analytics capabilities, Internet of Things for Electronics generates data-driven insight that transforms businesses and customers' experiences across the entire value chain. With this transformation, organizations can capitalize on the increasing demand for intelligent connected devices and experiences brought about by the Internet of Things.</p>
-		</div>
-		<div class = "rightHalf">
-		<header>
-			<div class='title'>Washing Machine</div>
-		</header>
-	</div>
+  <div class="leftHalf">
+    <img class="newappIcon" src="/images/newapp-icon.png">
+    <h1>Welcome to the <span class="blue">IoT for Electronics</span></h1>
+    <br>
+    <p class="description">Powered by IBM analytics capabilities, Internet of Things for Electronics generates data-driven insight that transforms businesses and customers experiences across the entire value chain. With this transformation, organizations can capitalize on the increasing demand for intelligent connected devices and experiences brought about by the Internet of Things.</p>
+  </div>
+  <div class="rightHalf">
+
+    <header>
+      <h1>List of Connected Devices</h1>
+      <br>
+      <section>
+        <div class="row">
+          <div class="col-md-4 col-md-offset-4">
+            <img src="/images/washing-machine.png"><br><br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-md-offset-4">
+            <div class="list-group">
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+    <footer>
+      <div>
+        <section>
+          <!-- <button id="addNewDevice" class="btn-primary">Add New Device</button> -->
+        </section>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+
+      $.ajax({
+        url: '/washingMachine/getStatus',
+        type: 'GET',
+        success: function(data){
+          $.each(data, function(index, value){
+            $('.list-group').append('<a href="washingMachine/' + index + '" class="list-group-item">' + index + '</a>');
+          });
+        }
+      });
+
+      $(document).on('click', '#addNewDevice', function(){
+        $.ajax({
+          url: '/washingMachine/createDevices/1',
+          type: 'POST',
+          success: function(data){
+            $.each(data, function(index, value){
+              $('.list-group').append('<a href="washingMachine/' + value.deviceID + '" class="list-group-item">' + value.deviceID + '</a>');
+            });
+          }
+        });
+      });
+
+    });
+  </script>
+
 </body>
 </html>

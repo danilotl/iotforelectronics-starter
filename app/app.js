@@ -1,172 +1,142 @@
-/**
- * Copyright 2016 IBM Corp. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-'use strict';
-
 var express      = require('express'),
-	q            = require('q'),
-	request      = require('request'),
-	path         = require('path'),
-	cfenv        = require('cfenv'),
-	app          = express(),
-	appEnv       = cfenv.getAppEnv();
+    path         = require('path'),
+    favicon      = require('serve-favicon'),
+    logger       = require('morgan'),
+    cookieParser = require('cookie-parser'),
+    bodyParser   = require('body-parser'),
+    cors         = require('cors'),
+    routes       = require('./routes/index'),
+    device       = require('./routes/device');
 
+var iot4electronicsDebug = null;
+//require user extentions  
+try {
+	iot4electronicsDebug = require("./iot4electronicsDebug.js");	
+} catch (e) {
+	try {
+		iot4electronicsDebug = require("./_debug.js");			
+	} catch (e) {
+		console.log("For Debug add _debug.js or iot4electronicsDebug.js");
+	};	
+}
 
-// Application settings
-require('./config/express')(app);
-
-app.get('/', function(req, res) {
-  res.render('index');
-});
+//There are many useful environment variables available in process.env.
+//VCAP_APPLICATION contains useful information about a deployed application.
+var appInfo = JSON.parse(process.env.VCAP_APPLICATION || "{}");
+//TODO: Get application information and use it in your app.
 
 //VCAP_SERVICES contains all the credentials of services bound to
 //this application. For details of its content, please refer to
 //the document or sample of each service.
-var VCAP_SERVICES = {};
+VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
+//try and get vcap from debug  
+else if (iot4electronicsDebug && iot4electronicsDebug.VCAP_SERVICES)
+	VCAP_SERVICES = iot4electronicsDebug.VCAP_SERVICES;
 
-//Get IoT-Platform credentials
+
+
+//The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
+var host = (process.env.VCAP_APP_HOST || 'localhost');
+
+//global connectedDevicesCache
+connectedDevicesCache = require('./lib/connectedDevicesCache');
+
+
+
+//global HTTP routers
+httpRouter = require('./routes/httpRouter');
+
+//get IoT-Foundation credentials
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
 var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 
-//Get RTI credentials
-if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
-	throw "Cannot get RTI credentials"
-var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+//global IoT-Foundation connectors 
+washingMachineIoTFClient = require('./mqtt/washingMachineIoTFClient'); 
+washingMachineIoTFClient.connectToBroker(iotfCredentials);
+	
+var app = express();
+//set the app object to export so it can be required 
+module.exports = app;
+var server = require('http').Server(app);
+iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 
-//Get IoT for Electronics credentials
-//if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
-//	throw "Cannot get IoT4E credentials"
-//var ioteCredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+//view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+//uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+//allow cross domain calls
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-//IoT Platform Credentials
-var name = iotfCredentials["org"];
-var orgId = iotfCredentials["org"];
-var apiKey = iotfCredentials["apiKey"];
-var authToken = iotfCredentials["apiToken"];
-var baseURI = iotfCredentials["base_uri"];
-var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+app.use(express.static(path.join(__dirname, 'public')));
 
-//RTI Credentials
-var rtiApiKey = rtiCredentials["apiKey"];
-var rtiAuthToken = rtiCredentials["authToken"];
-var rtiBaseUrl = rtiCredentials["baseUrl"];
-var disabled = false;
+app.use('/', routes);
+app.use('/', httpRouter);
+app.use('/', device);
 
-//IoT for Electronics Credentials
-//var ioteUser = ioteCredentials["userid"];
-//var iotePass = ioteCredentials["password"];
 
-//IoT Platform Device Types
-//var	iotpDevId = "washingMachine";
-//var	iotpDescription = "IoT4E Washing Machine";
-//var	iotpClassId = "Device"
+//iot-workbench additional requires   
+try {
+	require("./_requires.js");	
+} catch (e) {	
+		//no iot-workbench additional _requires;		
+}
 
-//RTI Message Schema Info
-//var	rtiSchemaName = "Electronics";
 
-//IoT Platform Config Creation Method.
-var iotpPost = function iotpPost (path, json) {
-  //console.log('calling api to POST: ' + baseURI);
-  //console.log('calling api on json: ' + JSON.stringify(json));
-
-  var url = apiURI + path;
-  var defer = q.defer();
-  var body = '';
-
-  request
-   .post({
-      url: url,
-      json: true,
-      body: json
-    }).auth(apiKey, authToken, true)
-    .on('data', function(data) {
-      body += data;
-    })
-    .on('end', function() {
-      var json = JSON.parse(body);
-      defer.resolve(json);
-   })
-   .on('response', function(response) {
-      console.log('IoTP status: ' + response.statusCode);
-  });
-   return defer.promise;
-};
-
-//RTI Config Creation Method.
-var rtiPost = function rtiPost (path, json) {
-  //console.log('calling api to POST: ' + path);
-  //console.log('Rti Api: ' + rtiApiKey);
-  //console.log('Rti Token: ' + rtiAuthToken);
-  //console.log('calling api on json: ' + JSON.stringify(json));
-
-  var url = rtiBaseUrl + path;
-  var defer = q.defer();
-  var body = '';
-
-  request
-   .post({
-      url: url,
-      json: true,
-      body: json
-    }).auth(rtiApiKey, rtiAuthToken, true)
-   .on('data', function(data) {
-      body += data;
-    })
-    .on('end', function() {
-      var json = JSON.parse(body);
-      defer.resolve(json);
-   })
-   .on('response', function(response) {
-      console.log('Response status: ' + response.statusCode); // 200
-  });
-   return defer.promise;
-};
-
-//IoT Platform device type creation call
-var iotpDeviceType = iotpPost('/device/types',{
-	"id": "washingMachine",
-	"description": "IoT4E Washing Machine",
-	"classId": "Device"
+//catch 404 and forward to error handler
+app.use(function(req, res, next) {
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
-//IoT Platform device creation call
-//var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
-//  //"id": "d:abc123:myType:myDevice",
-//  "typeId": "washingMachine",
-//  "deviceId": "washingMachineElec"
-//});
+//error handlers
 
-//RTI data source creation call
-var rtiSource = rtiPost('/message/source',{
-	"name": name,
-	"orgId": orgId,
-	"apiKey": apiKey,
-	"authToken": authToken,
-	"disabled": disabled});
+//development error handler
+//will print stacktrace
+if (app.get('env') === 'development') {
+	app.use(function(err, req, res, next) {
+		res.status(err.status || 500);
+		res.render('error', {
+			message: err.message,
+			error: err
+		});
+	});
+}
 
-//RTI schema creation call
-var rtiSchema = rtiPost('/message/schema',{
-	"name": "Electronics",
-	"format": "JSON",
-	"items": []});
-
-var port = process.env.VCAP_APP_PORT || 3000;
-app.listen(port, function(){
-	console.log('Listening on port:', port);
+//production error handler
+//no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+	res.status(err.status || 500);
+	res.render('error', {
+		message: err.message,
+		error: {}
+	});
 });
+
+app.set('port', process.env.VCAP_APP_PORT || 3000);
+
+//require user extensions  
+try {
+	require("./iot4electronics.js");	
+} catch (e) {
+	try {
+		require("./_app.js");			
+	} catch (e) {
+		console.log("Failed to load extention files _app.js or iot4electronics.js: " + e.message);
+	};	
+}
+
+//Start server
+server.listen(app.get('port'), function() {
+	console.log('Server listening on port ' + server.address().port);
+});
+
+

@@ -151,7 +151,7 @@ tr:hover .deleteBtn {
 	width: 55%;
 	background-color: #313f4a;
 	height: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 
 .fieldname {

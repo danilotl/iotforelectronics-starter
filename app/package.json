@@ -1,31 +1,31 @@
 {
-  "name": "IoTforElectronicsNodejsStarterApp",
-  "version": "0.1.0",
-  "description": "A sample nodejs app for Bluemix that use the IoT for Electronics service.",
-  "dependencies": {
-    "body-parser": "^1.11.0",
-    "ejs": "^2.3.4",
-    "express": "^4.13.3",
-    "cfenv": "1.0.x",
-    "q": "^1.4.1",
-    "request": "^2.64.0"
-  },
-  "engines": {
-    "node": ">=0.10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/danilotl/iotforelectronics-starter.git"
-  },
-  "author": "IBM Corp.",
-  "contributors": [
-    {
-      "name": "Danilo Teixeira Lopes",
-      "email": "danilol@br.ibm.com"
-    }
-  ],
-  "license": "Apache-2.0",
-  "scripts": {
-    "start": "node app.js"
-  }
+    "name": "iot4electronics",
+    "version": "0.0.1",
+    "description": "IoT4Electronics Server",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "~4.9.0",
+        "cfenv": "1.0.x",
+        "body-parser": "~1.8.1",
+        "cookie-parser": "~1.3.3",
+        "morgan": "~1.3.0",
+        "serve-favicon": "~2.1.3",
+        "ejs": "~0.8.5",
+        "cors": "",
+        "underscore": "",
+        "iotclient": "~0.1.4",
+        "ibmiotf": "",
+        "socket.io": "~1.2.0",
+        "mqtt": "^0.3.11",
+        "ws": "",
+        "fs-extra": "",
+        "node-uuid": "",
+        "q": "",
+        "qr-image": "",
+        "request": "",
+        "debug": ""
+    },
+    "repository": {}
 }
