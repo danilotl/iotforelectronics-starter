@@ -581,7 +581,7 @@ var iotfAppClient = null;
 function getIotfAppClient(){
 	if(iotfAppClient)
 		return iotfAppClient;
-	var iotfAppClientCtor = require("ibmiotf").IotfApplication;
+	var iotfAppClientCtor = require("../patched_ibmiotf").IotfApplication;
 	var iotFcreds = null;
 	try{
 		iotFcreds = VCAP_SERVICES["iotf-service"][0].credentials;
