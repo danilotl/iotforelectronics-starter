@@ -23,7 +23,7 @@ function simulationClient(config) {
 							"devices": (config.devices) ? config.devices : []
 	};
 	if(config.simulationConfigFile)
-		this.loadConfiguration(config.simulationConfigFile);
+		this.loadConfiguration(config.simulationConfigFile, true);
 	this.ws = null;	
 };
 
@@ -40,7 +40,7 @@ simulationClient.prototype.getDevices = function(){
 };
 
 simulationClient.prototype.loadConfiguration= function(simulationConfigFile, registerDevicetypes){
-	simulationConfigFile = (simulationConfigFile) ? simulationConfigFile: "./devicesSimulation/simulationConfig.json";
+	simulationConfigFile = (simulationConfigFile) ? simulationConfigFile: "./simulationConfig.json";
 	_.extend(this.simulationConfig, fs.readJsonSync(simulationConfigFile));	
 	if(!registerDevicetypes)
 		return Q(true);
@@ -124,7 +124,7 @@ simulationClient.prototype.terminateSimulation = function(deregisterDevices){
 simulationClient.prototype.createDevices = function(deviceType, numOfDevices, configs){
 	var deferred = Q.defer();
 
-	var iotFClient = getIotfAppClient();	
+	var iotFClient = getIotfAppClient();
 
 	var nameIndex = _.indexBy(this.simulationConfig.devicesSchemas, "name");
 	var deviceSchema = nameIndex[deviceType];
@@ -517,7 +517,7 @@ simulationClient.prototype.onMessage = function(msg){
 
 
 function callSimulationEngineAPI(method, paths, body){
-	var uri = (!process.env.LOCAL_SIM_DEBUG) ? "https://iotwbsimulationengine.mybluemix.net/api" :"http://localhost:6002/api";
+	var uri = (!process.env.LOCAL_SIM_DEBUG) ? "https://iot4esimulationclient.stage1.mybluemix.net/api" :"http://localhost:6002/api";
 	var apiKey = "b52f6b93-5b22-4e76-a765-b3c8ad7a72a8";
 	var apiToken = "21b750f1-43ee-4c92-a11e-1a30ff503feb";	
 	if(paths){
@@ -581,7 +581,7 @@ var iotfAppClient = null;
 function getIotfAppClient(){
 	if(iotfAppClient)
 		return iotfAppClient;
-	var iotfAppClientCtor = require("ibmiotf").IotfApplication;
+	var iotfAppClientCtor = require("../ibmiotf").IotfApplication;
 	var iotFcreds = null;
 	try{
 		iotFcreds = VCAP_SERVICES["iotf-service"][0].credentials;
@@ -595,6 +595,7 @@ function getIotfAppClient(){
 			"auth-key" : iotFcreds.apiKey,
 			"auth-token" : iotFcreds.apiToken
 	};
+	
 	iotfAppClient = new iotfAppClientCtor(config);
 	return iotfAppClient;	
 };

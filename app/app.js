@@ -6,7 +6,8 @@ var express      = require('express'),
     bodyParser   = require('body-parser'),
     cors         = require('cors'),
     routes       = require('./routes/index'),
-    device       = require('./routes/device');
+    device       = require('./routes/device'),
+    simulator    = require('./routes/simulator');
 
 var iot4electronicsDebug = null;
 //require user extentions  
@@ -58,6 +59,26 @@ washingMachineIoTFClient = require('./mqtt/washingMachineIoTFClient');
 washingMachineIoTFClient.connectToBroker(iotfCredentials);
 	
 var app = express();
+
+//Enable reverse proxy support in Express. This causes the
+//the "X-Forwarded-Proto" header field to be trusted so its
+//value can be used to determine the protocol. See 
+//http://expressjs.com/api#app-settings for more details.
+app.enable('trust proxy');
+
+//Add a handler to inspect the req.secure flag (see 
+//http://expressjs.com/api#req.secure). This allows us 
+//to know whether the request was via http or https.
+app.use (function (req, res, next) {
+     if (req.secure || app.get('env') === 'development') {
+             // request was via https, so do no special handling
+             next();
+     } else {
+             // request was via http, so redirect to https
+             res.redirect('https://' + req.headers.host + req.url);
+     }
+});
+
 //set the app object to export so it can be required 
 module.exports = app;
 var server = require('http').Server(app);
@@ -80,7 +101,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/', httpRouter);
 app.use('/', device);
-
+app.use('/', simulator);
 
 //iot-workbench additional requires   
 try {

@@ -150,23 +150,19 @@ device.reset = function(req, res){
 
 device.create = function(req, res){
 	var numberOfDevices = parseInt(req.params.numberOfDevices);
-	if(!isNaN(numberOfDevices)){
-		
-		simulationClient.terminateSimulation();
-		
+	if(!isNaN(numberOfDevices)){		
 		var configs = [];
 		for(var i = 0; i < numberOfDevices; i++){
 			configs.push({connected: true});
 		}
 		
 		simulationClient.createDevices("washingMachine", numberOfDevices, configs).then(function(data){
-			
 			for(var i = 0; i < data.length; i++){
 				var obj = data[i];
 				simulationClient.connectDevice(obj["deviceID"]);
 			}
 			simulationClient.saveSimulationConfig("./simulationConfig.json");
-			simulationClient.restartSimulation();
+
 
 			res.json(data);
 		});
