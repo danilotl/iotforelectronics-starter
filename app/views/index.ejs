@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.min.css"/>
-  <link rel="stylesheet" href="/styles/style.css" />
+  <link rel="stylesheet" href="/styles/style.css"/>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/iotAppMonitorClient.js"></script>
@@ -13,7 +13,7 @@
   <script src="/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <h4 class="bluemix-bar">IoT for Eletronics Starter Experience</h4>
+  <h4 class="bluemix-bar">IoT for Electronics Starter Experience</h4>
   <div class="main-section">
     <div class="container">
       <h2 >What would you like to explore?</h2>
@@ -94,7 +94,7 @@
       <section class="col-xs-12 col-md-10 content">
         <h2>Choose or add new simulated washer</h2>
         <p>You can add up to five washers.<p>
-        <button id="addNewDevice" class="add-button">+</button>
+        <button id="addNewDeviceButton" class="add-button">+</button>
         <hr/>
         <div class="washer-list">
           <p class="selection-text"><strong>Your washers</strong><span>Select a washer to control its simulated data. A new window will open.</span></p>
@@ -103,11 +103,11 @@
           </div>
           <p class="active-washer-message"><strong>Great!</strong> The washer is active.</p>
         </div>
-      <section>
+      </section>
     </div>
   </div>
   <div class="installation-section hidden">
-    <div class="main-section gray-background arrow-section">
+    <div class="main-section gray-background arrow-section ">
       <div class="container">
         <h2 >Next, install the mobile app on an iOS phone</h2>
         <section class="col-xs-12 col-md-10 content">
@@ -129,7 +129,7 @@
         </section>
       </div>
     </div>
-    <div class="main-section arrow-section">
+    <div class="main-section arrow-section ">
       <div class="container">
         <h2 >Last, you'll need these QR codes to use the app:</h2>
         <section class="col-xs-12 col-md-10 content">
@@ -181,35 +181,48 @@
          width:"auto"
       });
 
+      var numberOfDevices = 0;
+
       $.ajax({
         url: '/washingMachine/getStatus',
         type: 'GET',
         success: function(data){
           $.each(data, function(index, value){
-            $('.list-group').append('<a href="washingMachine/' + index + '" class="list-item">' + index + '</a>');
+            $('.list-group').append('<button class="list-item"><span>' + index + '</span></button>');
+            numberOfDevices++;
           });
           validateNoWasherMessage();
           validateSelectedWasherMessage();
         }
       });
 
-      $(document).on('click', '#addNewDevice', function(e){
+      $(document).on('click', '#addNewDeviceButton', function(e){
         e.preventDefault();
-        if($('.washer-list .list-group a').length >= 5){
-          alert("You already have 5 washers.");
-          return;
+        if(numberOfDevices < 5) {
+          numberOfDevices++;
+          $.ajax({
+            url: '/washingMachine/createDevices/1',
+            type: 'POST',
+            success: function(data){
+              $.each(data, function(index, value){
+                $('.list-group').append('<button class="list-item"><span>' + value.deviceID + '</span></button>');
+              });
+              validateNoWasherMessage();
+              validateSelectedWasherMessage();
+            }
+          });
         }
-        $.ajax({
-          url: '/washingMachine/createDevices/1',
-          type: 'POST',
-          success: function(data){
-            $.each(data, function(index, value){
-              $('.list-group').append('<a href="washingMachine/' + value.deviceID + '" class="list-item">' + value.deviceID + '</a>');
-            });
-            validateNoWasherMessage();
-            validateSelectedWasherMessage();
-          }
-        });
+      });
+
+      $('.washer-list .list-group').on("click", ".list-item", function(){
+        $('.washer-list .list-group .list-item').removeClass('active');
+        $(this).addClass('active');
+
+        window.open(
+          './washingMachine/' + $(this).find('span').text(),
+          '_blank' // <- This is what makes it open in a new window.
+        );
+        validateSelectedWasherMessage();
       });
 
       $('.selection-box').click(function() {
@@ -218,29 +231,35 @@
         //Change the content from the selection box
         $('.description-box').addClass('hidden');
         $('.description-box[name=description-' + $(this).attr('name') + ']').removeClass('hidden');
+
+
+        if ($('.selection-box.active').attr('name') === 'selection-box-2'){
+          $('.installation-section').removeClass('hidden');
+        }else{
+          $('.installation-section').addClass('hidden');
+        }
+
       });
 
-      $('.washer-list .list-group .list-item').click(function() {
-        $('.washer-list .list-group .list-item').removeClass('active');
-        $(this).addClass('active');
-        validateSelectedWasherMessage();
-      });
+
 
       function validateNoWasherMessage(){
-        if($('.washer-list .list-group a').length < 1){
+        if($('.washer-list .list-group .list-item').length < 1){
           $('.washer-list .no-washers-message').removeClass('hidden');
         }
         else{
           $('.washer-list .no-washers-message').addClass('hidden');
         }
       }
-      
+
       function validateSelectedWasherMessage(){
         if($('.washer-list .list-group .active').length < 1){
           $('.washer-list .active-washer-message').addClass('hidden');
+          $('.installation-section').addClass('hidden');
         }
         else{
           $('.washer-list .active-washer-message').removeClass('hidden');
+          $('.installation-section').removeClass('hidden');
         }
       }
     });
@@ -251,6 +270,7 @@
     }).ajaxStop(function(){ 
       $('#ajaxBusy').hide();
     });
+
   </script>
 
 </body>

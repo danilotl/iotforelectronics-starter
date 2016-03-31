@@ -56,8 +56,8 @@ device.getQrCode = function(req, res){
 	data.ID = req.params.deviceID;
 	data.SN = generateSerialNumber();
 	
-	var img = qr.image(JSON.stringify(data), { type: 'png', ec_level: 'H', size: 8, margin: 0 });
-	res.writeHead(200, {'Content-Type': 'image/png'});
+	var img = qr.image(req.params.deviceID, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
+	res.writeHead(200, {'Content-Type': 'image/png'})
 	img.pipe(res);
 }
 
@@ -69,6 +69,9 @@ device.getAllDevicesStatus = function(req, res){
 
 device.getStatus = function(req, res) {
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
+		if(!data["attributes"]["serialNumber"]){
+			simulationClient.setAttributeValue(req.params.deviceID, "serialNumber", generateSerialNumber());
+		}
 		res.json(data);
 	});
 }
@@ -150,7 +153,10 @@ device.reset = function(req, res){
 
 device.create = function(req, res){
 	var numberOfDevices = parseInt(req.params.numberOfDevices);
-	if(!isNaN(numberOfDevices)){		
+	if(!isNaN(numberOfDevices)){
+		
+		simulationClient.terminateSimulation();
+		
 		var configs = [];
 		for(var i = 0; i < numberOfDevices; i++){
 			configs.push({connected: true});
@@ -162,7 +168,7 @@ device.create = function(req, res){
 				simulationClient.connectDevice(obj["deviceID"]);
 			}
 			simulationClient.saveSimulationConfig("./simulationConfig.json");
-
+			simulationClient.restartSimulation();
 
 			res.json(data);
 		});
@@ -179,10 +185,11 @@ device.renderUI = function(req, res){
 			title:          'Watson IoT for Electronics',
 			deviceId:          data.deviceID,
 			deviceStatus:      data.attributes.status,
-			deviceDoorOpen:    data.attributes.doorOpen,
 			deviceProgram:     data.attributes.program,
 			deviceCurCycle:    data.attributes.currentCycle,
-			deviceFailureType: data.attributes.failureType
+			deviceFailureType: data.attributes.failureType,
+			vibration:         data.attributes.vibration,
+			waterPressure:     data.attributes.waterPressure
 		});
 	});
 }

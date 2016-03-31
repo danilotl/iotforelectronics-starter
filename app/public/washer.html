@@ -2,13 +2,13 @@
   <head>
     <title>Single Device Simulator - Application powered by IoT for Electronics</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/styles/style.css"/>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/iotAppMonitorClient.js"></script>
-    <script src="/jquery/jquery.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="styles/style.css"/>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="javascripts/iotAppMonitorClient.js"></script>
+    <script src="jquery/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
   </head>
   <body>
     <h4 class="bluemix-bar">Simulated washer experience</h4>
@@ -34,19 +34,19 @@
               <div class="washer-content">
                 <div class="washer-text">
                   <h3>Washer Info</h3>
-                  <p>Device ID <span><%= deviceId %></span></p>
-                  <p>Serial Number <span>Loading</span></p>
+                  <p>Devices ID <span>049940283082</span></p>
+                  <p>Serial Number <span>5882-4593-5631-3605</span></p>
                   <p>Make, Model <span>Swirlmore wkw007ge</span></p>
                   <h3>Washer Status</h3>
-                  <p>Overall status  <strong><%= deviceStatus %></strong></p>
-                  <p>Vibration <strong><%= vibration %></strong></p>
-                  <p>Water pressure <strong><%= waterPressure %></strong></p>
+                  <p>Overall status  <strong>Working</strong></p>
+                  <p>Vibration <strong>80 mps</strong></p>
+                  <p>Water pressure <strong>30 psi</strong></p>
                 </div>
               </div>
             </div>
             <div class="washer-app-info">
               <div>
-                <img src="/qr/<%= deviceId %>"/>
+                <img src="/images/QR-code.png"/>
               </div>
               <div>
                 <p>When you try the consumer app, you can scan the QR code to see this washer's status and other events on your phone.</p>
@@ -56,33 +56,5 @@
         </section>
       </div>
     </div>
-
-    <script type="text/javascript">
-
-      $(document).ready(function(){
-        $.ajax({
-          url: '/washingMachine/<%= deviceId %>/getStatus',
-          type: 'GET',
-          success: function(data){
-            $('.washer-content .washer-text p strong').eq(0).text(data.attributes.status);
-            $('.washer-content .washer-text p strong').eq(1).text(data.attributes.vibration);
-            $('.washer-content .washer-text p strong').eq(2).text(data.attributes.waterPressure);
-          }
-        });
-      });
-
-      iotAppMonitorClient.mqtt = function(id, message) {
-        if (id === "<%= deviceId %>") {
-          var device = JSON.parse(message).d;
-          $('.washer-content .washer-text p span').eq(1).text(device.serialNumber);
-
-          $('.washer-content .washer-text p strong').eq(0).text(device.status);
-          $('.washer-content .washer-text p strong').eq(1).text(device.vibration);
-          $('.washer-content .washer-text p strong').eq(2).text(device.waterPressure);
-        }
-      };
-
-    </script>
-
   </body>
 </html>
