@@ -7,7 +7,7 @@
         {
           "name": "statusReport",
           "qos": "0",
-          "payload": "status,doorOpen,failureType,program,currentCycle,serialNumber,model",
+          "payload": "status,failureType,program,currentCycle,vibration,waterPressure,serialNumber,model",
           "pattern": {
             "rate": 3,
             "type": "Periodic"
@@ -42,6 +42,14 @@
         {
           "name": "program",
           "defaultValue": "Cottons"
+        },
+        {
+          "name": "vibration",
+          "defaultValue": "80 mps"
+        },
+        {
+          "name": "waterPressure",
+          "defaultValue": "30 psi"
         },
         {
           "name": "serialNumber"
