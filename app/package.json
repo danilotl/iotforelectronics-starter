@@ -29,6 +29,8 @@
         "mqtt-connection": "",
         "readable-stream": "",
         "end-of-stream": "",
+        "mqtt-packet": "",
+        "inherits": "",
         "axios": "^0.5.4",
 	    "bluebird": "^2.9.34",
    		"btoa": "^1.1.2",
