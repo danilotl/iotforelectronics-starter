@@ -25,7 +25,13 @@
         "q": "",
         "qr-image": "",
         "request": "",
-        "debug": ""
+        "debug": "",
+        "axios": "^0.5.4",
+	    "bluebird": "^2.9.34",
+   		"btoa": "^1.1.2",
+   		"events": "^1.0.2",
+        "format": "^0.2.1",
+        "loglevel": "1.4.0"
     },
     "repository": {}
 }
