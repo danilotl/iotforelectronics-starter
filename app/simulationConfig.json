@@ -1,5 +1,4 @@
 {
-  "sessionid": "http://localhost:6001/home/danilotl/git/washing-machine",
   "devicesSchemas": [
     {
       "guid": "iot4electronics_washing_machine",
@@ -61,15 +60,5 @@
     }
   ],
   "devices": [
-    {
-      "deviceID": "45B1122A5E92",
-      "archDeviceGuid": "iot4electronics_washing_machine",
-      "lastRunAttributesValues": [],
-      "connected": true,
-      "iotFCredentials": {
-        "org": "ned1b6",
-        "password": "ZxBBXp-?3dzXUj5FXE"
-      }
-    }
   ]
 }
