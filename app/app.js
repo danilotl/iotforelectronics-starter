@@ -183,25 +183,25 @@ var Cloudant   = require('cloudant');
 
 var services = JSON.parse(process.env.VCAP_SERVICES)
 //var cloudantCreds = services.cloudantNoSQLDB[0].credentials;
-//
-//var cloudant = Cloudant(cloudantCreds.url, function(err,cloudant){
-//	db = cloudant.db.use(dbname);
-//	//make sure it is created
-//	cloudant.db.get(dbname, function(err, body) {
-//		if(err){
-//			console.log('creating ' + dbname);
-//			cloudant.db.create(dbname, function(err,body) {
-//				if (!err)
-//					console.log('DB created ');
-//				else
-//					console.error('Err creating DB ' + err );
-//			});
-//		}
-//		else {
-//			console.log("connected to DB");
-//		}
-//});
-//});
+
+var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
+	db = cloudant.db.use(dbname);
+	//make sure it is created
+	cloudant.db.get(dbname, function(err, body) {
+		if(err){
+			console.log('creating ' + dbname);
+			cloudant.db.create(dbname, function(err,body) {
+				if (!err)
+					console.log('DB created ');
+				else
+					console.error('Err creating DB ' + err );
+			});
+		}
+		else {
+			console.log("connected to DB");
+		}
+});
+});
 
 /***************************************************************/
 /* Set up express server & passport                            */
