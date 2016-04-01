@@ -27,6 +27,11 @@ deviceRouter.param('deviceID', function(req, res, next, id){
  * ************ ************ ************/
 
 /**
+ * Get the QR Code image for connecting into the Platform
+ */
+deviceRouter.get('/qr/getPlatformCredentials', device.QRcreds);
+
+/**
  * Get the QR Code image for the given device
  */
 deviceRouter.get('/qr/:deviceID', device.getQrCode);
@@ -88,5 +93,7 @@ deviceRouter.put('/washingMachine/reset', device.reset);
  * @Param :numberOfDevices - The number of devices to be created
  */
 deviceRouter.post('/washingMachine/createDevices/:numberOfDevices', device.create);
+
+deviceRouter.delete('/washingMachine/:deviceID', device.del);
 
 module.exports = deviceRouter;

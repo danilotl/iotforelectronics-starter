@@ -95,6 +95,12 @@ simulationClient.prototype.restartSimulation = function(){
 	return deferred.promise;
 };
 
+simulationClient.prototype.unregisterDevice = function(deviceId){
+	this.deleteDevice(deviceId);
+	var iotFClient = getIotfAppClient();
+	iotFClient.callApi('DELETE', 204, false, ['device', 'types', 'washingMachine', 'devices', deviceId], null);
+}
+
 simulationClient.prototype.terminateSimulation = function(deregisterDevices){
 	var deferred = Q.defer();
 	this.reconnectOnClose = false;
@@ -230,6 +236,7 @@ simulationClient.prototype.deleteDevice = function(deviceID){
 	for(var i = 0; i < this.simulationConfig.devices.length; i++){
 		if(this.simulationConfig.devices[i].deviceID == deviceID){
 			this.simulationConfig.devices.splice(i, 1);
+			this.saveSimulationConfig("./simulationConfig.json");
 			break;		
 		}
 	}

@@ -35,8 +35,8 @@
                 <div class="washer-text">
                   <h3>Washer Info</h3>
                   <p>Device ID <span><%= deviceId %></span></p>
-                  <p>Serial Number <span>Loading</span></p>
-                  <p>Make, Model <span>Swirlmore wkw007ge</span></p>
+                  <p>Serial Number <span><%= serialNumber %></span></p>
+                  <p>Make, Model <span><%= make %> <%= model %></span></p>
                   <h3>Washer Status</h3>
                   <p>Overall status  <strong><%= deviceStatus %></strong></p>
                   <p>Vibration <strong><%= vibration %></strong></p>
@@ -58,24 +58,9 @@
     </div>
 
     <script type="text/javascript">
-
-      $(document).ready(function(){
-        $.ajax({
-          url: '/washingMachine/<%= deviceId %>/getStatus',
-          type: 'GET',
-          success: function(data){
-            $('.washer-content .washer-text p strong').eq(0).text(data.attributes.status);
-            $('.washer-content .washer-text p strong').eq(1).text(data.attributes.vibration);
-            $('.washer-content .washer-text p strong').eq(2).text(data.attributes.waterPressure);
-          }
-        });
-      });
-
       iotAppMonitorClient.mqtt = function(id, message) {
         if (id === "<%= deviceId %>") {
           var device = JSON.parse(message).d;
-          $('.washer-content .washer-text p span').eq(1).text(device.serialNumber);
-
           $('.washer-content .washer-text p strong').eq(0).text(device.status);
           $('.washer-content .washer-text p strong').eq(1).text(device.vibration);
           $('.washer-content .washer-text p strong').eq(2).text(device.waterPressure);

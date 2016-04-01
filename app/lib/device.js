@@ -1,17 +1,11 @@
 var qr = require('qr-image');
+var cfenv = require('cfenv');
 
 var device = module.exports;
 
 /* ************** ************** **************
  * ************** UTIL FUNCTIONS **************
  * ************** ************** **************/
-
-var generateSerialNumber = function(){
-	var serialNumber = String(Math.floor(Math.random()*900) + 100);
-	serialNumber = serialNumber.concat(new Date().getTime());
-	serialNumber = [serialNumber.slice(0, 4), '-', serialNumber.slice(4, 8), '-', serialNumber.slice(8, 12), '-', serialNumber.slice(12)].join('');
-	return serialNumber;
-}
 
 var setAttributeIsValid = function(deviceID, attribute, value, data){
 	var status = data.attributes.status;
@@ -52,11 +46,35 @@ var setAttributeIsValid = function(deviceID, attribute, value, data){
 }
 
 device.getQrCode = function(req, res){
-	var data = {};
-	data.ID = req.params.deviceID;
-	data.SN = generateSerialNumber();
+	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
+		var deviceID = req.params.deviceID;
+		var serialNumber = data['attributes']['serialNumber'];
+		var deviceMake = data['attributes']['make'];
+		var deviceModel = data['attributes']['model'];
+		
+		var text = ['2', deviceID, serialNumber, deviceMake, deviceModel].join(',');
+		
+		var img = qr.image(text, { type: 'png', ec_level: 'H', size: 2, margin: 0 });
+		res.writeHead(200, {'Content-Type': 'image/png'})
+		img.pipe(res);
+	});
+}
+
+device.QRcreds = function(req, res){
+	var VCAP_SERVICES = {};
+	if(process.env.VCAP_SERVICES)
+		VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 	
-	var img = qr.image(req.params.deviceID, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
+	var appEnv = cfenv.getAppEnv();
+	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
+	var route = appEnv.url;
+	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
+	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
+	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	
+	var text = ['1', org, route, guid, key, token].join(',');
+	
+	var img = qr.image(text, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
 	res.writeHead(200, {'Content-Type': 'image/png'})
 	img.pipe(res);
 }
@@ -69,9 +87,6 @@ device.getAllDevicesStatus = function(req, res){
 
 device.getStatus = function(req, res) {
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
-		if(!data["attributes"]["serialNumber"]){
-			simulationClient.setAttributeValue(req.params.deviceID, "serialNumber", generateSerialNumber());
-		}
 		res.json(data);
 	});
 }
@@ -158,11 +173,14 @@ device.create = function(req, res){
 		simulationClient.terminateSimulation();
 		
 		var configs = [];
+		var devices;
+		
 		for(var i = 0; i < numberOfDevices; i++){
 			configs.push({connected: true});
 		}
 		
 		simulationClient.createDevices("washingMachine", numberOfDevices, configs).then(function(data){
+			
 			for(var i = 0; i < data.length; i++){
 				var obj = data[i];
 				simulationClient.connectDevice(obj["deviceID"]);
@@ -179,7 +197,13 @@ device.create = function(req, res){
 	
 }
 
+device.del = function(req, res){
+	simulationClient.unregisterDevice(req.params.deviceID);
+	res.json("The device was deleted.");
+}
+
 device.renderUI = function(req, res){
+	
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
 		return res.render('device', {
 			title:          'Watson IoT for Electronics',
@@ -189,7 +213,10 @@ device.renderUI = function(req, res){
 			deviceCurCycle:    data.attributes.currentCycle,
 			deviceFailureType: data.attributes.failureType,
 			vibration:         data.attributes.vibration,
-			waterPressure:     data.attributes.waterPressure
+			waterPressure:     data.attributes.waterPressure,
+			serialNumber:      data.attributes.serialNumber,
+			make:              data.attributes.make,
+			model:             data.attributes.model
 		});
 	});
 }

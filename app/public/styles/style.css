@@ -25,7 +25,9 @@ hr{
 }
 .bluemix-bar, .container:first-child h2, .selection-box:first-child p,
 .content div.explain p, .content div.explain a, .washer-list,
-.install-info h3, .footer-links .link{
+.install-info h3, .footer-links .link, .problem-machine p,
+.washer-details .washer-content .washer-text p, .washer-app-info p,
+.washer-details .washer-content .text-list li{
 	font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
 	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
 }
@@ -33,14 +35,16 @@ hr{
 .selection-box:first-child h3, .selection-code h3{
 	color: #262626;
 	font-size:21px;
+	margin-bottom: 20px;
 }
 .selection-box:first-child p, .selection-code p{
 	font-size: 16px;
+
 }
 
 .main-section {
   position: relative;
-  padding: 50px 0px;
+  padding: 60px 0px;
 
 }
 .container{
@@ -55,10 +59,19 @@ hr{
 }
 .bluemix-bar{
 	margin: 0px;
-	padding: 15px 40px;
+	padding: 20px 40px;
 	background-color: #20343E;
 	color: #FFF;
 	font-size:21px;
+}
+.bluemix-bar-header{
+	margin: 0px;
+	padding: 20px 40px;
+	background-color: #152935;
+	color: #4A97F8;
+	font-size: 12px;
+	font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
+	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 .container:first-child h2{
 	font-size: 28px;
@@ -90,7 +103,7 @@ hr{
 	border-color: #4A97F8;
 }
 .explore-info .selection-box img{
-	margin-top: 55px;
+	margin-top: 40px;
 	margin-bottom: 20px;
 	width: 89px;
 	height: 120px;
@@ -101,6 +114,7 @@ hr{
 }
 .content:first-child p{
 	font-size: 16px;
+	margin-bottom: 20px;
 }
 .content div.explain p{
 	font-size: 21px;
@@ -108,15 +122,14 @@ hr{
 	width: 90%;
 }
 .content div.explain a{
-	margin-top: 10px;
+	margin-top: 40px;
 	font-size: 21px;
 	color: #4581E0;
 	float: left;
 }
 .gray-background .content div>img{
 	border: 1px solid #0F0F0F;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 40px;
 	width: 220px;
 	height: 140px;
 }
@@ -134,8 +147,8 @@ hr{
 	text-align: left;
 }
 .gray-background .content div >.mobile-image,.content div >.mobile-image{
-	height: 128px;
-	width: 128px;
+	height: 120px;
+	width: 120px;
 	border: none;
 }
 .gray-background .arrow-section .content{
@@ -171,6 +184,9 @@ hr{
   border-left: 23px solid transparent;
   border-right: 23px solid transparent;
   border-top: 50px solid #FFF;
+}
+.main-section.gray-background{
+	padding-bottom: 40px;
 }
 .main-section.arrow-section:before{
 	border-top-color: #FFF;
@@ -212,24 +228,24 @@ hr{
 	position: relative;
 	outline: 0 !important;
 }
-
-.list-group .list-item.active span:after{
+.list-group .list-item span{
+  position: relative;
+  display: inline-block;
+  margin-top: 200px;
+  margin-left: -20px;
+  color: #0F0F0F;
+  text-align: center;
+}
+.list-group .list-item span:after {
   content: "";
+  position: relative;
   display: block;
   background: #7CCD10;
+  left: calc(100% + 10px);
+  top: -17px;
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  position: absolute;
-  left: 85%;
-  top: 1px;
-}
-.list-group .list-item span{
-	position: absolute;
-	top: 210px;
-	left: 0;
-	right: 0;
-	color: #0F0F0F;
 }
 .list-group .list-item.active,
 .list-group .list-item:hover{
@@ -272,10 +288,15 @@ hr{
   line-height: 0px;
   outline: 0;
 }
-
+.add-button:hover{
+	background-color: #B4E0FF;
+}
 /*Install Mobile*/
 .installation-section{
 	padding: 0px;
+}
+.installation-section .container:first-child h2{
+	margin-bottom: 60px;
 }
 .install-info{
 	float: left;
@@ -298,8 +319,12 @@ hr{
 	color: #4A97F8;
 }
 .selection-code img{
-	width:64px;
-	height:64px;
+	width:128px;
+	height:128px;
+	margin-bottom: 20px;
+}
+.selection-code p{
+	padding: 0px 25px;
 }
 /*Footer*/
 footer{
@@ -323,9 +348,18 @@ footer.main-section{
 	font-size: 28px;
 	color: #0F0F0F;
 }
+.footer-links h4{
+	margin-bottom: 20px;
+}
 
 /* Washer Single Page*/
-.washer-title span{
+.washer-content{
+	padding: 10px 0px;
+}
+.washer-text p, .washer-text h3{
+	margin-bottom: 20px;
+}
+.washer-title span {
 	position: relative;
 }
 .washer-title span:after{
@@ -341,37 +375,125 @@ footer.main-section{
 }
 .washer-details{
 	display: flex;
-  width: 100%;
-  margin: 40px 0px;
+  	width: 100%;
+  	margin: 10px 0px;
 }
 .washer-details .washer-content{
 	position: relative;
+	padding-top: 15px;
   flex: 1;
 }
 .washer-details .washer-content .washer-text{
+  display: inline-block;
+  margin-top: -25px;
 	text-align: left;
+	width: 100%;
 }
 .washer-details .washer-content .washer-text p span{
 	margin-left: 50px;
 }
+.washer-details .washer-content .washer-text p strong{
+	float: right;
+}
 .washer-details .washer-content .washer-machine{
   width: calc(100% - 100px);
 }
+.washer-details .washer-content .text-list{
+	list-style: none;
+  padding: 0px;
+  width: 100%;
+}
+.washer-details .washer-content .text-list li{
+	display: inline-block;
+	width: 50%;
+	text-align: left;
+}
+.washer-details .washer-content .text-list li strong{
+	position: relative;
+}
+.washer-details .washer-content .text-list li strong:after{
+	content: " ";
+	position: absolute;
+	height: 0;
+	width: 0;
+  left: calc(100% + 15px);
+	pointer-events: none;
+	border: solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 12px solid #aa75f5
+;
+}
 .washer-app-info{
-	display: table;;
+  display: flex;
+	font-size:20px;
 }
 .washer-app-info > div{
-  display: table-cell;
   padding-left: 50px;
+}
+.washer-app-info img{
+	height: 100px;
+	width: 100px;
+}
+.washer-app-info > div > img {
+    margin-left: 10px;
 }
 .problem-machine{
 	text-align: left;
+	padding: 0px 25px;
 }
-.problem-machine button{
+.problem-machine-icons img{
+	width: 40px;
+	height: 40px;
+}
+.problem-machine .problem-machine-icons button{
+	border: none;
+	display: inline-block;
+  text-align: left;
+  background: none;
+  margin-left: 10px;
+	outline: 0 !important;
+}
+.problem-machine-icons{
+	margin: 20px;
+}
+.problem-machine-icons p {
+	margin-top: 20px;
+}
+
+.problem-machine:first-child h3{
+	margin-bottom: 20px;
+}
+.problem-machine .problem-machine-buttons button{
 	display: block;
 	background: #FFF;
-  margin: 7px 0px;
-	padding: 10px;
-	width: 130px;
+	margin: 7px 0px;
+  padding: 8px;
+  width: 120px;
+  height: 40px;
 	border: 1px solid #000;
+	outline: 0 !important;
+}
+.problem-machine .problem-machine-buttons button:hover{
+	background-color: #B4E0FF;
+}
+@media only screen and (max-width: 768px){
+  .explore-info .selection-box:before,
+	.explore-info .selection-box:after{
+    display: none;
+  }
+	.content .explore-info .selection-box{
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.list-group .list-item{
+		width: 50%;
+	}
+	.washer-details .washer-content{
+    text-align: left;
+	}
+	.washer-app-info > div{
+  	padding-left: 0px;
+	}
 }
