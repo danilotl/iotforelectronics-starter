@@ -44,7 +44,7 @@ else if (iot4electronicsDebug && iot4electronicsDebug.VCAP_SERVICES)
 var host = (process.env.VCAP_APP_HOST || 'localhost');
 
 //global connectedDevicesCache
-connectedDevicesCache = require('./lib/connectedDevicesCache');
+//connectedDevicesCache = require('./lib/connectedDevicesCache');
 
 
 

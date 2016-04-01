@@ -42,8 +42,8 @@
                   <ul class="text-list"><li>Make, Model </li><li><%= make %> <%= model %></li></ul>
                   <h3 class="washer-title">Washer Status</h3>
                   <ul class="text-list"><li>Overall status  </li><li><strong><%= deviceStatus %></strong></li></ul>
-                  <ul class="text-list"><li>Vibration </li><li><strong><%= vibration %></strong></li></ul>
-                  <ul class="text-list"><li>Water pressure </li><li><strong><%= waterPressure %></strong></li></ul>
+                  <ul class="text-list"><li>Vibration </li><li><strong><%= vibration %> mps</strong></li></ul>
+                  <ul class="text-list"><li>Water pressure </li><li><strong><%= waterPressure %> psi</strong></li></ul>
                 </div>
               </div>
             </div>
@@ -66,8 +66,21 @@
         $('.problem-machine-buttons button').eq(0).on('click', function(e){
           e.preventDefault();
           $.ajax({
-            url: '/washingMachine/reset',
-            type: 'PUT'
+            url: '/washingMachine/<%= deviceId %>/setAttributes',
+            type: 'PUT',
+            data: {
+              status: "Ready",
+              failureType: "",
+              vibration: "80",
+              waterPressure: "30"
+
+            },
+            success: function() {
+              $('.washer-content .washer-text p strong').eq(0).text('Failure');
+              if(index > 0){
+                $('.washer-content .washer-text p strong').eq(index).text(text);
+              }
+            }
           });
         });
 
@@ -95,12 +108,12 @@
           switch(failureType){
             case 'Strong vibration':
             index = 1;
-            text = "150 mps";
+            text = "150";
             obj['vibration'] = text;
             break;
             case 'Water leak':
             index = 2;
-            text = "70 psi";
+            text = "70";
             obj['waterPressure'] = text;
             break;
           }
@@ -122,9 +135,9 @@
       iotAppMonitorClient.mqtt = function(id, message) {
         if (id === "<%= deviceId %>") {
           var device = JSON.parse(message).d;
-          $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
-          $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration);
-          $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure);
+          if(device.status)        $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
+          if(device.vibration)     $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
+          if(device.waterPressure) $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
         }
       };
     </script>
