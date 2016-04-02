@@ -43,7 +43,7 @@ washingMachineIoTFClient.dispatchDeviceEvent = function (type, id, event, format
     var payloadObj = null;
 	if(format == 'json')
 		payloadObj = JSON.parse(payload).d;
-	connectedDevicesCache.cacheDevice(type, id, payloadObj);
+	//connectedDevicesCache.cacheDevice(type, id, payloadObj);
     switch (event){
     case "statusReport":
     	if(washingMachineIoTFClient.statusReportMessageArrived)    		
@@ -64,12 +64,12 @@ washingMachineIoTFClient.dispatchDeviceEvent = function (type, id, event, format
 washingMachineIoTFClient.dispatchDeviceStatus = function (type, id, payload, topic) {	var payloadObj = JSON.parse(payload);
 	switch (payloadObj.Action){
 	case "Connect":
-		connectedDevicesCache.cacheDevice(type, id);
+		//connectedDevicesCache.cacheDevice(type, id);
 		if(washingMachineIoTFClient.onwashingMachineConnected)
 			washingMachineIoTFClient.onwashingMachineConnected(id, payloadObj);
 		break;
 	case "Disconnect":
-		connectedDevicesCache.deleteDevice(type, id);
+		//connectedDevicesCache.deleteDevice(type, id);
 		if(washingMachineIoTFClient.onwashingMachineDisconnected)
 			washingMachineIoTFClient.onwashingMachineDisconnected(id, payloadObj);
 		break;
