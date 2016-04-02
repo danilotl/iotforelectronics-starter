@@ -301,7 +301,8 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 /*             serial number, manufacturer, and model          */
 /***************************************************************/
 //TODO: check if we already have registered this appliance?
-app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
+//app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
+app.post('/appliances', function (req, res)
 {
     console.log("POST /appliances  ==> Begin");
    console.log("POST /applianecs  ==> Inserting device document in Cloudant");
