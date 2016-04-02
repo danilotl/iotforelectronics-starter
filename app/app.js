@@ -157,12 +157,6 @@ try {
 	};	
 }
 
-//Start server
-server.listen(app.get('port'), function() {
-	console.log('Server listening on port ' + server.address().port);
-});
-
-
 /***************************************************************/
 //STEPHANIES'S CODE *************
 /***************************************************************/
@@ -705,4 +699,9 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
      }
      res.sendStatus(204);
   });
+});
+
+//Start server
+server.listen(app.get('port'), function() {
+	console.log('Server listening on port ' + server.address().port);
 });
