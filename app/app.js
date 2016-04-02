@@ -87,6 +87,7 @@ var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
 /***************************************************************/
 /* Set up express server & passport                            */
 /***************************************************************/
+var app = express();
 passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
@@ -601,7 +602,7 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 washingMachineIoTFClient = require('./mqtt/washingMachineIoTFClient'); 
 washingMachineIoTFClient.connectToBroker(iotfCredentials);
 	
-var app = express();
+//var app = express();
 
 //Enable reverse proxy support in Express. This causes the
 //the "X-Forwarded-Proto" header field to be trusted so its
