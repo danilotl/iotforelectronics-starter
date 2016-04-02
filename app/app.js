@@ -7,8 +7,8 @@ var express      = require('express'),
     cors         = require('cors'),
     routes       = require('./routes/index'),
     device       = require('./routes/device'),
-    simulator    = require('./routes/simulator');
-    http       = require('http');
+    simulator    = require('./routes/simulator'),
+    http       = require('http'),
     request    = require('request');
 
 var iot4electronicsDebug = null;
