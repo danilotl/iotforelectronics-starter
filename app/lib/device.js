@@ -71,8 +71,9 @@ device.QRcreds = function(req, res){
 	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
 	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
 	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	var name = VCAP_SERVICES['iotf-service'][0]name;
 	
-	var text = ['1', org, route, guid, key, token].join(',');
+	var text = ['1', org, route, guid, key, token, name].join(',');
 	
 	var img = qr.image(text, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
 	res.writeHead(200, {'Content-Type': 'image/png'})
