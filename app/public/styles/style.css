@@ -81,12 +81,15 @@ button, a{
 	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 .bluemix-bar-header-text:before{
-	font-size: 20px;
-	content: "←";
+	content: "";
+	background-image: url("../images/GoDashboard_Arrow.svg");
+	background-repeat: no-repeat;
+	background-size: 100%;
 	position: absolute;
-	left: 0px;
-	top: -5px;
-	display: inline-block;
+	height: 12px;
+	width: 13px;
+	left: 2px;
+	top: 2px;
 
 }
 .bluemix-bar-header-text{
@@ -148,7 +151,7 @@ button, a{
 	float: left;
 }
 .gray-background .content div>img{
-	margin-bottom: 40px;
+	margin-bottom: 70px;
 	width: 220px;
 	height: 140px;
 }
@@ -241,7 +244,7 @@ button, a{
 	width: 20%;
 	height: 250px;
 	border: 2px solid transparent;
-	background-image: url("../images/washing-machine-placeholders.png");
+	background-image: url("../images/Washer.svg");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: #FFF;
@@ -252,7 +255,7 @@ button, a{
   position: relative;
   display: inline-block;
   margin-top: 200px;
-  margin-left: -20px;
+  /*margin-left: -20px;*/
   color: #0F0F0F;
   text-align: center;
 }
@@ -283,7 +286,6 @@ button, a{
   font-size: 30px;
   background: #FFF;
   border: 2px solid #000;
-  padding-bottom: 5px;
   line-height: 0px;
   outline: 0;
 }
@@ -295,6 +297,7 @@ button, a{
 	border-color: #AEAEAE;
 	background-color: #FFF;
 }
+
 .max-washer-message span{
   position: relative;
   padding-left: 30px;
@@ -426,18 +429,7 @@ footer.main-section{
 	display: inline-block;
   width: calc(100% - 65px);
 }
-.washer-details .washer-content .text-list li strong:after{
-	content: " ";
-	position: absolute;
-	height: 0;
-	width: 0;
-  left: calc(100% + 15px);
-	pointer-events: none;
-	border: solid transparent;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 12px solid #aa75f5;
-}
+
 .washer-app-info{
   display: flex;
 	font-size:20px;

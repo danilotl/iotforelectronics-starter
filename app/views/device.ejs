@@ -20,19 +20,19 @@
             <h3>Select a problem</h3>
             <p>Watch your washer 's status change. When you try the consumer app, a status change message will automatically be sent to your iOS phone</p>
             <div class="problem-machine-icons">
-              <p class="enabled"><img src="/images/board-failure-icon.png"><button>Board failure</button></p>
-              <p class="enabled"><img src="/images/strong-vibration-icon.png"/> <button>Strong vibration</button></p>
-              <p class="enabled"><img src="/images/water-leak-icon.png"/> <button>Water leak</button></p>
+              <p class="enabled"><img src="/images/Board_failure_en.svg"><button>Board failure</button></p>
+              <p class="enabled"><img src="/images/Vibration_en.svg"/> <button>Strong vibration</button></p>
+              <p class="enabled"><img src="/images/waterdrop.svg"/> <button>Water leak</button></p>
             </div>
             <div class="problem-machine-buttons">
-              <button id="resetMachines" disabled>Reset machine</button>
+              <button id="resetMachines" disabled>Fix machine</button>
               <button>Delete washer</button>
             </div>
           </div>
           <div class="col-xs-12 col-sm-8 machine-info">
             <div class="washer-details">
               <div class="washer-content">
-                <img src="/images/washer.png" class="washer-machine"/>
+                <img src="/images/Washer.svg" class="washer-machine"/>
               </div>
               <div class="washer-content">
                 <div class="washer-text">
@@ -41,9 +41,9 @@
                   <ul class="text-list"><li>Serial Number </li><li><%= serialNumber %></li></ul>
                   <ul class="text-list"><li>Make, Model </li><li><%= make %> <%= model %></li></ul>
                   <h3 class="washer-title">Washer Status</h3>
-                  <ul class="text-list"><li>Overall status  </li><li><strong><%= deviceStatus %></strong></li></ul>
-                  <ul class="text-list"><li>Vibration </li><li><strong><%= vibration %> mps</strong></li></ul>
-                  <ul class="text-list"><li>Water pressure </li><li><strong><%= waterPressure %> psi</strong></li></ul>
+                  <ul class="text-list"><li>Overall status  </li><li><strong><%= deviceStatus %></strong><img src="../images/Checkmark.svg"></li></ul>
+                  <ul class="text-list"><li>Vibration </li><li><strong><%= vibration %> mps</strong><img src="../images/Checkmark.svg"></li></ul>
+                  <ul class="text-list"><li>Water pressure </li><li><strong><%= waterPressure %> psi</strong><img src="../images/Checkmark.svg"></li></ul>
                 </div>
               </div>
             </div>
@@ -145,8 +145,27 @@
         if (id === "<%= deviceId %>") {
           var device = JSON.parse(message).d;
           if(device.status)        $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
-          if(device.vibration)     $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
-          if(device.waterPressure) $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
+
+          if(device.failureType != 'Board failure'){
+            if(device.vibration)     $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
+            if(device.waterPressure) $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
+          } else {
+            $('.washer-content .washer-text ul li strong').eq(1).text('No data');
+            $('.washer-content .washer-text ul li strong').eq(2).text('No data');
+            $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
+            $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
+          }
+
+          if(device.status == 'Failure'){
+            $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/advise-icon.svg');
+            if(device.failureType == 'Strong vibration') $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
+            if(device.failureType == 'Water leak')       $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
+          } else {
+            $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/Checkmark.svg');
+            if(device.failureType != 'Strong vibration') $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/Checkmark.svg');
+            if(device.failureType != 'Water leak')       $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/Checkmark.svg');
+          }
+          
         }
       };
     </script>

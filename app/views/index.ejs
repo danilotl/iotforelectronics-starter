@@ -64,8 +64,8 @@
       </section>
       <section name="description-selection-box-2" class="col-xs-12 col-md-10 content description-box hidden">
         <div class="col-xs-12 col-md-6 image-box-2">
-          <img src="/images/image-placeholde-2.png"/>
-          <img src="/images/image-placeholder.png"/>
+          <img src="/images//Phone.svg"/>
+          <img src="/images/ConsumerApp_Diagram.png"/>
         </div>
         <div class="col-xs-12 col-md-6 explain">
           <p>You will experience a simulation of how
@@ -98,7 +98,7 @@
         <h2>Choose or add new simulated washer</h2>
         <p class="add-washer-message">You can add up to five washers.<p>
         <p class="max-washer-message hidden"><span>You have reached the limit of 5 washers.</span></p>
-        <button id="addNewDeviceButton" class="add-button">+</button>
+        <button id="addNewDeviceButton" class="add-button"><img src="/images/PlusWasher_en.svg"></button>
         <hr/>
         <div class="washer-list">
           <p class="selection-text"><strong>Your washers</strong><span>Select a washer to control its simulated data. A new window will open.</span></p>
@@ -120,12 +120,12 @@
           </div>
           <div class="col-xs-12 col-md-7 instructions-section">
             <div class="install-info">
-              <h3> <img src="/images/step-one.png"/>
+              <h3> <img src="/images/Install_Step1.svg"/>
               Download the app to your workstation<br/>
-              <a>add link here</a></h3>
+              <a href="javascript:alert('Still to be included.');">add link here</a></h3>
             </div>
             <div class="install-info">
-              <h3> <img src="/images/step-two.png"/>
+              <h3> <img src="/images/Install_Step2.svg"/>
               Instructions to install on your iOS phone<br/>
               <a href="https://console.stage1.ng.bluemix.net/docs/starters/IotElectronics/iote_installMobileApp.html" target="_blank">Click Here</a></h3>
             </div>
@@ -155,6 +155,8 @@
       // Setup the ajax indicator
       $('body').append('<div id="ajaxBusy"><p><img src="images/loading.gif"></p></div>');
 
+      $('#addNewDeviceButton').prop('disabled', false);
+
       $('#ajaxBusy').css({
         display:"none",
         margin:"0px",
@@ -165,7 +167,7 @@
         position:"fixed",
         left:"50%",
         top:"50%",
-         width:"auto"
+        width:"auto"
       });
 
 
@@ -194,19 +196,31 @@
         e.preventDefault();
         if(numberOfDevices < MAX_DEVICES) {
           numberOfDevices++;
-          $.ajax({
-            url: '/washingMachine/createDevices/1',
-            type: 'POST',
-            success: function(data){
-              $.each(data, function(index, value){
-                $('.list-group').append('<button class="list-item"><span>' + value.deviceID + '</span></button>');
-              });
-              validateNoWasherMessage();
-              validateAppExperienceWasherMessage();
-            }
-          });
+
+          // TODO: Uncomment the snippet below (it was commented out for testing purposes)
+
+           $.ajax({
+             url: '/washingMachine/createDevices/1',
+             type: 'POST',
+             success: function(data){
+               $.each(data, function(index, value){
+                 $('.list-group').append('<button class="list-item"><span>' + value.deviceID + '</span></button>');
+               });
+               validateNoWasherMessage();
+               validateAppExperienceWasherMessage();
+             }
+           });
+
+          // TODO: Remove the snippet below (I added it for testing purposes)
+          // validateNoWasherMessage();
+          // validateAppExperienceWasherMessage();
+          // $('.list-group').append('<button class="list-item"><span>Washer ' + numberOfDevices + '</span></button>');
+          // *****
+
+
           if(numberOfDevices === MAX_DEVICES) {
             $('#addNewDeviceButton').prop('disabled', true);
+            $('#addNewDeviceButton img').attr("src","../images/PlusWasher_dis.svg");
             validateMaxWasherMessage();
           }
         }
@@ -217,7 +231,9 @@
         $(this).addClass('active');
 
         window.open(
+          // TODO: Uncomment the line below and comment out the line with './washer.html'
           './washingMachine/' + $(this).find('span').text(),
+          // './washer.html',
           '_blank' // <- This is what makes it open in a new window.
         );
       });
@@ -228,40 +244,32 @@
         //Change the content from the selection box
         $('.description-box').addClass('hidden');
         $('.description-box[name=description-' + $(this).attr('name') + ']').removeClass('hidden');
-        validateInstallationSection();
         validateAppExperienceWasherMessage();
       });
-      
+
       $('.problem-machine-icons button').click(function() {
         $('.problem-machine-icons button').removeClass('active');
         $(this).addClass('active');
       });
 
-      function validateInstallationSection(){
-        if ($('.selection-box.active').attr('name') === 'selection-box-2'){
-          $('.installation-section').removeClass('hidden');
-        }else{
-          $('.installation-section').addClass('hidden');
-        }
-      }
-
       function validateAppExperienceWasherMessage(){
         var appNoWasherMessage = $('.appxp-washer-message');
+        var installationSection = $('.installation-section');
         if ($('.selection-box.active').attr('name') === 'selection-box-2'){
-          if(numberOfDevices < 1 && appNoWasherMessage.hasClass("hidden")){
+          if(numberOfDevices < 1){
             appNoWasherMessage.removeClass('hidden');
+            installationSection.addClass('hidden');
           }
-          if(numberOfDevices > 0 && !appNoWasherMessage.hasClass("hidden")){
+          if(numberOfDevices > 0 ){
             appNoWasherMessage.addClass('hidden');
+            installationSection.removeClass('hidden');
           }
         }
         else{
-          if(!appNoWasherMessage.hasClass("hidden")){
-            appNoWasherMessage.addClass('hidden');
-          }
+          appNoWasherMessage.addClass('hidden');
+          installationSection.addClass('hidden');
         }
       }
-
       function validateNoWasherMessage(){
         var noWashersMessage = $('.washer-list .no-washers-message');
         if(numberOfDevices < 1 && noWashersMessage.hasClass("hidden")){
@@ -271,7 +279,6 @@
           noWashersMessage.addClass('hidden');
         }
       }
-
       function validateMaxWasherMessage(){
         var maxMessage = $('.max-washer-message');
         var addMessage = $('.add-washer-message');
@@ -287,16 +294,16 @@
     });
 
     // Ajax activity indicator bound to ajax start/stop document events
-    $(document).ajaxStart(function(){ 
-      $('#ajaxBusy').show(); 
-    }).ajaxStop(function(){ 
+    $(document).ajaxStart(function(){
+      $('#ajaxBusy').show();
+    }).ajaxStop(function(){
       $('#ajaxBusy').hide();
     });
 
     //Scroll page control
     $('.ibm-top-link').click(function() {
-        $('html, body').animate({scrollTop : 0},400);
-        return false;
+    		$('html, body').animate({scrollTop : 0},400);
+    		return false;
     });
 
     $(window).scroll(function (event) {
