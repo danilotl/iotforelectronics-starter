@@ -23,14 +23,14 @@
 			        	<h3>Select a problem</h3>
 			        	<p>Watch your washer 's status change. When you try the consumer app, a status change message will automatically be sent to your iOS phone</p>
 			        	<div class="problem-machine-icons">
-									<p><img src="/images/board-failure-icon.png"><button class="board-failure">Board failure</button></p>
-			        		<p><img src="/images/strong-vibration-icon.png"/> <button class="strong-vibration">Strong vibration</button></p>
-			        		<p><img src="/images/water-leak-icon.png"/> <button class="water-leak">Water leak</button></p>
+			        		<p class="enabled"><img src="/images/board-failure-icon.png"><button>Board failure</button></p>
+			        		<p class="enabled"><img src="/images/strong-vibration-icon.png"/> <button>Strong vibration</button></p>
+			        		<p class="enabled"><img src="/images/water-leak-icon.png"/> <button>Water leak</button></p>
 			        	</div>
-								<div class="problem-machine-buttons">
-		        			<button>Reset machine</button>
+						<div class="problem-machine-buttons">
+		        			<button id="resetMachines" disabled>Reset machine</button>
 			        		<button>Delete washer</button>
-								</div>
+						</div>
 	     			</div>
         		<div class="col-xs-12 col-sm-8 machine-info">
         			<div class="washer-details">
@@ -55,12 +55,31 @@
 									<img src="/images/QR-code.png"/>
 								</div>
 								<div>
-									<p>When you try the consumer app, you can scan the QR code to see this washer's status and other events on your phone.</p>
+									<p class="qr-code-message">When you try the consumer app, you can scan the QR code to see this washer's status and other events on your phone.</p>
 								</div>
 							</div>
 	        	</div>
       	</section>
 	    </div>
 	  </div>
+		<script>
+    		$(document).ready(function(){
+				$('.problem-machine-icons p').click(function() {
+					if($('#resetMachines').prop('disabled')) {
+						$('#resetMachines').prop('disabled', false);
+						$('.problem-machine-icons button').removeClass('active');
+						$('.problem-machine-icons p').removeClass('enabled');
+						$('.problem-machine-icons p').removeClass('active');
+						$(this).eq(0).addClass('active');
+						$(this).children('button').eq(0).addClass('active');
+					}
+				});
+				$('.problem-machine-buttons #resetMachines').click(function() {
+					$('#resetMachines').prop('disabled', true);
+					$('.problem-machine-icons button').removeClass('active');
+					$('.problem-machine-icons p').addClass('enabled');
+				});
+    		});
+    </script>
 	</body>
 </html>

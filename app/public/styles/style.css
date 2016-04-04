@@ -23,6 +23,13 @@ h1, h2, h3, h4{
 hr{
 	border: 3px solid #D8E4E4;
 }
+button{
+  transition: right .4s,background-color .15s;
+  will-change: transform;
+}
+button, a{
+	outline: 0 !important;
+}
 .bluemix-bar, .container:first-child h2, .selection-box:first-child p,
 .content div.explain p, .content div.explain a, .washer-list,
 .install-info h3, .footer-links .link, .problem-machine p,
@@ -72,6 +79,19 @@ hr{
 	font-size: 12px;
 	font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
 	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+.bluemix-bar-header-text:before{
+	font-size: 20px;
+	content: "←";
+	position: absolute;
+	left: 0px;
+	top: -5px;
+	display: inline-block;
+
+}
+.bluemix-bar-header-text{
+	position: relative;
+	padding-left: 30px;
 }
 .container:first-child h2{
 	font-size: 28px;
@@ -128,18 +148,18 @@ hr{
 	float: left;
 }
 .gray-background .content div>img{
-	border: 1px solid #0F0F0F;
 	margin-bottom: 40px;
 	width: 220px;
 	height: 140px;
 }
 .gray-background .content .image-box-2>img{
 	margin-top: 60px;
-	margin-bottom: 60px;
+	margin-bottom: 80px;
 }
 .gray-background .content div.explain img{
 	width: 32px;
 	height: 32px;
+	vertical-align: top;
 }
 .info-description{
   width: 70%;
@@ -236,7 +256,7 @@ hr{
   color: #0F0F0F;
   text-align: center;
 }
-.list-group .list-item span:after {
+/*.list-group .list-item span:after {
   content: "";
   position: relative;
   display: block;
@@ -246,33 +266,12 @@ hr{
   height: 15px;
   width: 15px;
   border-radius: 50%;
-}
+}*/
 .list-group .list-item.active,
 .list-group .list-item:hover{
 	border: 2px solid #4A97F8;
 	color: #0f0f0f;
 	outline:
-}
-.active-washer-message{
-	position: relative;
-  border: 1px solid #7CCD10;
-  width: 302px;
-  padding: 18px;
-  padding-left: 60px;
-}
-.active-washer-message:before{
-  content: "";
-  position: absolute;
-  left: 15px;
-  top: 13px;
-  height: 32px;
-  width: 32px;
-  background-size: 20px;
-  background-position: 4px;
-  background-image: url("../images/check-icon.png");
-  background-repeat: no-repeat;
-  border: 2px solid #7CCD10;
-  border-radius: 50%;
 }
 .washer-list .no-washers-message{
 	font-size: 21px;
@@ -291,6 +290,26 @@ hr{
 .add-button:hover{
 	background-color: #B4E0FF;
 }
+#addNewDeviceButton:disabled{
+	color: #AEAEAE;
+	border-color: #AEAEAE;
+	background-color: #FFF;
+}
+.max-washer-message span{
+  position: relative;
+  padding-left: 30px;
+}
+.max-washer-message span:before{
+	content: "";
+	background-image: url("../images/advise-icon.svg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	position: absolute;
+	height: 20px;
+	width: 20px;
+	left: 0px;
+	top: 1px;
+}
 /*Install Mobile*/
 .installation-section{
 	padding: 0px;
@@ -298,6 +317,11 @@ hr{
 .installation-section .container:first-child h2{
 	margin-bottom: 60px;
 }
+
+.installation-section .container .instructions-section{
+	margin-top: -20px;
+}
+
 .install-info{
 	float: left;
 	margin: auto;
@@ -326,7 +350,7 @@ hr{
 .selection-code p{
 	padding: 0px 25px;
 }
-/*Footer*/
+/*Footer
 footer{
   padding: 20px 0px;
 }
@@ -350,7 +374,7 @@ footer.main-section{
 }
 .footer-links h4{
 	margin-bottom: 20px;
-}
+}*/
 
 /* Washer Single Page*/
 .washer-content{
@@ -362,21 +386,10 @@ footer.main-section{
 .washer-title span {
 	position: relative;
 }
-.washer-title span:after{
-  content: "";
-  display: block;
-  background: #7CCD10;
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 7px;
-}
 .washer-details{
 	display: flex;
   	width: 100%;
-  	margin: 10px 0px;
+  	margin: 10px 0px 40px;
 }
 .washer-details .washer-content{
 	position: relative;
@@ -410,6 +423,8 @@ footer.main-section{
 }
 .washer-details .washer-content .text-list li strong{
 	position: relative;
+	display: inline-block;
+  width: calc(100% - 65px);
 }
 .washer-details .washer-content .text-list li strong:after{
 	content: " ";
@@ -421,12 +436,14 @@ footer.main-section{
 	border: solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 12px solid #aa75f5
-;
+  border-bottom: 12px solid #aa75f5;
 }
 .washer-app-info{
   display: flex;
 	font-size:20px;
+}
+.washer-app-info .qr-code-message{
+	text-align: left;
 }
 .washer-app-info > div{
   padding-left: 50px;
@@ -451,14 +468,36 @@ footer.main-section{
 	display: inline-block;
   text-align: left;
   background: none;
-  margin-left: 10px;
+  margin-left: 20px;
 	outline: 0 !important;
 }
-.problem-machine-icons{
+/*.problem-machine-icons{
 	margin: 20px;
-}
-.problem-machine-icons p {
+}*/
+/*.problem-machine-icons p {
 	margin-top: 20px;
+}*/
+
+.problem-machine-icons p:hover{
+	position: relative;
+	border: 2px solid transparent;
+	cursor: pointer;
+	border-color: #4A97F8;
+}
+
+.problem-machine-icons p{
+	opacity: 0.5;
+}
+
+.problem-machine-icons p.enabled, p.active{
+	opacity: 1;
+}
+
+.problem-machine-icons p button.active{
+	position: relative;
+	border-bottom: 5px solid transparent;
+	border-color: #aa75f5;
+	padding-bottom: 6px;
 }
 
 .problem-machine:first-child h3{
@@ -476,6 +515,22 @@ footer.main-section{
 }
 .problem-machine .problem-machine-buttons button:hover{
 	background-color: #B4E0FF;
+}
+
+.problem-machine .problem-machine-buttons button:disabled{
+	background: #FFF;
+	opacity: 0.5;
+}
+
+
+.problem-machine .problem-machine-icons p{
+	border: 2px solid transparent;
+	padding: 10px;
+
+}
+.problem-machine .problem-machine-icons p.enabled:hover{
+	border-color: #4A97F8;
+	opacity: 1;
 }
 @media only screen and (max-width: 768px){
   .explore-info .selection-box:before,
@@ -496,4 +551,49 @@ footer.main-section{
 	.washer-app-info > div{
   	padding-left: 0px;
 	}
+}
+/*IBM TOP LINK*/
+a.ibm-top-link {
+	position: fixed;
+  background: #ececec;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  font-size: 0;
+	right: 1.5rem;
+  bottom: 60px;
+  height: 40px;
+  width: 40px;
+  z-index: 10;
+  overflow: hidden;
+}
+a.ibm-top-link:before,
+a.ibm-top-link:after{
+  top: 9px;
+  left: 8px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+a.ibm-top-link:before{
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 12px solid #000;
+}
+a.ibm-top-link:after{
+	top: 12px;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 12px solid #ececec;
+}
+a.ibm-top-link:hover {
+	background: #000
+}
+a.ibm-top-link:hover:before {
+	border-bottom-color: #FFF;
+}
+a.ibm-top-link:hover:after {
+	border-bottom-color: #000;
 }
