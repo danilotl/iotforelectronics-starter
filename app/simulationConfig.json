@@ -45,11 +45,11 @@
         },
         {
           "name": "vibration",
-          "defaultValue": "80 mps"
+          "defaultValue": "80"
         },
         {
           "name": "waterPressure",
-          "defaultValue": "30 psi"
+          "defaultValue": "30"
         },
         {
           "name": "serialNumber"

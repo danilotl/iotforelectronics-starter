@@ -61,18 +61,18 @@ device.getQrCode = function(req, res){
 }
 
 device.QRcreds = function(req, res){
-//	var VCAP_SERVICES = {};
-//	if(process.env.VCAP_SERVICES)
-//		VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
-//	
-//	var appEnv = cfenv.getAppEnv();
-//	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
-//	var route = appEnv.url;
-//	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
-//	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
-//	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	var VCAP_SERVICES = {};
+	if(process.env.VCAP_SERVICES)
+		VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 	
-	var text = '1,rbncl3,https://test-vcap.stage1.mybluemix.net,83625e1b-4cb2-491f-aed0-da2551cceb1d,a-rbncl3-2mcy2brgdl,oWUZwHelISfJubaO8-'; //['1', org, route, guid, key, token].join(',');
+	var appEnv = cfenv.getAppEnv();
+	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
+	var route = appEnv.url;
+	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
+	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
+	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	
+	var text = ['1', org, route, guid, key, token].join(',');
 	
 	var img = qr.image(text, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
 	res.writeHead(200, {'Content-Type': 'image/png'})
