@@ -1,5 +1,5 @@
 var qr = require('qr-image');
-//var cfenv = require('cfenv');
+var cfenv = require('cfenv');
 
 var device = module.exports;
 
