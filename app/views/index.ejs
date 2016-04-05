@@ -122,12 +122,12 @@
             <div class="install-info">
               <h3> <img src="/images/Install_Step1.svg"/>
               Download the app to your workstation<br/>
-              <a href="javascript:alert('Still to be included.');">add link here</a></h3>
+              <a href="https://github.ibm.com/Watson-IoT/IoT-Electronics-mobileApp/releases/download/v02/IoT-Electronics-mobileApp-SWIFT.ipa" target="_blank">Click Here</a></h3>
             </div>
             <div class="install-info">
               <h3> <img src="/images/Install_Step2.svg"/>
               Instructions to install on your iOS phone<br/>
-              <a href="https://console.stage1.ng.bluemix.net/docs/starters/IotElectronics/iote_installMobileApp.html" target="_blank">Click Here</a></h3>
+              <a href="https://daily-console.stage1.ng.bluemix.net/docs/starters/IotElectronics/iotelectronics_overview.html#iotforelectronics_getmobileapp" target="_blank">Click Here</a></h3>
             </div>
           </div>
         </section>
@@ -194,6 +194,8 @@
 
       $(document).on('click', '#addNewDeviceButton', function(e){
         e.preventDefault();
+        $('#addNewDeviceButton').prop('disabled', true);
+        $('#addNewDeviceButton img').attr("src","../images/PlusWasher_dis.svg");
         if(numberOfDevices < MAX_DEVICES) {
           numberOfDevices++;
 
@@ -206,6 +208,12 @@
                $.each(data, function(index, value){
                  $('.list-group').append('<button class="list-item"><span>' + value.deviceID + '</span></button>');
                });
+
+               if(numberOfDevices !== MAX_DEVICES){
+                $('#addNewDeviceButton').prop('disabled', false);
+                $('#addNewDeviceButton img').attr("src","../images/PlusWasher_en.svg");
+               }
+               
                validateNoWasherMessage();
                validateAppExperienceWasherMessage();
              }
