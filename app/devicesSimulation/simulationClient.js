@@ -14,7 +14,8 @@ var appEnv = require("cfenv").getAppEnv();
 function simulationClient(config) {
 	if (!(this instanceof simulationClient)) {
 		return new simulationClient(config);
-	}	
+	}
+
 	EventEmitter.call(this);
 	config = (config) ? config :{};
 	this.simulationConfig = {
@@ -22,6 +23,7 @@ function simulationClient(config) {
 					"devicesSchemas": (config.devicesSchemas) ? config.devicesSchemas : [],
 							"devices": (config.devices) ? config.devices : []
 	};
+
 	if(config.simulationConfigFile)
 		this.loadConfiguration(config.simulationConfigFile, true);
 	this.ws = null;	
@@ -71,6 +73,7 @@ simulationClient.prototype.saveSimulationConfig = function(path){
 simulationClient.prototype.startSimulation = function(){
 	var _this = this;
 	var body = {simulationConfig: this.simulationConfig};
+
 	return callSimulationEngineAPI("POST", ["startSimulation"], body).then(function (resp){
 		return _this.createws(resp.wsurl);		
 	}).fail(function(err){
@@ -524,7 +527,7 @@ simulationClient.prototype.onMessage = function(msg){
 
 
 function callSimulationEngineAPI(method, paths, body){
-	var uri = (!process.env.LOCAL_SIM_DEBUG) ? "https://iot4esimulationclient.stage1.mybluemix.net/api" :"http://localhost:6002/api";
+	var uri = appEnv.url + "/api";
 	var apiKey = "b52f6b93-5b22-4e76-a765-b3c8ad7a72a8";
 	var apiToken = "21b750f1-43ee-4c92-a11e-1a30ff503feb";	
 	if(paths){
@@ -532,7 +535,7 @@ function callSimulationEngineAPI(method, paths, body){
 			uri += '/'+paths[i];
 		}
 	}
-	return callRestApi(uri, /*simulationCreds.*/apiKey, /*simulationCreds.*/apiToken, method, JSON.stringify(body));
+	return callRestApi(uri, apiKey, apiToken, method, JSON.stringify(body));
 };
 
 

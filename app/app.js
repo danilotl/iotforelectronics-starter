@@ -1,48 +1,51 @@
-var express      = require('express'),
-    path         = require('path'),
-    favicon      = require('serve-favicon'),
-    logger       = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser   = require('body-parser'),
-    cors         = require('cors'),
-    routes       = require('./routes/index'),
-    device       = require('./routes/device'),
-    simulator    = require('./routes/simulator'),
-    http       = require('http'),
-    request    = require('request');
+var express         = require('express');
 
-var iot4electronicsDebug = null;
-//require user extentions  
-try {
-	iot4electronicsDebug = require("./iot4electronicsDebug.js");	
-} catch (e) {
-	try {
-		iot4electronicsDebug = require("./_debug.js");			
-	} catch (e) {
-		console.log("For Debug add _debug.js or iot4electronicsDebug.js");
-	};	
-}
+var app = express();
+//set the app object to export so it can be required 
+module.exports = app;
 
-//There are many useful environment variables available in process.env.
-//VCAP_APPLICATION contains useful information about a deployed application.
-var appInfo = JSON.parse(process.env.VCAP_APPLICATION || "{}");
-//TODO: Get application information and use it in your app.
+var path            = require('path'),
+    favicon         = require('serve-favicon'),
+    logger          = require('morgan'),
+    cookieParser    = require('cookie-parser'),
+    bodyParser      = require('body-parser'),
+    cors            = require('cors'),
+    routes          = require('./routes/index'),
+    device          = require('./routes/device'),
+    simulator       = require('./routes/simulator'),
+    http            = require('http'),
+    request         = require('request'),
+    _               = require("underscore"),
+    appEnv          = require("cfenv").getAppEnv(),
+    debug           = require('debug')('virtualDevices:server'),
+    WebSocketServer = require('ws').Server,
+    apiRouter       = require('./routes/api');
 
-//VCAP_SERVICES contains all the credentials of services bound to
-//this application. For details of its content, please refer to
-//the document or sample of each service.
+dumpError = function(msg, err) {
+	if (typeof err === 'object') {
+		msg = (msg) ? msg : "";		
+		var message = "***********ERROR: " + msg + " *************\n";
+		if (err.message) {
+			message += '\nMessage: ' + err.message;
+		}
+		if (err.stack) {
+			message += '\nStacktrace:\n';
+			message += '====================\n';
+			message += err.stack;				
+			message += '====================\n';			
+		}
+		console.error(message);
+	} else {
+		console.error('dumpError :: argument is not an object');
+	}
+};
+
 VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
-//try and get vcap from debug  
-else if (iot4electronicsDebug && iot4electronicsDebug.VCAP_SERVICES)
-	VCAP_SERVICES = iot4electronicsDebug.VCAP_SERVICES;
 
 //The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
-
-//global connectedDevicesCache
-//connectedDevicesCache = require('./lib/connectedDevicesCache');
 
 /***************************************************************/
 //STEPHANIES'S CODE *************
@@ -87,7 +90,8 @@ var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
 /***************************************************************/
 /* Set up express server & passport                            */
 /***************************************************************/
-var app = express();
+
+
 passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
@@ -139,7 +143,6 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 /* Input: JSON structure that contains the userID, name,       */
 /*             address, and telephone			               */
 /***************************************************************/
-// passport.authenticate('mca-backend-strategy', {session: false }),
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res) 
 {
    console.log("POST /users  ==> Begin");
@@ -613,18 +616,18 @@ app.enable('trust proxy');
 //Add a handler to inspect the req.secure flag (see 
 //http://expressjs.com/api#req.secure). This allows us 
 //to know whether the request was via http or https.
-app.use (function (req, res, next) {
-     if (req.secure || app.get('env') === 'development') {
-             // request was via https, so do no special handling
-             next();
-     } else {
-             // request was via http, so redirect to https
-             res.redirect('https://' + req.headers.host + req.url);
-     }
+app.use(function (req, res, next) {	
+	res.set({
+		'Cache-Control': 'no-store',
+		'Pragma': 'no-cache'
+	});
+	//force https
+	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
+		res.redirect('https://' + req.headers.host + req.url);
+	else
+		next();		
 });
 
-//set the app object to export so it can be required 
-module.exports = app;
 var server = require('http').Server(app);
 iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 
@@ -646,14 +649,7 @@ app.use('/', routes);
 app.use('/', httpRouter);
 app.use('/', device);
 app.use('/', simulator);
-
-//iot-workbench additional requires   
-try {
-	require("./_requires.js");	
-} catch (e) {	
-		//no iot-workbench additional _requires;		
-}
-
+app.use('/api', apiRouter);
 
 //catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -686,20 +682,101 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-app.set('port', process.env.VCAP_APP_PORT || 3000);
+var port = normalizePort(appEnv.port || '3000');
+app.set('port', port);
 
 //require user extensions  
 try {
-	require("./iot4electronics.js");	
-} catch (e) {
-	try {
 		require("./_app.js");			
 	} catch (e) {
-		console.log("Failed to load extention files _app.js or iot4electronics.js: " + e.message);
-	};	
-}
+		console.log("Failed to load extention file _app.js: " + e.message);
+	};
 
 //Start server
 server.listen(app.get('port'), function() {
 	console.log('Server listening on port ' + server.address().port);
 });
+server.on('error', onError);
+server.on('listening', onListening);
+
+//set the server in the app object
+app.server = server;
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+	var port = parseInt(val, 10);
+
+	if (isNaN(port)) {
+		// named pipe
+		return val;
+	}
+
+	if (port >= 0) {
+		// port number
+		return port;
+	}
+
+	return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+	if (error.syscall !== 'listen') {
+		throw error;
+	}
+
+	var bind = typeof port === 'string'
+		? 'Pipe ' + port
+				: 'Port ' + port;
+
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+	case 'EACCES':
+		console.error(bind + ' requires elevated privileges');
+		process.exit(1);
+		break;
+	case 'EADDRINUSE':
+		console.error(bind + ' is already in use');
+		process.exit(1);
+		break;
+	default:
+		throw error;
+	}
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+	var addr = server.address();
+	var bind = typeof addr === 'string'
+		? 'pipe ' + addr
+				: 'port ' + addr.port;
+	debug('Listening on ' + bind);
+	
+	var devicesManager = require("./devicesManager");
+//	web socket for index page
+	var wss = new WebSocketServer({ server: app.server, path :  '/serverStatus'});
+	wss.on('connection', function(ws) {
+		var id = setInterval(function() {
+			var stats = devicesManager.getStats();
+			_.extend(stats, process.memoryUsage());			
+			ws.send(JSON.stringify(stats), function() { /* ignore errors */ });
+		}, 5000);
+		console.log('started server status client interval');
+		ws.on('close', function() {
+			console.log('stopping server status client interval');
+			clearInterval(id);
+		});
+	});
+//	var devicesManager = require("./devicesManager").createFromModelFiles();
+
+
+}

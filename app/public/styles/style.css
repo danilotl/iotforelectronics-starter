@@ -122,7 +122,7 @@ button, a{
 	height: 360px;
 	cursor: pointer;
 }
-.explore-info .selection-box.active{
+.explore-info .selection-box.active, .explore-info .selection-box:hover{
 	border-color: #4A97F8;
 }
 .explore-info .selection-box img{

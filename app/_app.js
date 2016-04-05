@@ -14,6 +14,7 @@ httpRouter.onPutStopWashing  = function(deviceID) {
 var SimulationClient = require('./devicesSimulation/simulationClient.js');
 //create new simulation client using devices in configuration file
 global.simulationClient = new SimulationClient({simulationConfigFile: "./simulationConfig.json"});
+
 simulationClient.restartSimulation();
 ////start simulation session
 //simulationClient.restartSimulation().then(function(){

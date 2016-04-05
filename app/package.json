@@ -25,7 +25,7 @@
          "q": "",
          "qr-image": "",
          "request": "",
-         "debug": "",
+         "debug": "~2.2.0",
          "mqtt-connection": "",
          "readable-stream": "",
          "end-of-stream": "",
@@ -48,7 +48,11 @@
          "cloudant": "^1.4.1",
          "http": "0.0.0",
          "https": "^1.0.0",
-         "passport": "^0.3.2"   
+         "passport": "^0.3.2",
+         "object.observe": "",
+         "eval": "",
+         "validator": "",
+         "basic-auth": ""
     },
     "repository": {}
 }

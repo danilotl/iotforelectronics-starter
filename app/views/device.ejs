@@ -129,45 +129,84 @@
         // Delete Washer
         $('.problem-machine-buttons button').eq(1).on('click', function(e){
           e.preventDefault();
-          $.ajax({
-            url: '/washingMachine/<%= deviceId %>',
-            type: 'DELETE',
-            success: function(){
-              alert('Device was deleted.');
-              window.close();
-            }
+          $('#confirmDelete').modal('show');
+        });
+
+        // Delete Washer - Modal
+        $("#confirmDelete").on('show.bs.modal', function() {
+          $("#btnConfirm").on("click", function(e) {
+            
+            $.ajax({
+              url: '/washingMachine/<%= deviceId %>',
+              type: 'DELETE',
+              success: function(){
+                window.opener.removeDevice('<%= deviceId %>');
+                window.close();
+              }
+            });
+
+            $("#confirmDelete").modal('hide');
+          });
+          $("#btnCancel").on("click", function(e) {
+            $("#confirmDelete").modal('hide');
           });
         });
+
+        $("#confirmDelete").on('hide.bs.modal', function() {
+          $("#btnConfirm").off("click");
+          $("#btnCancel").off("click");
+        });
+
       });
 
       // Status Report
       iotAppMonitorClient.mqtt = function(id, message) {
-        if (id === "<%= deviceId %>") {
-          var device = JSON.parse(message).d;
-          if(device.status)        $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
+        var length = 0;
+        var device = JSON.parse(message).d;
+        for(var k in device) if(device.hasOwnProperty(k)) length++;
 
-          if(device.failureType != 'Board failure'){
-            if(device.vibration)     $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
-            if(device.waterPressure) $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
-          } else {
-            $('.washer-content .washer-text ul li strong').eq(1).text('No data');
-            $('.washer-content .washer-text ul li strong').eq(2).text('No data');
-            $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
-            $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
-          }
-
-          if(device.status == 'Failure'){
+        if (id === "<%= deviceId %>" && length > 1) {
+          if(device.status && device.status == 'Failure'){
+            $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
             $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/advise-icon.svg');
-            if(device.failureType == 'Strong vibration') $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
-            if(device.failureType == 'Water leak')       $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
+            if(device.failureType && device.failureType == 'Board failure'){
+              $('.washer-content .washer-text ul li strong').eq(1).text('No data');
+              $('.washer-content .washer-text ul li strong').eq(2).text('No data');
+              $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
+              $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
+            } else if(device.failureType && device.failureType == 'Strong vibration'){
+              $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
+              $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/advise-icon.svg');
+            } else if(device.failureType && device.failureType == 'Water leak'){
+              $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
+              $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
+            }
           } else {
-            $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/Checkmark.svg');
-            if(device.failureType != 'Strong vibration') $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/Checkmark.svg');
-            if(device.failureType != 'Water leak')       $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/Checkmark.svg');
-          }
-          
+            $('.washer-content .washer-text ul li strong').eq(0).text(device.status);
+            $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + ' mps');
+            $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + ' psi');
+            $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
+          }          
         }
       };
     </script>
+
+    <div id="confirmDelete" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- dialog body -->
+          <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            This action cannot be undone. Are you sure?
+          </div>
+          <!-- dialog buttons -->
+          <div class="modal-footer">
+            <button id="btnCancel" type="button" class="btn btn-default">Cancel</button>
+            <button id="btnConfirm" type="button" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
