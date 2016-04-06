@@ -4,9 +4,18 @@ var appEnv = require("cfenv").getAppEnv();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', {
-	  title: 'Single Device Simulator'
-  });
+
+	var VCAP_SERVICES = {};
+	if(process.env.VCAP_SERVICES)
+		VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
+
+	var iotf_url = VCAP_SERVICES['iotf-service'][0]['credentials'].http_host;
+	var platformDashboard = 'https://' + iotf_url + '/dashboard';
+
+	res.render('index', {
+		title: 'Single Device Simulator',
+		platformDashboard: platformDashboard
+	});
 });
 
 /* GET home page. */

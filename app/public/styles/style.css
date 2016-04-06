@@ -362,7 +362,7 @@ button, a{
 	margin: auto;
 	z-index: 7000;
 }
-/*Footer
+/*Footer */
 footer{
   padding: 20px 0px;
 }
@@ -370,7 +370,7 @@ footer.main-section{
 	z-index: 2;
 }
 .footer-links{
-	width: 50%;
+	width: 60%;
 	float: right;
 	list-style: none;
 	text-align: left;
@@ -386,7 +386,7 @@ footer.main-section{
 }
 .footer-links h4{
 	margin-bottom: 20px;
-}*/
+}
 
 /* Washer Single Page*/
 .washer-content{
