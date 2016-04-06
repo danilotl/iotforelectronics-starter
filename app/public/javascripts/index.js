@@ -3,6 +3,8 @@ var MAX_DEVICES = 5;
 
 $(document).ready(function(){
 
+  $('#alertDeviceDeleted').hide();
+
   $('#addNewDeviceButton').prop('disabled', false);
   $('#addNewDeviceButton img').attr("src","../images/PlusWasher_en.svg");
 
@@ -180,6 +182,8 @@ function removeDevice(deviceID){
   if(deviceID === $(this).find('span').text()){
     numberOfDevices--;
     $(this).remove();
+    $('#alertDeviceDeleted span').text(deviceID);
+    $('#alertDeviceDeleted').show();
     if(numberOfDevices !== MAX_DEVICES){
       $('#addNewDeviceButton').prop('disabled', false);
       $('#addNewDeviceButton img').attr("src","../images/PlusWasher_en.svg");
@@ -189,6 +193,11 @@ function removeDevice(deviceID){
   }
  });
 }
+
+$('#alertDeviceDeleted a').on('click', function(e){
+  e.preventDefault();
+  $('#alertDeviceDeleted').hide();
+});
 
 // Setup the ajax indicator
 $('body').append('<div id="ajaxBusy"><p><img src="images/loading.gif"></p></div>');

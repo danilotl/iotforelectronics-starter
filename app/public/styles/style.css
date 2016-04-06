@@ -353,6 +353,15 @@ button, a{
 .selection-code p{
 	padding: 0px 25px;
 }
+.alert-messages {
+	position: fixed;
+	width: 50%;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	margin: auto;
+	z-index: 7000;
+}
 /*Footer
 footer{
   padding: 20px 0px;
