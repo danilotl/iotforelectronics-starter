@@ -713,12 +713,12 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 
 
 // //IoT Platform Credentials
-// var name = iotfCredentials["org"];
-// var orgId = iotfCredentials["org"];
-// var apiKey = iotfCredentials["apiKey"];
-// var authToken = iotfCredentials["apiToken"];
-// var baseURI = iotfCredentials["base_uri"];
-// var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+ var name = iotfCredentials["org"];
+ var orgId = iotfCredentials["org"];
+ var apiKey = iotfCredentials["apiKey"];
+ var authToken = iotfCredentials["apiToken"];
+ var baseURI = iotfCredentials["base_uri"];
+ var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
 // //RTI Credentials
 // var rtiApiKey = rtiCredentials["apiKey"];
@@ -739,33 +739,33 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 // //var	rtiSchemaName = "Electronics";
 
 // //IoT Platform Config Creation Method.
-// var iotpPost = function iotpPost (path, json) {
-// console.log('calling api to POST: ' + baseURI);
-// console.log('IoTP API URI: ' + baseURI);
-// console.log('calling api on json: ' + JSON.stringify(json));
+ var iotpPost = function iotpPost (path, json) {
+ console.log('calling api to POST: ' + baseURI);
+ console.log('IoTP API URI: ' + baseURI);
+ console.log('calling api on json: ' + JSON.stringify(json));
 
-//   var url = apiURI + path;
-//   var defer = q.defer();
-//   var body = '';
+   var url = apiURI + path;
+   var defer = q.defer();
+   var body = '';
 
-//   request
-//    .post({
-//       url: url,
-//       json: true,
-//       body: json
-//     }).auth(apiKey, authToken, true)
-//     .on('data', function(data) {
-//       body += data;
-//     })
-//     .on('end', function() {
-//       var json = JSON.parse(body);
-//       defer.resolve(json);
-//    })
-//    .on('response', function(response) {
-//       console.log('IoTP status: ' + response.statusCode);
-//   });
-//    return defer.promise;
-// };
+   request
+    .post({
+       url: url,
+       json: true,
+       body: json
+     }).auth(apiKey, authToken, true)
+     .on('data', function(data) {
+       body += data;
+     })
+     .on('end', function() {
+       var json = JSON.parse(body);
+       defer.resolve(json);
+    })
+    .on('response', function(response) {
+       console.log('IoTP status: ' + response.statusCode);
+   });
+    return defer.promise;
+ };
 
 // //RTI Config Creation Method.
 // var rtiPost = function rtiPost (path, json) {
@@ -798,11 +798,11 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 // };
 
 // //IoT Platform device type creation call
-// var iotpDeviceType = iotpPost('/device/types',{
-// 	"id": "washingMachine",
-// 	"description": "IoT4E Washing Machine",
-// 	"classId": "Device"
-// });
+ var iotpDeviceType = iotpPost('/device/types',{
+ 	"id": "washingMachine",
+ 	"description": "IoT4E Washing Machine",
+ 	"classId": "Device"
+ });
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
