@@ -66,6 +66,7 @@ var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackend
 var Cloudant   = require('cloudant');
 
 var services = JSON.parse(process.env.VCAP_SERVICES)
+var application = JSON.parse(process.env.VCAP_APPLICATION)
 //var cloudantCreds = services.cloudantNoSQLDB[0].credentials;
 
 var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
@@ -203,7 +204,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url:'https://registrationMicro.mybluemix.net/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	req.post({url: application.application_uris[0] + '/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
     return console.error('upload failed:', err);
 	}
@@ -295,12 +296,13 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url:'https://registrationMicro.mybluemix.net/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	req.post({url: application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
     return console.error('upload failed:', err);
 	}
 	});
 });
+
 
 app.get("/index", function(req, res)
 {
