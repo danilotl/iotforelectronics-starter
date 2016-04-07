@@ -101,7 +101,7 @@ app.use(passport.initialize());
 /* Input: url params that contains the userID 			       */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/internalGet/:userID', function(req, res)
+app.get('/users/internal/:userID', function(req, res)
 {
 	console.log('GET /users  ==> Begin');
     console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
@@ -139,7 +139,7 @@ app.get('/users/internalGet/:userID', function(req, res)
 /***************************************************************/
 app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.redirect('/users/internalGet/' + req.user.id);
+	res.redirect('/users/internal/' + req.user.id);
 });
 
 /***************************************************************/
@@ -180,7 +180,7 @@ app.post("/users/internal", function (req, res)
 				   console.log("POST /users  ==> Inserting user document in Cloudant");
 				   console.log('POST /users  ==> id       = ', data.id);
 				   console.log('POST /users  ==> revision = ', data.rev);
-				   res.sendStatus(200);
+				   res.sendStatus(201);
 			   }
 		   });
 	   }
@@ -354,6 +354,7 @@ app.get("/user/internal/:userID", function(req, res)
      if (result.docs.length==0)
      {
         console.log("GET /user ==> user:" + req.params.userID + " not in database");
+		res.sendStatus(404);
         return;
      }
      else
