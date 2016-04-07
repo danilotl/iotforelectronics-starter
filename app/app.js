@@ -738,8 +738,9 @@ var disabled = false;
 
 //IoT Platform Config Creation Method.
 var iotpPost = function iotpPost (path, json) {
-//console.log('calling api to POST: ' + baseURI);
-//console.log('calling api on json: ' + JSON.stringify(json));
+console.log('calling api to POST: ' + baseURI);
+console.log('IoTP API URI: ' + baseURI);
+console.log('calling api on json: ' + JSON.stringify(json));
 
   var url = apiURI + path;
   var defer = q.defer();
