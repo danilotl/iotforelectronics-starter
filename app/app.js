@@ -97,20 +97,14 @@ app.use(passport.initialize());
 
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
-/*															   */
-/* Input: query string that contains the userID 			   */
+/*   Internal API       									   */
+/* Input: url params that contains the userID 			       */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get('/users/internalGet/:userID', function(req, res)
 {
-	//MCA authentication test 
-    //console.log("Securty context", request.securityContext)    
-    //response.send(200, "Success!");
-    
 	console.log('GET /users  ==> Begin');
-    console.log('GET /users  ==> Incoming userID = '+ req.query.userID);
-
-	//TODO: review this code. it works, but might not be the best way to do it.
+    console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
     
     //find a user doc by using the userID index, given query string with userID
     db.find({selector:{userID:req.params.userID}}, function(er, result) 
@@ -138,28 +132,38 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 });
 
 /***************************************************************/
-/* Route to add 1 user document to Cloudant.   (2)             */
-/*                                                             */
-/* Input: JSON structure that contains the userID, name,       */
-/*             address, and telephone			               */
+/* Route to get 1 user document from Cloudant (1)              */
+/*															   */
+/* Input: url params that contains the userID 			       */
+/* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res) 
+app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-   console.log("POST /users  ==> Begin");
+	res.redirect('/users/internalGet/' + req.user.id);
+});
 
-   //TODO: change to req.user for MCA after done testing
-   //TODO: review code. this works, but might not be best implementation
+/***************************************************************/
+/* Route to add 1 user document to Cloudant.   (2)             */
+/*           Internal API                                      */
+/* Input: JSON structure that contains the userID, name,       */
+/*             address, and telephone                          */
+/***************************************************************/
+app.post("/users/internal", function (req, res)
+{
+	console.log("POST /users  ==> Begin");
+
    var doc = {userID: req.body.userID, name:req.body.name, telephone:req.body.telephone, address:req.body.address};
    db.find({selector:{userID:req.body.userID}}, function(er, result) 
    {
 	   if (er) 
 	   {
 		   res.sendStatus(er.statusCode);
-		   throw er;
+		   return;
 	   }
 	   //if user already exists, send error code	
 	   if (result.docs.length!=0)
 	   {
+			console.log("User already exists.");
 		   res.sendStatus(409)
 	   }
 	   else
@@ -182,24 +186,44 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	   }
 	   
    });
+  
+
 });
 
 
 /***************************************************************/
-/* Route to add 1 appliance document to registration Cloudant.(3) */
+/* Route to add 1 user document to Cloudant.   (2)             */
 /*                                                             */
-/* Input: JSON structure that contains the userID, applianceID,*/
-/*             serial number, manufacturer, and model          */
+/* Input: JSON structure that contains the userID, name,       */
+/*             address, and telephone			               */
 /***************************************************************/
-//TODO: check if we already have registered this appliance?
-app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
-//app.post('/appliances', function (req, res)
+// passport.authenticate('mca-backend-strategy', {session: false }),
+app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res) 
+{
+	var formData = req.body;
+	formData.userID = req.user.id;
+	
+	req.post({url:'https://registrationMicro.mybluemix.net/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	if (err) {
+    return console.error('upload failed:', err);
+  }
+});
+
+
+/******************************************************************/
+/* Route to add 1 appliance document to registration Cloudant.(3) */
+/*                 												  */
+/*  Internal API                                                  */
+/* Input: JSON structure that contains the userID, applianceID,   */
+/*             serial number, manufacturer, and model             */
+/******************************************************************/
+app.post('/appliances/internal', function (req, res)
 {
     console.log("POST /appliances  ==> Begin");
    console.log("POST /applianecs  ==> Inserting device document in Cloudant");
-   console.log(req.query.userID);
-   console.log(req.query.applianceID);
-   var doc = {userID: req.query.userID, applianceID: req.query.applianceID, serialNumber: req.query.serialNumber, manufacturer: req.query.manufacturer, model: req.query.model, registrationCreatedOnPlatform: false};
+   console.log(req.body.userID);
+   console.log(req.body.applianceID);
+   var doc = {userID: req.body.userID, applianceID: req.body.applianceID, serialNumber: req.body.serialNumber, manufacturer: req.body.manufacturer, name: req.body.name, dateOfPurchase: req.body.dateOfPurchase, model: req.body.model, registrationCreatedOnPlatform: false};
    
 	var https = require('https');
 
@@ -210,7 +234,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	var options = 
 	{
 			host: '1jw61a.internetofthings.ibmcloud.com',
-			path: '/api/v0002/device/types/washingMachine/devices/'+ req.query.applianceID,
+			path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
 			auth: auth_key + ':' + auth_token
 	};
 
@@ -225,7 +249,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		{
 			if (response == '')
 			{
-				console.log(req.query.applianceID + " does not exist.");
+				console.log(req.body.applianceID + " does not exist.");
 				res.sendStatus(409);
 				return;
 			}
@@ -255,6 +279,25 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		});
 
 	});
+});
+
+
+/***************************************************************/
+/* Route to add 1 appliance document to registration Cloudant.(3) */
+/*                                                             */
+/* Input: JSON structure that contains the userID, applianceID,*/
+/*             serial number, manufacturer, and model          */
+/***************************************************************/
+//TODO: check if we already have registered this appliance?
+app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
+{
+	var formData = req.body;
+	formData.userID = req.user.id;
+	
+	req.post({url:'https://registrationMicro.mybluemix.net/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	if (err) {
+    return console.error('upload failed:', err);
+  }
 });
 
 
@@ -288,42 +331,39 @@ app.get("/index", function(req, res)
 
 
 /***************************************************************/
-/* Route to show one user using Cloudant Query                 */
+/* Route to show one user doc using Cloudant Query             */
+/*   Internal API											   */
+/* Takes a userID in the url params                            */
 /***************************************************************/
-app.get("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get("/user/internal/:userID", function(req, res)
 {
    console.log('GET /user  ==> Begin');
-
+    console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
+	
    var responseDoc = {docs:[]};
 
-   db.find({selector:{"userID":req.params.userID}}, function(err, result)
-
+   db.find({selector:{userID:req.params.userID}}, function(err, result)
    {
      if (err)
      {
        console.log("GET /user ==> Error received from database = " + err.statusCode);
        console.log(err);
-       responseDoc.code    = err.statusCode;
-       responseDoc.message = "Error message from Cloudant";
-       res.json(responseDoc);
        return;
      }
     
      if (result.docs.length==0)
      {
         console.log("GET /user ==> user:" + req.params.userID + " not in database");
-        responseDoc.code = "404";
-        responseDoc.message = "Cannot find document in Cloudant DB";
-        res.json(responseDoc);
         return;
      }
      else
      {
+	 console.log(result);
         for (var i = 0; i < result.docs.length; i++)
         {
           if (!('applianceID'  in result.docs[i]))
           {
-             responseDoc.fields.docs.push({userID:    result.docs[i].userID,
+             responseDoc.docs.push({userID:    result.docs[i].userID,
                                            name:      result.docs[i].name,
                                            telephone: result.docs[i].telephone,
                                            address:   result.docs[i].address});
@@ -334,15 +374,26 @@ app.get("/user/:userID", passport.authenticate('mca-backend-strategy', {session:
         return;
      }
    });
+
+});
+
+
+/***************************************************************/
+/* Route to show one user doc using Cloudant Query             */
+/* Takes a userID in the url params                            */
+/***************************************************************/
+app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+{
+	res.redirect('user/internal/' + req.user.id);
 });
 
 
 /***************************************************************/
 /* Route to list all appliance documents for given user   (4)  */
-/*       													   */
+/*   Internal API            								   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
+app.get('appliances/internal/:userID', function (req, res)
 {
 	// create empty array responseDoc, to hold just the appliance docs (will filter out user docs) to return
 	var responseDoc = {docs:[]};
@@ -373,6 +424,9 @@ app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {se
          responseDoc.docs.push({userID: result.docs[i].userID,
                                        applianceID: result.docs[i].applianceID,
                                        serialNumber: result.docs[i].serialNumber,
+									   manufacturer: result.docs[i].manufacturer,
+									   name: result.docs[i].name,
+									   dateOfPurchase: result.docs[i].dateOfPurchase,
                                        model: result.docs[i].model});
        }
        i++;
@@ -380,27 +434,34 @@ app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {se
 	
 	//we found something and didn't hit an error, send 200 and the result
     res.status(200).json(responseDoc);
-});
-
-    
+	});
 
 });
-
-
-
 /***************************************************************/
 /* Route to list all appliance documents for given user   (4)  */
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
+app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
+{
+	res.redirect('/appliances/internal/' + req.user.id);
+});
+
+
+
+/****************************************************************************/
+/* Route to list 1 appliance document for given userID and applianceID (4)  */
+/*       Internal API										   				*/
+/* Input: Query string with userID and optional applianceID    				*/
+/****************************************************************************/
+app.get('/appliances/internal2/:userID/:applianceID', function (req, res)
 {
 	// create empty array responseDoc, to hold just the appliance docs (will filter out user docs) to return
 	var responseDoc = {docs:[]};
 	//find a device doc given query string with userID and optional applianceID
 	//first query by user, then by applianceID
 	
-	db.find({selector:{userID:req.userID, applianceID:req.params.applianceID}}, function(err, result) 
+	db.find({selector:{userID:req.params.userID, applianceID:req.params.applianceID}}, function(err, result) 
     {
     	if (err) 
     	{
@@ -416,10 +477,12 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
        return;
      }	 
     	 
-		console.log("**********");
-        responseDoc.docs.push({userID: result.docs[0].userID,
+         responseDoc.docs.push({userID: result.docs[0].userID,
                                        applianceID: result.docs[0].applianceID,
                                        serialNumber: result.docs[0].serialNumber,
+									   manufacturer: result.docs[0].manufacturer,
+									   name: result.docs[0].name,
+									   dateOfPurchase: result.docs[0].dateOfPurchase,
                                        model: result.docs[0].model});
 									   
 									   
@@ -428,16 +491,26 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 
     });
 
-    
+
 });
+
+/****************************************************************************/
+/* Route to list 1 appliance document for given userID and applianceID (4)  */
+/*       													   				*/
+/* Input: Query string with userID and optional applianceID    				*/
+/****************************************************************************/
+app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
+{
+	res.redirect('/appliances/internal2/' + req.user.id + '/' + req.params.applianceID);
+});
+
 
 
 /***************************************************************/
 /* Route to delete appliance records                           */
 /***************************************************************/
-app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.del('/appliances/internal/:userID/:applianceID', function(req, res) 
 {
-	console.log(req.params);
 	//first check that userID AND applianceID were given
    if (req.params.userID == null || req.params.applianceID == null)
    {
@@ -495,12 +568,22 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
   });
 });
 
+/***************************************************************/
+/* Route to delete appliance records                           */
+/*    Internal API											   */
+/***************************************************************/
+app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+{
+	res.redirect('/appliances/internal/' + req.user.id + '/' + req.params.applianceID);
+});
+
+
 /**************************************************************************************** **/
 /* Route to delete user documents.                              						   */
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.delete('/user/internal/:userID', function (req, res)
 {
    if (req.params.userID == null)
    {
@@ -591,6 +674,16 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
      }
      res.sendStatus(204);
   });
+});
+
+/**************************************************************************************** **/
+/* Route to delete user documents.                              						   */
+/* Need to delete the appliance documents as well from our db  							   */
+/* If we created them on the platform, delete from platform (NOT for experimental)         */
+/*******************************************************************************************/
+app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+{
+	res.redirect('/user/internal/' + req.user.id);
 });
 
 //global HTTP routers
