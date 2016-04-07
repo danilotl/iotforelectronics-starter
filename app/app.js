@@ -19,6 +19,7 @@ var path            = require('path'),
     appEnv          = require("cfenv").getAppEnv(),
     debug           = require('debug')('virtualDevices:server'),
     WebSocketServer = require('ws').Server,
+    q               = require('q'),
     apiRouter       = require('./routes/api');
 
 dumpError = function(msg, err) {
