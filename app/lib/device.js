@@ -51,8 +51,9 @@ device.getQrCode = function(req, res){
 		var serialNumber = data['attributes']['serialNumber'];
 		var deviceMake = data['attributes']['make'];
 		var deviceModel = data['attributes']['model'];
+		var deviceType = data['deviceType'];
 		
-		var text = ['2', deviceID, serialNumber, deviceMake, deviceModel].join(',');
+		var text = ['2', deviceID, serialNumber, deviceMake, deviceModel, deviceType].join(',');
 		
 		var img = qr.image(text, { type: 'png', ec_level: 'H', size: 2, margin: 0 });
 		res.writeHead(200, {'Content-Type': 'image/png'})
