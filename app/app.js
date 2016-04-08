@@ -1,131 +1,132 @@
-VAP_SERVIES = {};
-if(proess.env.VAP_SERVIES)
-	VAP_SERVIES = JSON.parse(proess.env.VAP_SERVIES);
+VCAP_SERVICES = {};
+if(process.env.VCAP_SERVICES)
+	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 
-var iotf_host = VAP_SERVIES["iotf-servie"][0]["redentials"].http_host;
+var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
 
-if(iotf_host.searh('.staging.internetofthings.ibmloud.om') > -1)
-	proess.env.STAGING = 1;
+if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
+	process.env.STAGING = 1;
 
 var express         = require('express');
+var cfenv = require('cfenv');
 var log4js = require('log4js');
 
 var app = express();
-//set the app objet to export so it an be required 
+//set the app object to export so it can be required 
 module.exports = app;
 
 var path            = require('path'),
-    favion         = require('serve-favion'),
+    favicon         = require('serve-favicon'),
     logger          = require('morgan'),
-    ookieParser    = require('ookie-parser'),
+    cookieParser    = require('cookie-parser'),
     bodyParser      = require('body-parser'),
-    ors            = require('ors'),
+    cors            = require('cors'),
     routes          = require('./routes/index'),
-    devie          = require('./routes/devie'),
+    device          = require('./routes/device'),
     simulator       = require('./routes/simulator'),
     http            = require('http'),
     request         = require('request'),
-    _               = require("undersore"),
-    appEnv          = require("fenv").getAppEnv(),
-    debug           = require('debug')('virtualDevies:server'),
-    WebSoketServer = require('ws').Server,
+    _               = require("underscore"),
+    appEnv          = cfenv.getAppEnv(),
+    debug           = require('debug')('virtualDevices:server'),
+    WebSocketServer = require('ws').Server,
     q               = require('q'),
     apiRouter       = require('./routes/api');
 
 var jsonParser = bodyParser.json();
 
-dumpError = funtion(msg, err) {
-	if (typeof err === 'objet') {
+dumpError = function(msg, err) {
+	if (typeof err === 'object') {
 		msg = (msg) ? msg : "";		
 		var message = "***********ERROR: " + msg + " *************\n";
 		if (err.message) {
 			message += '\nMessage: ' + err.message;
 		}
-		if (err.stak) {
-			message += '\nStaktrae:\n';
+		if (err.stack) {
+			message += '\nStacktrace:\n';
 			message += '====================\n';
-			message += err.stak;				
+			message += err.stack;				
 			message += '====================\n';			
 		}
-		onsole.error(message);
+		console.error(message);
 	} else {
-		onsole.error('dumpError :: argument is not an objet');
+		console.error('dumpError :: argument is not an object');
 	}
 };
 
-//The IP address of the loud Foundry DEA (Droplet Exeution Agent) that hosts this appliation:
-var host = (proess.env.VAP_APP_HOST || 'loalhost');
+//The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
+var host = (process.env.VCAP_APP_HOST || 'localhost');
 
 //global HTTP routers
 httpRouter = require('./routes/httpRouter');
 
-//allow ross domain alls
-app.use(ors());
+//allow cross domain calls
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlenoded({ extended: false }));
-app.use(ookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-app.use(express.stati(path.join(__dirname, 'publi')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/', httpRouter);
-app.use('/', devie);
+app.use('/', device);
 app.use('/', simulator);
 app.use('/api', apiRouter);
 
-//Add a handler to inspet the req.seure flag (see 
-//http://expressjs.om/api#req.seure). This allows us 
+//Add a handler to inspect the req.secure flag (see 
+//http://expressjs.com/api#req.secure). This allows us 
 //to know whether the request was via http or https.
-app.use(funtion (req, res, next) {	
+app.use(function (req, res, next) {	
 	res.set({
-		'ahe-ontrol': 'no-store',
-		'Pragma': 'no-ahe'
+		'Cache-Control': 'no-store',
+		'Pragma': 'no-cache'
 	});
-	//fore https
-	if(!appEnv.isLoal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
-		res.rediret('https://' + req.headers.host + req.url);
+	//force https
+	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
+		res.redirect('https://' + req.headers.host + req.url);
 	else
 		next();		
 });
 
 /***************************************************************/
-//STEPHANIES'S ODE *************
+//STEPHANIES'S CODE *************
 /***************************************************************/
 /***************************************************************/
 
-// SETUP LOUDANT
-//Key whihispermandenellansp
-//Password a8ba75e7534498a85a9f011adbe11e09ae03177 //
-var id = 'a15409e-9847-4b9e-9d8-e264f01ae-bluemix';
-var pword = 'f1ad812df21ef96a09dbfbaff6de261e3085b0a5da0518bede7ab69a1aff3f7';
-var host  = 'a15409e-9847-4b9e-9d8-e264f01ae-bluemix.loudant.om';
-var LOUDANT_URL='https://' + id + ':' + pword + '@' + host;
-var dbname   = 'iot_for_eletronis_registration';
+// SETUP CLOUDANT
+//Key whichispermandencellansp
+//Password a8ba75e7534498a85a9f0c11adbe11e09ae03177 //
+var id = 'ca15409e-9847-4b9e-9d8c-ec26c4cf01ae-bluemix';
+var pword = 'f1ad812df21ef96a09dbfbaff6de261e3085b0a5da0518bede7ab69a1caff3f7';
+var host  = 'ca15409e-9847-4b9e-9d8c-ec26c4cf01ae-bluemix.cloudant.com';
+var CLOUDANT_URL='https://' + id + ':' + pword + '@' + host;
+var dbname   = 'iot_for_electronics_registration';
 
 var passport   = require('passport');
-var MABakendStrategy = require('bms-ma-token-validation-strategy').MABakendStrategy;
-var loudant   = require('loudant');
+var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
+var Cloudant   = require('cloudant');
 
-var servies = JSON.parse(proess.env.VAP_SERVIES)
-var appliation = JSON.parse(proess.env.VAP_APPLIATION)
-//var loudantreds = servies.loudantNoSQLDB[0].redentials;
+var services = JSON.parse(process.env.VCAP_SERVICES)
+var application = JSON.parse(process.env.VCAP_APPLICATION)
+//var cloudantCreds = services.cloudantNoSQLDB[0].credentials;
 
-var loudant = loudant(LOUDANT_URL, funtion(err,loudant){
-	db = loudant.db.use(dbname);
-	//make sure it is reated
-	loudant.db.get(dbname, funtion(err, body) {
+var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
+	db = cloudant.db.use(dbname);
+	//make sure it is created
+	cloudant.db.get(dbname, function(err, body) {
 		if(err){
-			onsole.log('reating ' + dbname);
-			loudant.db.reate(dbname, funtion(err,body) {
+			console.log('creating ' + dbname);
+			cloudant.db.create(dbname, function(err,body) {
 				if (!err)
-					onsole.log('DB reated ');
+					console.log('DB created ');
 				else
-					onsole.error('Err reating DB ' + err );
+					console.error('Err creating DB ' + err );
 			});
 		}
 		else {
-			onsole.log("onneted to DB");
+			console.log("connected to DB");
 		}
 });
 });
@@ -135,94 +136,94 @@ var loudant = loudant(LOUDANT_URL, funtion(err,loudant){
 /***************************************************************/
 
 
-passport.use(new MABakendStrategy());
+passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
 /***************************************************************/
-/* Route to get 1 user doument from loudant (1)              */
+/* Route to get 1 user document from Cloudant (1)              */
 /*   Internal API       									   */
-/* Input: url params that ontains the userID 			       */
+/* Input: url params that contains the userID 			       */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/internal/:userID', funtion(req, res)
+app.get('/users/internal/:userID', function(req, res)
 {
-	onsole.log('GET /users  ==> Begin');
-    onsole.log('GET /users  ==> Inoming userID = '+ req.params.userID);
+	console.log('GET /users  ==> Begin');
+    console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
     
-    //find a user do by using the userID index, given query string with userID
-    db.find({seletor:{userID:req.params.userID}}, funtion(er, result) 
+    //find a user doc by using the userID index, given query string with userID
+    db.find({selector:{userID:req.params.userID}}, function(er, result) 
     {
     	if (er) 
     	{
-    		res.sendStatus(er.statusode);
+    		res.sendStatus(er.statusCode);
     		throw er;
     	}
     	
-    	if (result.dos.length==0)
+    	if (result.docs.length==0)
     	{
     		res.sendStatus(404)
     	}
     	else
     		res.sendStatus(200);
     	 
-    	onsole.log('Found %d douments with userID', result.dos.length);
-    	for (var i = 0; i < result.dos.length; i++) 
+    	console.log('Found %d documents with userID', result.docs.length);
+    	for (var i = 0; i < result.docs.length; i++) 
     	{
-    		onsole.log('  Do id: %s', result.dos[i]._id);
+    		console.log('  Doc id: %s', result.docs[i]._id);
     	}
 
     });
 });
 
 /***************************************************************/
-/* Route to get 1 user doument from loudant (1)              */
+/* Route to get 1 user document from Cloudant (1)              */
 /*															   */
-/* Input: url params that ontains the userID 			       */
+/* Input: url params that contains the userID 			       */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/:userID', passport.authentiate('ma-bakend-strategy', {session: false }), funtion(req, res)
+app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.rediret('/users/internal/' + req.user.id);
+	res.redirect('/users/internal/' + req.user.id);
 });
 
 /***************************************************************/
-/* Route to add 1 user doument to loudant.   (2)             */
+/* Route to add 1 user document to Cloudant.   (2)             */
 /*           Internal API                                      */
-/* Input: JSON struture that ontains the userID, name,       */
+/* Input: JSON structure that contains the userID, name,       */
 /*             address, and telephone                          */
 /***************************************************************/
-app.post("/users/internal", funtion (req, res)
+app.post("/users/internal", function (req, res)
 {
-	onsole.log("POST /users  ==> Begin");
+	console.log("POST /users  ==> Begin");
 
-   var do = {userID: req.body.userID, name:req.body.name, telephone:req.body.telephone, address:req.body.address};
-   db.find({seletor:{userID:req.body.userID}}, funtion(er, result) 
+   var doc = {userID: req.body.userID, name:req.body.name, telephone:req.body.telephone, address:req.body.address};
+   db.find({selector:{userID:req.body.userID}}, function(er, result) 
    {
 	   if (er) 
 	   {
-		   res.sendStatus(er.statusode);
+		   res.sendStatus(er.statusCode);
 		   return;
 	   }
-	   //if user already exists, send error ode	
-	   if (result.dos.length!=0)
+	   //if user already exists, send error code	
+	   if (result.docs.length!=0)
 	   {
-			onsole.log("User already exists.");
+			console.log("User already exists.");
 		   res.sendStatus(409)
 	   }
 	   else
 	   {
-		   db.insert(do, funtion(err, data) 
+		   db.insert(doc, function(err, data) 
 		   {
 			   if(err)
 			   {
-				   onsole.log('POST /users  ==> Error:', er);
-				   res.sendStatus(err.statusode);
+				   console.log('POST /users  ==> Error:', er);
+				   res.sendStatus(err.statusCode);
 			   }
 			   else
 			   {
-				   onsole.log("POST /users  ==> Inserting user doument in loudant");
-				   onsole.log('POST /users  ==> id       = ', data.id);
-				   onsole.log('POST /users  ==> revision = ', data.rev);
+				   console.log("POST /users  ==> Inserting user document in Cloudant");
+				   console.log('POST /users  ==> id       = ', data.id);
+				   console.log('POST /users  ==> revision = ', data.rev);
 				   res.sendStatus(201);
 			   }
 		   });
@@ -235,84 +236,84 @@ app.post("/users/internal", funtion (req, res)
 
 
 /***************************************************************/
-/* Route to add 1 user doument to loudant.   (2)             */
+/* Route to add 1 user document to Cloudant.   (2)             */
 /*                                                             */
-/* Input: JSON struture that ontains the userID, name,       */
+/* Input: JSON structure that contains the userID, name,       */
 /*             address, and telephone			               */
 /***************************************************************/
-// passport.authentiate('ma-bakend-strategy', {session: false }),
-app.post("/users", passport.authentiate('ma-bakend-strategy', {session: false }),  funtion (req, res) 
+// passport.authenticate('mca-backend-strategy', {session: false }),
+app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res) 
 {
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url: appliation.appliation_uris[0] + '/users/internal', formData: formData}, funtion optionalallbak(err, httpResponse, body) {
+	req.post({url: application.application_uris[0] + '/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
-    return onsole.error('upload failed:', err);
+    return console.error('upload failed:', err);
 	}
 	});
 });
 
 
 /******************************************************************/
-/* Route to add 1 appliane doument to registration loudant.(3) */
+/* Route to add 1 appliance document to registration Cloudant.(3) */
 /*                 												  */
 /*  Internal API                                                  */
-/* Input: JSON struture that ontains the userID, applianeID,   */
-/*             serial number, manufaturer, and model             */
+/* Input: JSON structure that contains the userID, applianceID,   */
+/*             serial number, manufacturer, and model             */
 /******************************************************************/
-app.post('/applianes/internal', funtion (req, res)
+app.post('/appliances/internal', function (req, res)
 {
-    onsole.log("POST /applianes  ==> Begin");
-   onsole.log("POST /applianes  ==> Inserting devie doument in loudant");
-   onsole.log(req.body.userID);
-   onsole.log(req.body.applianeID);
-   var do = {userID: req.body.userID, applianeID: req.body.applianeID, serialNumber: req.body.serialNumber, manufaturer: req.body.manufaturer, name: req.body.name, dateOfPurhase: req.body.dateOfPurhase, model: req.body.model, registrationreatedOnPlatform: false};
+    console.log("POST /appliances  ==> Begin");
+   console.log("POST /applianecs  ==> Inserting device document in Cloudant");
+   console.log(req.body.userID);
+   console.log(req.body.applianceID);
+   var doc = {userID: req.body.userID, applianceID: req.body.applianceID, serialNumber: req.body.serialNumber, manufacturer: req.body.manufacturer, name: req.body.name, dateOfPurchase: req.body.dateOfPurchase, model: req.body.model, registrationCreatedOnPlatform: false};
    
 	var https = require('https');
 
 	//API keys from IoTF
 	var auth_key = "a-1jw61a-yxv230waqu";
-	var auth_token = "*kr*4(mkd3e7BQJQ";
+	var auth_token = "*kr*4(mkdC3e7BQJQC";
 
 	var options = 
 	{
-			host: '1jw61a.internetofthings.ibmloud.om',
-			path: '/api/v0002/devie/types/washingMahine/devies/'+ req.body.applianeID,
+			host: '1jw61a.internetofthings.ibmcloud.com',
+			path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
 			auth: auth_key + ':' + auth_token
 	};
 
-	https.get(options, funtion(platformRes)
+	https.get(options, function(platformRes)
 	{
 		var response = '';
-		platformRes.on('data', funtion(data) 
+		platformRes.on('data', function(data) 
 		{
 			response += data;
 		});
-		platformRes.on('end', funtion()
+		platformRes.on('end', function()
 		{
 			if (response == '')
 			{
-				onsole.log(req.body.applianeID + " does not exist.");
+				console.log(req.body.applianceID + " does not exist.");
 				res.sendStatus(409);
 				return;
 			}
 			else
 			{
-				   db.insert(do, funtion(err, data) 
+				   db.insert(doc, function(err, data) 
 				   {
 					   if (err)
 					   {
-						   onsole.log('POST /applianes  ==> Error:', err);
-					       res.sendStatus(err.statusode);
+						   console.log('POST /appliances  ==> Error:', err);
+					       res.sendStatus(err.statusCode);
 					       return;
 					   }
 					   else
 					   {
 						   var output = JSON.parse(response);
-						   onsole.log(JSON.stringify(output, null, 2));
-						   onsole.log('POST /applianes  ==> id       = ', data.id);
-					       onsole.log('POST /applianes  ==> revision = ', data.rev);
+						   console.log(JSON.stringify(output, null, 2));
+						   console.log('POST /appliances  ==> id       = ', data.id);
+					       console.log('POST /appliances  ==> revision = ', data.rev);
 					       res.sendStatus(201);
 					       return;
 					   }
@@ -327,95 +328,95 @@ app.post('/applianes/internal', funtion (req, res)
 
 
 /***************************************************************/
-/* Route to add 1 appliane doument to registration loudant.(3) */
+/* Route to add 1 appliance document to registration Cloudant.(3) */
 /*                                                             */
-/* Input: JSON struture that ontains the userID, applianeID,*/
-/*             serial number, manufaturer, and model          */
+/* Input: JSON structure that contains the userID, applianceID,*/
+/*             serial number, manufacturer, and model          */
 /***************************************************************/
-//TODO: hek if we already have registered this appliane?
-app.post('/applianes', passport.authentiate('ma-bakend-strategy', {session: false }), funtion (req, res)  
+//TODO: check if we already have registered this appliance?
+app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
 {
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url: appliation.appliation_uris[0] + '/applianes/internal', formData: formData}, funtion optionalallbak(err, httpResponse, body) {
+	req.post({url: application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
-    return onsole.error('upload failed:', err);
+    return console.error('upload failed:', err);
 	}
 	});
 });
 
-app.get("/index", funtion(req, res)
+app.get("/index", function(req, res)
 {
 	var index = {name:'userId', type:'json', index:{fields:['userID']}};
 
-	   db.index(index, funtion(err, response)
+	   db.index(index, function(err, response)
 	   {
 	     if (err)
 	     {
-	       onsole.log('GET /index  ==> Error:', err.statusode);
+	       console.log('GET /index  ==> Error:', err.statusCode);
 	       return;
 	     }
-	     onsole.log('Index reation result: %s', response.result);
+	     console.log('Index creation result: %s', response.result);
 	   });
 	   
-	/*//reate an index to find appliane do for given userID and applianeID
-	var index = {name:'applianeByUser', type:'json', index:{fields:['userID', 'applianeID']}};
-	db.index(index, funtion(er, response) 
+	/*//create an index to find appliance doc for given userID and applianceID
+	var index = {name:'applianceByUser', type:'json', index:{fields:['userID', 'applianceID']}};
+	db.index(index, function(er, response) 
 	{
 		if (er) 
 		{
-			onsole.log(er);
+			console.log(er);
 			//throw er;
 		}     
-		onsole.log('Index reation result: %s', response.result);
+		console.log('Index creation result: %s', response.result);
 	})*/		
 });
 
 
 
 /***************************************************************/
-/* Route to show one user do using loudant Query             */
+/* Route to show one user doc using Cloudant Query             */
 /*   Internal API											   */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-app.get("/user/internal/:userID", funtion(req, res)
+app.get("/user/internal/:userID", function(req, res)
 {
-   onsole.log('GET /user  ==> Begin');
-    onsole.log('GET /users  ==> Inoming userID = '+ req.params.userID);
+   console.log('GET /user  ==> Begin');
+    console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
 	
-   var responseDo = {dos:[]};
+   var responseDoc = {docs:[]};
 
-   db.find({seletor:{userID:req.params.userID}}, funtion(err, result)
+   db.find({selector:{userID:req.params.userID}}, function(err, result)
    {
      if (err)
      {
-       onsole.log("GET /user ==> Error reeived from database = " + err.statusode);
-       onsole.log(err);
+       console.log("GET /user ==> Error received from database = " + err.statusCode);
+       console.log(err);
        return;
      }
     
-     if (result.dos.length==0)
+     if (result.docs.length==0)
      {
-        onsole.log("GET /user ==> user:" + req.params.userID + " not in database");
+        console.log("GET /user ==> user:" + req.params.userID + " not in database");
 		res.sendStatus(404);
         return;
      }
      else
      {
-	 onsole.log(result);
-        for (var i = 0; i < result.dos.length; i++)
+	 console.log(result);
+        for (var i = 0; i < result.docs.length; i++)
         {
-          if (!('applianeID'  in result.dos[i]))
+          if (!('applianceID'  in result.docs[i]))
           {
-             responseDo.dos.push({userID:    result.dos[i].userID,
-                                           name:      result.dos[i].name,
-                                           telephone: result.dos[i].telephone,
-                                           address:   result.dos[i].address});
+             responseDoc.docs.push({userID:    result.docs[i].userID,
+                                           name:      result.docs[i].name,
+                                           telephone: result.docs[i].telephone,
+                                           address:   result.docs[i].address});
           }
         }
 
-        res.status(200).json(responseDo);
+        res.status(200).json(responseDoc);
         return;
      }
    });
@@ -424,115 +425,115 @@ app.get("/user/internal/:userID", funtion(req, res)
 
 
 /***************************************************************/
-/* Route to show one user do using loudant Query             */
+/* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-app.get('/user/:userID', passport.authentiate('ma-bakend-strategy', {session: false }), funtion(req, res)
+app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.rediret('user/internal/' + req.user.id);
+	res.redirect('user/internal/' + req.user.id);
 });
 
 
 /***************************************************************/
-/* Route to list all appliane douments for given user   (4)  */
+/* Route to list all appliance documents for given user   (4)  */
 /*   Internal API            								   */
-/* Input: Query string with userID and optional applianeID    */
+/* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get('applianes/internal/:userID', funtion (req, res)
+app.get('appliances/internal/:userID', function (req, res)
 {
-	// reate empty array responseDo, to hold just the appliane dos (will filter out user dos) to return
-	var responseDo = {dos:[]};
-	//find a devie do given query string with userID and optional applianeID
-	//first query by user, then by applianeID
+	// create empty array responseDoc, to hold just the appliance docs (will filter out user docs) to return
+	var responseDoc = {docs:[]};
+	//find a device doc given query string with userID and optional applianceID
+	//first query by user, then by applianceID
 	
-	db.find({seletor:{userID:req.params.userID}}, funtion(err, result) 
+	db.find({selector:{userID:req.params.userID}}, function(err, result) 
     {
     	if (err) 
     	{
-			onsole.log("app.get ==> Error ondition");
-			onsole.log(err);
-			res.sendStatus(err.statusode);
+			console.log("app.get ==> Error condition");
+			console.log(err);
+			res.sendStatus(err.statusCode);
 			return;
     	}
-     if (result.dos.length==0)
+     if (result.docs.length==0)
      {
-       onsole.log("app.get /appliane ==> annot find doument");
+       console.log("app.get /appliance ==> Cannot find document");
        res.sendStatus(404);
        return;
      }	 
     	 
     	var i=0;
-    while (i < result.dos.length)
+    while (i < result.docs.length)
     {
-       if ('applianeID' in result.dos[i])
+       if ('applianceID' in result.docs[i])
        {
-         responseDo.dos.push({userID: result.dos[i].userID,
-                                       applianeID: result.dos[i].applianeID,
-                                       serialNumber: result.dos[i].serialNumber,
-									   manufaturer: result.dos[i].manufaturer,
-									   name: result.dos[i].name,
-									   dateOfPurhase: result.dos[i].dateOfPurhase,
-                                       model: result.dos[i].model});
+         responseDoc.docs.push({userID: result.docs[i].userID,
+                                       applianceID: result.docs[i].applianceID,
+                                       serialNumber: result.docs[i].serialNumber,
+									   manufacturer: result.docs[i].manufacturer,
+									   name: result.docs[i].name,
+									   dateOfPurchase: result.docs[i].dateOfPurchase,
+                                       model: result.docs[i].model});
        }
        i++;
     }
 	
 	//we found something and didn't hit an error, send 200 and the result
-    res.status(200).json(responseDo);
+    res.status(200).json(responseDoc);
 	});
 
 });
 /***************************************************************/
-/* Route to list all appliane douments for given user   (4)  */
+/* Route to list all appliance documents for given user   (4)  */
 /*       													   */
-/* Input: Query string with userID and optional applianeID    */
+/* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get("/applianes/:userID", passport.authentiate('ma-bakend-strategy', {session: false }), funtion (req, res) 
+app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
 {
-	res.rediret('/applianes/internal/' + req.user.id);
+	res.redirect('/appliances/internal/' + req.user.id);
 });
 
 
 
 /****************************************************************************/
-/* Route to list 1 appliane doument for given userID and applianeID (4)  */
+/* Route to list 1 appliance document for given userID and applianceID (4)  */
 /*       Internal API										   				*/
-/* Input: Query string with userID and optional applianeID    				*/
+/* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
-app.get('/applianes/internal2/:userID/:applianeID', funtion (req, res)
+app.get('/appliances/internal2/:userID/:applianceID', function (req, res)
 {
-	// reate empty array responseDo, to hold just the appliane dos (will filter out user dos) to return
-	var responseDo = {dos:[]};
-	//find a devie do given query string with userID and optional applianeID
-	//first query by user, then by applianeID
+	// create empty array responseDoc, to hold just the appliance docs (will filter out user docs) to return
+	var responseDoc = {docs:[]};
+	//find a device doc given query string with userID and optional applianceID
+	//first query by user, then by applianceID
 	
-	db.find({seletor:{userID:req.params.userID, applianeID:req.params.applianeID}}, funtion(err, result) 
+	db.find({selector:{userID:req.params.userID, applianceID:req.params.applianceID}}, function(err, result) 
     {
     	if (err) 
     	{
-			onsole.log("app.get ==> Error ondition");
-			onsole.log(err);
-			res.sendStatus(err.statusode);
+			console.log("app.get ==> Error condition");
+			console.log(err);
+			res.sendStatus(err.statusCode);
 			return;
     	}
-     if (result.dos.length==0)
+     if (result.docs.length==0)
      {
-       onsole.log("app.get /appliane ==> annot find doument");
+       console.log("app.get /appliance ==> Cannot find document");
        res.sendStatus(404);
        return;
      }	 
     	 
-         responseDo.dos.push({userID: result.dos[0].userID,
-                                       applianeID: result.dos[0].applianeID,
-                                       serialNumber: result.dos[0].serialNumber,
-									   manufaturer: result.dos[0].manufaturer,
-									   name: result.dos[0].name,
-									   dateOfPurhase: result.dos[0].dateOfPurhase,
-                                       model: result.dos[0].model});
+         responseDoc.docs.push({userID: result.docs[0].userID,
+                                       applianceID: result.docs[0].applianceID,
+                                       serialNumber: result.docs[0].serialNumber,
+									   manufacturer: result.docs[0].manufacturer,
+									   name: result.docs[0].name,
+									   dateOfPurchase: result.docs[0].dateOfPurchase,
+                                       model: result.docs[0].model});
 									   
 									   
     //we found something and didn't hit an error, send 200 and the result
-    res.status(200).json(responseDo);
+    res.status(200).json(responseDoc);
 
     });
 
@@ -540,72 +541,72 @@ app.get('/applianes/internal2/:userID/:applianeID', funtion (req, res)
 });
 
 /****************************************************************************/
-/* Route to list 1 appliane doument for given userID and applianeID (4)  */
+/* Route to list 1 appliance document for given userID and applianceID (4)  */
 /*       													   				*/
-/* Input: Query string with userID and optional applianeID    				*/
+/* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
-app.get("/applianes/:userID/:applianeID", passport.authentiate('ma-bakend-strategy', {session: false }), funtion (req, res) 
+app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res) 
 {
-	res.rediret('/applianes/internal2/' + req.user.id + '/' + req.params.applianeID);
+	res.redirect('/appliances/internal2/' + req.user.id + '/' + req.params.applianceID);
 });
 
 
 
 /***************************************************************/
-/* Route to delete appliane reords                           */
+/* Route to delete appliance records                           */
 /***************************************************************/
-app.del('/applianes/internal/:userID/:applianeID', funtion(req, res) 
+app.del('/appliances/internal/:userID/:applianceID', function(req, res) 
 {
-	//first hek that userID AND applianeID were given
-   if (req.params.userID == null || req.params.applianeID == null)
+	//first check that userID AND applianceID were given
+   if (req.params.userID == null || req.params.applianceID == null)
    {
-      onsole.log("DEL /appliane ==> userID and/or applianeID not provided");
+      console.log("DEL /appliance ==> userID and/or applianceID not provided");
       res.sendStatus(400);
       return;
    }
 
-   db.find({seletor:{userID:req.params.userID, applianeID:req.params.applianeID}}, funtion(err, result)
+   db.find({selector:{userID:req.params.userID, applianceID:req.params.applianceID}}, function(err, result)
    {
      if (err)
      {
-       onsole.log("DEL /appliane ==> Error ondition");
-       onsole.log(err);
-       res.status(err.statusode);
+       console.log("DEL /appliance ==> Error condition");
+       console.log(err);
+       res.status(err.statusCode);
        return;
      }
 
-     if (result.dos.length==0)
+     if (result.docs.length==0)
      {
-       onsole.log("DEL /appliane ==> annot find doument");
+       console.log("DEL /appliance ==> Cannot find document");
        res.status(404);
        return;
      }
 	 
-	if (result.dos[0].registrationreatedOnPlatform == true)
+	if (result.docs[0].registrationCreatedOnPlatform == true)
     {
        /*******************************************************************/
        /* Delete from platform and registration databases.                */
-       /* For experimental this ode will not get exeuted                */
-       /* beause registrationreatedOnPlatform will always be false.     */
+       /* For experimental this code will not get executed                */
+       /* because registrationCreatedOnPlatform will always be false.     */
        /*******************************************************************/
-      onsole.log("DEL /appliane ==> Deleting appliane from platform and registration database.");
+      console.log("DEL /appliance ==> Deleting appliance from platform and registration database.");
     }
     else
     {
-		//delete the reord from our db only
-		onsole.log("DEL /appliane ==> Deleting appliane from registration database only.");
-		db.destroy(result.dos[0]._id,result.dos[0]._rev, funtion(err,data)
+		//delete the record from our db only
+		console.log("DEL /appliance ==> Deleting appliance from registration database only.");
+		db.destroy(result.docs[0]._id,result.docs[0]._rev, function(err,data)
 		{
 			if(err)
 			{
-				onsole.log('DEL /appliane  ==> Error:', err.statusode);
-				onsole.log('DEL /appliane  ==> Error: Error deleting doument');
-				onsole.log(err);
-				res.status(err.statusode);
+				console.log('DEL /appliance  ==> Error:', err.statusCode);
+				console.log('DEL /appliance  ==> Error: Error deleting document');
+				console.log(err);
+				res.status(err.statusCode);
 			}
 			else
 			{
-				onsole.log("DEL /appliane ==> Deleted doument for userID: " + req.params.userID + " applianeID: " + req.params.applianeID);
+				console.log("DEL /appliance ==> Deleted document for userID: " + req.params.userID + " applianceID: " + req.params.applianceID);
 				res.status(204);
 			}
 		});
@@ -614,104 +615,104 @@ app.del('/applianes/internal/:userID/:applianeID', funtion(req, res)
 });
 
 /***************************************************************/
-/* Route to delete appliane reords                           */
+/* Route to delete appliance records                           */
 /*    Internal API											   */
 /***************************************************************/
-app.del("/applianes/:userID/:applianeID", passport.authentiate('ma-bakend-strategy', {session: false }), funtion (req, res)
+app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.rediret('/applianes/internal/' + req.user.id + '/' + req.params.applianeID);
+	res.redirect('/appliances/internal/' + req.user.id + '/' + req.params.applianceID);
 });
 
 
 /**************************************************************************************** **/
-/* Route to delete user douments.                              						   */
-/* Need to delete the appliane douments as well from our db  							   */
-/* If we reated them on the platform, delete from platform (NOT for experimental)         */
+/* Route to delete user documents.                              						   */
+/* Need to delete the appliance documents as well from our db  							   */
+/* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete('/user/internal/:userID', funtion (req, res)
+app.delete('/user/internal/:userID', function (req, res)
 {
    if (req.params.userID == null)
    {
-      onsole.log("DEL /user ==> userID not provided");
+      console.log("DEL /user ==> userID not provided");
       res.sendStatus(400);
       return;
    }
 
-   db.find({seletor:{userID:req.params.userID}}, funtion(err, result)
+   db.find({selector:{userID:req.params.userID}}, function(err, result)
    {
      if (err)
      {
-       onsole.log("DEL /user ==> Error ondition");
-       onsole.log(err);
-       res.sendStatus(err.statusode);
+       console.log("DEL /user ==> Error condition");
+       console.log(err);
+       res.sendStatus(err.statusCode);
        return;
      }
 
-     if (result.dos.length==0)
+     if (result.docs.length==0)
      {
-       onsole.log("DEL /user ==> annot find doument in loudant");
+       console.log("DEL /user ==> Cannot find document in Cloudant");
        res.sendStatus(404);
        return;
      }
 
      var i=0;
-     while (i < result.dos.length)
+     while (i < result.docs.length)
      {
-       if ('applianeID' in result.dos[i])
+       if ('applianceID' in result.docs[i])
        {
           /*******************************************************************/
-          /* Deleting an appliane doument(s)                               */
+          /* Deleting an appliance document(s)                               */
           /*******************************************************************/
-          if (result.dos[i].registrationreatedOnPlatform == true)
+          if (result.docs[i].registrationCreatedOnPlatform == true)
           {
             /*******************************************************************/
             /* Delete from platform and registration databases                 */
-            /* As of Marh 30, 2016, this ode will not get exeuted           */
-            /* beause registrationreatedOnPlatform will always be false.     */
+            /* As of March 30, 2016, this code will not get executed           */
+            /* because registrationCreatedOnPlatform will always be false.     */
             /*******************************************************************/
-            onsole.log("DEL /appliane ==> Deleting appliane from platform and registration database.");
+            console.log("DEL /appliance ==> Deleting appliance from platform and registration database.");
           }
           else
           {
             /*******************************************************************/
             /* Delete from registration database only                          */
             /*******************************************************************/
-            onsole.log("DEL /appliane ==> Deleting appliane from registration database only.");
+            console.log("DEL /appliance ==> Deleting appliance from registration database only.");
 
-            db.destroy(result.dos[i]._id,result.dos[i]._rev, funtion(err,data)
+            db.destroy(result.docs[i]._id,result.docs[i]._rev, function(err,data)
             {
                if(err)
                {
-                 onsole.log('DEL /appliane  ==> Error:', err.statusode);
-                 onsole.log('DEL /appliane  ==> Error: Error deleting doument');
-                 onsole.log(err);
-                 res.sendStatus(err.statusode);
+                 console.log('DEL /appliance  ==> Error:', err.statusCode);
+                 console.log('DEL /appliance  ==> Error: Error deleting document');
+                 console.log(err);
+                 res.sendStatus(err.statusCode);
                }
                else
                {
-                 onsole.log("DEL /appliane ==> Deleted appliane doument for userID: " + req.params.userID);
+                 console.log("DEL /appliance ==> Deleted appliance document for userID: " + req.params.userID);
                }
             });
           }
        }
-       else if (!('applianeID' in result.dos[i]))
+       else if (!('applianceID' in result.docs[i]))
        {
-          onsole.log("DEL /appliane ==> Deleting userID doument");
+          console.log("DEL /appliance ==> Deleting userID document");
           /*******************************************************************/
-          /* Delete the user doument                                        */
+          /* Delete the user document                                        */
           /*******************************************************************/
-          db.destroy(result.dos[i]._id,result.dos[i]._rev, funtion(err,result)
+          db.destroy(result.docs[i]._id,result.docs[i]._rev, function(err,result)
           {
              if(err)
              {
-               onsole.log('DEL /user  ==> Error:', err.statusode);
-               onsole.log('DEL /user  ==> Error: Error deleting doument');
-               onsole.log(err);
-               res.sendStatus(err.statusode);
+               console.log('DEL /user  ==> Error:', err.statusCode);
+               console.log('DEL /user  ==> Error: Error deleting document');
+               console.log(err);
+               res.sendStatus(err.statusCode);
              }
              else
              {
-               onsole.log("DEL /user ==> Deleted user doument for userID: " + req.params.userID);
+               console.log("DEL /user ==> Deleted user document for userID: " + req.params.userID);
              }
           });
        }
@@ -722,65 +723,65 @@ app.delete('/user/internal/:userID', funtion (req, res)
 });
 
 /**************************************************************************************** **/
-/* Route to delete user douments.                              						   */
-/* Need to delete the appliane douments as well from our db  							   */
-/* If we reated them on the platform, delete from platform (NOT for experimental)         */
+/* Route to delete user documents.                              						   */
+/* Need to delete the appliance documents as well from our db  							   */
+/* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete("/user/:userID", passport.authentiate('ma-bakend-strategy', {session: false }), funtion (req, res)
+app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.rediret('/user/internal/' + req.user.id);
+	res.redirect('/user/internal/' + req.user.id);
 });
 
-//get IoT-Foundation redentials
-if(!VAP_SERVIES || !VAP_SERVIES["iotf-servie"])
-	throw "annot get IoT-Foundation redentials"
-var iotfredentials = VAP_SERVIES["iotf-servie"][0]["redentials"];
+//get IoT-Foundation credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
+	throw "Cannot get IoT-Foundation credentials"
+var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 
 /********************************************************************** **/
-/*Solution Integrator ode                                               */
+/*Solution Integrator Code                                               */
 /********************************************************************** **/
- //Get RTI redentials
- if(!VAP_SERVIES || !VAP_SERVIES["IoT Real-Time Insight"])
- 	throw "annot get RTI redentials"
- var rtiredentials = VAP_SERVIES["IoT Real-Time Insight"][0]["redentials"];
+ //Get RTI credentials
+ if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+ 	throw "Cannot get RTI credentials"
+ var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
-// //Get IoT for Eletronis redentials
-// //if(!VAP_SERVIES || !VAP_SERVIES["ibmiotforeletronis"])
-// //	throw "annot get IoT4E redentials"
-// //var ioteredentials = VAP_SERVIES["ibmiotforeletronis"][0]["redentials"];
+// //Get IoT for Electronics credentials
+// //if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
+// //	throw "Cannot get IoT4E credentials"
+// //var ioteCredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 
 
-// //IoT Platform redentials
- var name = iotfredentials["org"];
- var orgId = iotfredentials["org"];
- var apiKey = iotfredentials["apiKey"];
- var authToken = iotfredentials["apiToken"];
- var baseURI = iotfredentials["base_uri"];
- var apiURI = 'https://' + iotfredentials["http_host"] + ':443/api/v0002';
+// //IoT Platform Credentials
+ var name = iotfCredentials["org"];
+ var orgId = iotfCredentials["org"];
+ var apiKey = iotfCredentials["apiKey"];
+ var authToken = iotfCredentials["apiToken"];
+ var baseURI = iotfCredentials["base_uri"];
+ var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
- //RTI redentials
- var rtiApiKey = rtiredentials["apiKey"];
- var rtiAuthToken = rtiredentials["authToken"];
- var rtiBaseUrl = rtiredentials["baseUrl"];
+ //RTI Credentials
+ var rtiApiKey = rtiCredentials["apiKey"];
+ var rtiAuthToken = rtiCredentials["authToken"];
+ var rtiBaseUrl = rtiCredentials["baseUrl"];
  var disabled = false;
 
-// //IoT for Eletronis redentials
-// //var ioteUser = ioteredentials["userid"];
-// //var iotePass = ioteredentials["password"];
+// //IoT for Electronics Credentials
+// //var ioteUser = ioteCredentials["userid"];
+// //var iotePass = ioteCredentials["password"];
 
-// //IoT Platform Devie Types
-// //var	iotpDevId = "washingMahine";
-// //var	iotpDesription = "IoT4E Washing Mahine";
-// //var	iotplassId = "Devie"
+// //IoT Platform Device Types
+// //var	iotpDevId = "washingMachine";
+// //var	iotpDescription = "IoT4E Washing Machine";
+// //var	iotpClassId = "Device"
 
-// //RTI Message Shema Info
-// //var	rtiShemaName = "Eletronis";
+// //RTI Message Schema Info
+// //var	rtiSchemaName = "Electronics";
 
-// //IoT Platform onfig reation Method.
- var iotpPost = funtion iotpPost (path, json) {
- onsole.log('alling api to POST: ' + baseURI);
- onsole.log('IoTP API URI: ' + apiURI);
- onsole.log('alling api on json: ' + JSON.stringify(json));
+// //IoT Platform Config Creation Method.
+ var iotpPost = function iotpPost (path, json) {
+ console.log('calling api to POST: ' + baseURI);
+ console.log('IoTP API URI: ' + apiURI);
+ console.log('calling api on json: ' + JSON.stringify(json));
 
    var url = apiURI + path;
    var defer = q.defer();
@@ -792,25 +793,25 @@ var iotfredentials = VAP_SERVIES["iotf-servie"][0]["redentials"];
        json: true,
        body: json
      }).auth(apiKey, authToken, true)
-     .on('data', funtion(data) {
+     .on('data', function(data) {
        body += data;
      })
-     .on('end', funtion() {
+     .on('end', function() {
        var json = JSON.parse(body);
        defer.resolve(json);
     })
-    .on('response', funtion(response) {
-       onsole.log('IoTP status: ' + response.statusode);
+    .on('response', function(response) {
+       console.log('IoTP status: ' + response.statusCode);
    });
     return defer.promise;
  };
 
-// //RTI onfig reation Method.
- var rtiPost = funtion rtiPost (path, json) {
-   onsole.log('alling api to POST: ' + path);
-   onsole.log('Rti Api: ' + rtiApiKey);
-   onsole.log('Rti Token: ' + rtiAuthToken);
-   onsole.log('alling api on json: ' + JSON.stringify(json));
+// //RTI Config Creation Method.
+ var rtiPost = function rtiPost (path, json) {
+   console.log('calling api to POST: ' + path);
+   console.log('Rti Api: ' + rtiApiKey);
+   console.log('Rti Token: ' + rtiAuthToken);
+   console.log('calling api on json: ' + JSON.stringify(json));
 
    var url = rtiBaseUrl + path;
    var defer = q.defer();
@@ -822,61 +823,61 @@ var iotfredentials = VAP_SERVIES["iotf-servie"][0]["redentials"];
        json: true,
        body: json
      }).auth(rtiApiKey, rtiAuthToken, true)
-    .on('data', funtion(data) {
+    .on('data', function(data) {
        body += data;
      })
-     .on('end', funtion() {
+     .on('end', function() {
        var json = JSON.parse(body);
        defer.resolve(json);
     })
-    .on('response', funtion(response) {
-       onsole.log('Response status: ' + response.statusode); // 200
+    .on('response', function(response) {
+       console.log('Response status: ' + response.statusCode); // 200
    });
     return defer.promise;
   };
 
-// //IoT Platform devie type reation all
- var iotpDevieType = iotpPost('/devie/types',{
- 	"id": "washingMahine",
- 	"desription": "IoT4E Washing Mahine",
- 	"lassId": "Devie"
+// //IoT Platform device type creation call
+ var iotpDeviceType = iotpPost('/device/types',{
+ 	"id": "washingMachine",
+ 	"description": "IoT4E Washing Machine",
+ 	"classId": "Device"
  });
 
-// //IoT Platform devie reation all
-// //var iotpDevieType = iotpPost('/devie/types/washingMahine/devies',{
-// //  //"id": "d:ab123:myType:myDevie",
-// //  "typeId": "washingMahine",
-// //  "devieId": "washingMahineEle"
+// //IoT Platform device creation call
+// //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
+// //  //"id": "d:abc123:myType:myDevice",
+// //  "typeId": "washingMachine",
+// //  "deviceId": "washingMachineElec"
 // //});
 
- //RTI data soure reation all
- var rtiSoure = rtiPost('/message/soure',{
+ //RTI data source creation call
+ var rtiSource = rtiPost('/message/source',{
  	"name": name,
  	"orgId": orgId,
  	"apiKey": apiKey,
  	"authToken": authToken,
  	"disabled": disabled});
 
- //RTI shema reation all
- var rtiShema = rtiPost('/message/shema',{
- 	"name": "Eletronis",
+ //RTI schema creation call
+ var rtiSchema = rtiPost('/message/schema',{
+ 	"name": "Electronics",
  	"format": "JSON",
  	"items": []});
 /********************************************************************** **/
-/*End of Solution Integrator ode                                        */
+/*End of Solution Integrator Code                                        */
 /********************************************************************** **/
 
 
-//global IoT-Foundation onnetors 
-washingMahineIoTFlient = require('./mqtt/washingMahineIoTFlient'); 
-washingMahineIoTFlient.onnetToBroker(iotfredentials);
+//global IoT-Foundation connectors 
+washingMachineIoTFClient = require('./mqtt/washingMachineIoTFClient'); 
+washingMachineIoTFClient.connectToBroker(iotfCredentials);
 	
 //var app = express();
 
-//Enable reverse proxy support in Express. This auses the
+//Enable reverse proxy support in Express. This causes the
 //the "X-Forwarded-Proto" header field to be trusted so its
-//value an be used to determine the protool. See 
-//http://expressjs.om/api#app-settings for more details.
+//value can be used to determine the protocol. See 
+//http://expressjs.com/api#app-settings for more details.
 app.enable('trust proxy');
 
 var server = require('http').Server(app);
@@ -885,11 +886,11 @@ iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 //view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-//unomment after plaing your favion in /publi
-//app.use(favion(__dirname + '/publi/favion.io'));
+//uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
 
-//ath 404 and forward to error handler
-app.use(funtion(req, res, next) {
+//catch 404 and forward to error handler
+app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
 	next(err);
@@ -898,9 +899,9 @@ app.use(funtion(req, res, next) {
 //error handlers
 
 //development error handler
-//will print staktrae
+//will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(funtion(err, req, res, next) {
+	app.use(function(err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('error', {
 			message: err.message,
@@ -909,9 +910,9 @@ if (app.get('env') === 'development') {
 	});
 }
 
-//prodution error handler
-//no staktraes leaked to user
-app.use(funtion(err, req, res, next) {
+//production error handler
+//no stacktraces leaked to user
+app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error', {
 		message: err.message,
@@ -925,25 +926,25 @@ app.set('port', port);
 //require user extensions  
 try {
 		require("./_app.js");			
-	} ath (e) {
-		onsole.log("Failed to load extention file _app.js: " + e.message);
+	} catch (e) {
+		console.log("Failed to load extention file _app.js: " + e.message);
 	};
 
 //Start server
-server.listen(app.get('port'), funtion() {
-	onsole.log('Server listening on port ' + server.address().port);
+server.listen(app.get('port'), function() {
+	console.log('Server listening on port ' + server.address().port);
 });
 server.on('error', onError);
 server.on('listening', onListening);
 
-//set the server in the app objet
+//set the server in the app object
 app.server = server;
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
-funtion normalizePort(val) {
+function normalizePort(val) {
 	var port = parseInt(val, 10);
 
 	if (isNaN(port)) {
@@ -963,8 +964,8 @@ funtion normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-funtion onError(error) {
-	if (error.sysall !== 'listen') {
+function onError(error) {
+	if (error.syscall !== 'listen') {
 		throw error;
 	}
 
@@ -972,15 +973,15 @@ funtion onError(error) {
 		? 'Pipe ' + port
 				: 'Port ' + port;
 
-	// handle speifi listen errors with friendly messages
-	swith (error.ode) {
-	ase 'EAES':
-		onsole.error(bind + ' requires elevated privileges');
-		proess.exit(1);
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+	case 'EACCES':
+		console.error(bind + ' requires elevated privileges');
+		process.exit(1);
 		break;
-	ase 'EADDRINUSE':
-		onsole.error(bind + ' is already in use');
-		proess.exit(1);
+	case 'EADDRINUSE':
+		console.error(bind + ' is already in use');
+		process.exit(1);
 		break;
 	default:
 		throw error;
@@ -991,48 +992,48 @@ funtion onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-funtion onListening() {
+function onListening() {
 	var addr = server.address();
 	var bind = typeof addr === 'string'
 		? 'pipe ' + addr
 				: 'port ' + addr.port;
 	debug('Listening on ' + bind);
 	
-	var deviesManager = require("./deviesManager");
-//	web soket for index page
-	var wss = new WebSoketServer({ server: app.server, path :  '/serverStatus'});
-	wss.on('onnetion', funtion(ws) {
-		var id = setInterval(funtion() {
-			var stats = deviesManager.getStats();
-			_.extend(stats, proess.memoryUsage());			
-			ws.send(JSON.stringify(stats), funtion() { /* ignore errors */ });
+	var devicesManager = require("./devicesManager");
+//	web socket for index page
+	var wss = new WebSocketServer({ server: app.server, path :  '/serverStatus'});
+	wss.on('connection', function(ws) {
+		var id = setInterval(function() {
+			var stats = devicesManager.getStats();
+			_.extend(stats, process.memoryUsage());			
+			ws.send(JSON.stringify(stats), function() { /* ignore errors */ });
 		}, 5000);
-		onsole.log('started server status lient interval');
-		ws.on('lose', funtion() {
-			onsole.log('stopping server status lient interval');
-			learInterval(id);
+		console.log('started server status client interval');
+		ws.on('close', function() {
+			console.log('stopping server status client interval');
+			clearInterval(id);
 		});
 	});
-//	var deviesManager = require("./deviesManager").reateFromModelFiles();
+//	var devicesManager = require("./devicesManager").createFromModelFiles();
 }
 
 /*
-ONRAD'S ODE
-*/
+ * CONRAD'S CODE
+ */
 
-//Using hardoded user repository
+//Using hardcoded user repository
 var userRepository = {
-    "onrad":      { password: "12345" , displayName:"onrad Kao"      , dob:"Otober 9, 1940"},
-    "john.lennon":      { password: "12345" , displayName:"John Lennon"      , dob:"Otober 9, 1940"},
-    "paul.martney":   { password: "67890" , displayName:"Paul Martney"   , dob:"June 18, 1942"},
-    "ringo.starr":      { password: "abde" , displayName:"Ringo Starr"      , dob: "July 7, 1940"},
+    "conrad":      { password: "12345" , displayName:"Conrad Kao"      , dob:"October 9, 1940"},
+    "john.lennon":      { password: "12345" , displayName:"John Lennon"      , dob:"October 9, 1940"},
+    "paul.mccartney":   { password: "67890" , displayName:"Paul McCartney"   , dob:"June 18, 1942"},
+    "ringo.starr":      { password: "abcde" , displayName:"Ringo Starr"      , dob: "July 7, 1940"},
     "george.harrison":  { password: "fghij" , displayName: "George Harrison" , dob:"Feburary 25, 1943"}
 };
 
-var logger = log4js.getLogger("ustomIdentityProviderApp");
+var logger = log4js.getLogger("CustomIdentityProviderApp");
 logger.info("Starting up");
 
-app.post('/apps/:tenantId/:realmName/startAuthorization', jsonParser, funtion(req, res){
+app.post('/apps/:tenantId/:realmName/startAuthorization', jsonParser, function(req, res){
     var tenantId = req.params.tenantId;
     var realmName = req.params.realmName;
     var headers = req.body.headers;
@@ -1040,8 +1041,8 @@ app.post('/apps/:tenantId/:realmName/startAuthorization', jsonParser, funtion(re
     logger.debug("startAuthorization", tenantId, realmName, headers);
 
     var responseJson = {
-        status: "hallenge",
-        hallenge: {
+        status: "challenge",
+        challenge: {
             text: "Enter username and password"
         }
     };
@@ -1049,33 +1050,33 @@ app.post('/apps/:tenantId/:realmName/startAuthorization', jsonParser, funtion(re
     res.status(200).json(responseJson);
 });
 
-app.post('/apps/:tenantId/:realmName/handlehallengeAnswer', jsonParser, funtion(req, res){
+app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, function(req, res){
     var tenantId = req.params.tenantId;
     var realmName = req.params.realmName;
-    var hallengeAnswer = req.body.hallengeAnswer;
+    var challengeAnswer = req.body.challengeAnswer;
 
-    logger.debug("handlehallengeAnswer", tenantId, realmName, hallengeAnswer);
+    logger.debug("handleChallengeAnswer", tenantId, realmName, challengeAnswer);
 
-    var username = req.body.hallengeAnswer["username"];
-    var password = req.body.hallengeAnswer["password"];
+    var username = req.body.challengeAnswer["username"];
+    var password = req.body.challengeAnswer["password"];
 
     var responseJson = { status: "failure" };
 
     //add the following lines to add a new user (temporily) when the username is not existed.
     if (userRepository[username] == null) {
-        userRepository[username]={password: password, displayName: username, dob:"Deember 31, 2016"};
+        userRepository[username]={password: password, displayName: username, dob:"December 31, 2016"};
     }
 
-    var userObjet = userRepository[username];
+    var userObject = userRepository[username];
 
-    if (userObjet && userObjet.password == password ){
-        logger.debug("Login suess for userId ::", username);
-        responseJson.status = "suess";
+    if (userObject && userObject.password == password ){
+        logger.debug("Login success for userId ::", username);
+        responseJson.status = "success";
         responseJson.userIdentity = {
             userName: username,
-            displayName: userObjet.displayName,
+            displayName: userObject.displayName,
             attributes: {
-                dob: userObjet.dob
+                dob: userObject.dob
             }
         };
     } else {
@@ -1085,6 +1086,6 @@ app.post('/apps/:tenantId/:realmName/handlehallengeAnswer', jsonParser, funtion(
     res.status(200).json(responseJson);
 });
 
-app.use(funtion(req, res, next){
+app.use(function(req, res, next){
     res.status(404).send("This is not the URL you're looking for");
 });
