@@ -21,6 +21,7 @@
          "http": "0.0.0",
          "https": "^1.0.0",
          "passport": "^0.3.2",
+         "log4js": "^0.6.29",
          "node-uuid": "",
          "cors": "",
          "request": "",
