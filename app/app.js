@@ -1,3 +1,12 @@
+VCAP_SERVICES = {};
+if(process.env.VCAP_SERVICES)
+	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
+
+var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
+
+if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
+	process.env.STAGING = 1;
+
 var express         = require('express');
 
 var app = express();
@@ -41,12 +50,41 @@ dumpError = function(msg, err) {
 	}
 };
 
-VCAP_SERVICES = {};
-if(process.env.VCAP_SERVICES)
-	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
-
 //The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
+
+//global HTTP routers
+httpRouter = require('./routes/httpRouter');
+
+//allow cross domain calls
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/', httpRouter);
+app.use('/', device);
+app.use('/', simulator);
+app.use('/api', apiRouter);
+
+//Add a handler to inspect the req.secure flag (see 
+//http://expressjs.com/api#req.secure). This allows us 
+//to know whether the request was via http or https.
+app.use(function (req, res, next) {	
+	res.set({
+		'Cache-Control': 'no-store',
+		'Pragma': 'no-cache'
+	});
+	//force https
+	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
+		res.redirect('https://' + req.headers.host + req.url);
+	else
+		next();		
+});
 
 /***************************************************************/
 //STEPHANIES'S CODE *************
@@ -303,7 +341,6 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	}
 	});
 });
-
 
 app.get("/index", function(req, res)
 {
@@ -691,9 +728,6 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 	res.redirect('/user/internal/' + req.user.id);
 });
 
-//global HTTP routers
-httpRouter = require('./routes/httpRouter');
-
 //get IoT-Foundation credentials
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
@@ -842,21 +876,6 @@ washingMachineIoTFClient.connectToBroker(iotfCredentials);
 //http://expressjs.com/api#app-settings for more details.
 app.enable('trust proxy');
 
-//Add a handler to inspect the req.secure flag (see 
-//http://expressjs.com/api#req.secure). This allows us 
-//to know whether the request was via http or https.
-app.use(function (req, res, next) {	
-	res.set({
-		'Cache-Control': 'no-store',
-		'Pragma': 'no-cache'
-	});
-	//force https
-	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
-		res.redirect('https://' + req.headers.host + req.url);
-	else
-		next();		
-});
-
 var server = require('http').Server(app);
 iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 
@@ -865,20 +884,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 //uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-//allow cross domain calls
-app.use(cors());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-app.use('/', httpRouter);
-app.use('/', device);
-app.use('/', simulator);
-app.use('/api', apiRouter);
 
 //catch 404 and forward to error handler
 app.use(function(req, res, next) {
