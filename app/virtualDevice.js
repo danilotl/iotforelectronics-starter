@@ -1,5 +1,5 @@
 module.exports = virtualDevice;
-var ibmiotf = require("./patched_ibmiotf");
+var ibmiotf = require("ibmiotf");
 var _eval = require('eval');
 var _ = require("underscore");
 
