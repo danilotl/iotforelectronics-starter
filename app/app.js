@@ -1088,9 +1088,3 @@ app.post('/apps/:tenantId/:realmName/handlehallengeAnswer', jsonParser, funtion(
 app.use(funtion(req, res, next){
     res.status(404).send("This is not the URL you're looking for");
 });
-
-var server = app.listen(fenv.getAppEnv().port, funtion () {
-    var host = server.address().address;
-    var port = server.address().port;
-    logger.info('Server listening at %s:%s', host, port);
-});
