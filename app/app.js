@@ -2,10 +2,10 @@ VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 
-// var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
+var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
 
-// if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
-// 	process.env.STAGING = 1;
+if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
+	process.env.STAGING = 1;
 
 var express         = require('express');
 var cfenv = require('cfenv');
@@ -56,6 +56,39 @@ dumpError = function(msg, err) {
 
 //The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
+
+//global HTTP routers
+httpRouter = require('./routes/httpRouter');
+
+//allow cross domain calls
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/', httpRouter);
+app.use('/', device);
+app.use('/', simulator);
+app.use('/api', apiRouter);
+
+//Add a handler to inspect the req.secure flag (see 
+//http://expressjs.com/api#req.secure). This allows us 
+//to know whether the request was via http or https.
+app.use(function (req, res, next) {	
+	res.set({
+		'Cache-Control': 'no-store',
+		'Pragma': 'no-cache'
+	});
+	//force https
+	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
+		res.redirect('https://' + req.headers.host + req.url);
+	else
+		next();		
+});
 
 /***************************************************************/
 //STEPHANIES'S CODE *************
@@ -707,39 +740,6 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 /*End of Registration Integrator Code                                               */
 /********************************************************************** **/
 
-//global HTTP routers
-httpRouter = require('./routes/httpRouter');
-
-//allow cross domain calls
-app.use(cors());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-app.use('/', httpRouter);
-app.use('/', device);
-app.use('/', simulator);
-app.use('/api', apiRouter);
-
-//Add a handler to inspect the req.secure flag (see 
-//http://expressjs.com/api#req.secure). This allows us 
-//to know whether the request was via http or https.
-app.use(function (req, res, next) {	
-	res.set({
-		'Cache-Control': 'no-store',
-		'Pragma': 'no-cache'
-	});
-	//force https
-	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')					
-		res.redirect('https://' + req.headers.host + req.url);
-	else
-		next();		
-});
-
 /********************************************************************** **/
 /*Solution Integrator Code                                               */
 /********************************************************************** **/
@@ -755,12 +755,12 @@ app.use(function (req, res, next) {
 
 
 // //IoT Platform Credentials
- var name = iotfCredentials["org"];
- var orgId = iotfCredentials["org"];
- var apiKey = iotfCredentials["apiKey"];
- var authToken = iotfCredentials["apiToken"];
- var baseURI = iotfCredentials["base_uri"];
- var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+ // var name = iotfCredentials["org"];
+ // var orgId = iotfCredentials["org"];
+ // var apiKey = iotfCredentials["apiKey"];
+ // var authToken = iotfCredentials["apiToken"];
+ // var baseURI = iotfCredentials["base_uri"];
+ // var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
  // //RTI Credentials
  // var rtiApiKey = rtiCredentials["apiKey"];
@@ -781,33 +781,33 @@ app.use(function (req, res, next) {
 // //var	rtiSchemaName = "Electronics";
 
 // //IoT Platform Config Creation Method.
- var iotpPost = function iotpPost (path, json) {
- console.log('calling api to POST: ' + baseURI);
- console.log('IoTP API URI: ' + apiURI);
- console.log('calling api on json: ' + JSON.stringify(json));
+ // var iotpPost = function iotpPost (path, json) {
+ // console.log('calling api to POST: ' + baseURI);
+ // console.log('IoTP API URI: ' + apiURI);
+ // console.log('calling api on json: ' + JSON.stringify(json));
 
-   var url = apiURI + path;
-   var defer = q.defer();
-   var body = '';
+ //   var url = apiURI + path;
+ //   var defer = q.defer();
+ //   var body = '';
 
-   request
-    .post({
-       url: url,
-       json: true,
-       body: json
-     }).auth(apiKey, authToken, true)
-     .on('data', function(data) {
-       body += data;
-     })
-     .on('end', function() {
-       var json = JSON.parse(body);
-       defer.resolve(json);
-    })
-    .on('response', function(response) {
-       console.log('IoTP status: ' + response.statusCode);
-   });
-    return defer.promise;
- };
+ //   request
+ //    .post({
+ //       url: url,
+ //       json: true,
+ //       body: json
+ //     }).auth(apiKey, authToken, true)
+ //     .on('data', function(data) {
+ //       body += data;
+ //     })
+ //     .on('end', function() {
+ //       var json = JSON.parse(body);
+ //       defer.resolve(json);
+ //    })
+ //    .on('response', function(response) {
+ //       console.log('IoTP status: ' + response.statusCode);
+ //   });
+ //    return defer.promise;
+ // };
 
 // // //RTI Config Creation Method.
 //  var rtiPost = function rtiPost (path, json) {
@@ -840,11 +840,11 @@ app.use(function (req, res, next) {
 //   };
 
 // //IoT Platform device type creation call
- var iotpDeviceType = iotpPost('/device/types',{
- 	"id": "washingMachine",
- 	"description": "IoT4E Washing Machine",
- 	"classId": "Device"
- });
+ // var iotpDeviceType = iotpPost('/device/types',{
+ // 	"id": "washingMachine",
+ // 	"description": "IoT4E Washing Machine",
+ // 	"classId": "Device"
+ // });
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
