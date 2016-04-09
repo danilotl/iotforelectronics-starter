@@ -2,10 +2,10 @@ VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
 
-var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
+// var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
 
-if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
-	process.env.STAGING = 1;
+// if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
+// 	process.env.STAGING = 1;
 
 var express         = require('express');
 var cfenv = require('cfenv');
