@@ -740,10 +740,10 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 /********************************************************************** **/
 /*Solution Integrator Code                                               */
 /********************************************************************** **/
- //Get RTI credentials
- if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
- 	throw "Cannot get RTI credentials"
- var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+ // //Get RTI credentials
+ // if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+ // 	throw "Cannot get RTI credentials"
+ // var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
 // //Get IoT for Electronics credentials
 // //if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
@@ -759,11 +759,11 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
  var baseURI = iotfCredentials["base_uri"];
  var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
- //RTI Credentials
- var rtiApiKey = rtiCredentials["apiKey"];
- var rtiAuthToken = rtiCredentials["authToken"];
- var rtiBaseUrl = rtiCredentials["baseUrl"];
- var disabled = false;
+ // //RTI Credentials
+ // var rtiApiKey = rtiCredentials["apiKey"];
+ // var rtiAuthToken = rtiCredentials["authToken"];
+ // var rtiBaseUrl = rtiCredentials["baseUrl"];
+ // var disabled = false;
 
 // //IoT for Electronics Credentials
 // //var ioteUser = ioteCredentials["userid"];
@@ -806,35 +806,35 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
     return defer.promise;
  };
 
-// //RTI Config Creation Method.
- var rtiPost = function rtiPost (path, json) {
-   console.log('calling api to POST: ' + path);
-   console.log('Rti Api: ' + rtiApiKey);
-   console.log('Rti Token: ' + rtiAuthToken);
-   console.log('calling api on json: ' + JSON.stringify(json));
+// // //RTI Config Creation Method.
+//  var rtiPost = function rtiPost (path, json) {
+//    console.log('calling api to POST: ' + path);
+//    console.log('Rti Api: ' + rtiApiKey);
+//    console.log('Rti Token: ' + rtiAuthToken);
+//    console.log('calling api on json: ' + JSON.stringify(json));
 
-   var url = rtiBaseUrl + path;
-   var defer = q.defer();
-   var body = '';
+//    var url = rtiBaseUrl + path;
+//    var defer = q.defer();
+//    var body = '';
 
-   request
-    .post({
-       url: url,
-       json: true,
-       body: json
-     }).auth(rtiApiKey, rtiAuthToken, true)
-    .on('data', function(data) {
-       body += data;
-     })
-     .on('end', function() {
-       var json = JSON.parse(body);
-       defer.resolve(json);
-    })
-    .on('response', function(response) {
-       console.log('Response status: ' + response.statusCode); // 200
-   });
-    return defer.promise;
-  };
+//    request
+//     .post({
+//        url: url,
+//        json: true,
+//        body: json
+//      }).auth(rtiApiKey, rtiAuthToken, true)
+//     .on('data', function(data) {
+//        body += data;
+//      })
+//      .on('end', function() {
+//        var json = JSON.parse(body);
+//        defer.resolve(json);
+//     })
+//     .on('response', function(response) {
+//        console.log('Response status: ' + response.statusCode); // 200
+//    });
+//     return defer.promise;
+//   };
 
 // //IoT Platform device type creation call
  var iotpDeviceType = iotpPost('/device/types',{
@@ -850,19 +850,19 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 // //  "deviceId": "washingMachineElec"
 // //});
 
- //RTI data source creation call
- var rtiSource = rtiPost('/message/source',{
- 	"name": name,
- 	"orgId": orgId,
- 	"apiKey": apiKey,
- 	"authToken": authToken,
- 	"disabled": disabled});
+ // //RTI data source creation call
+ // var rtiSource = rtiPost('/message/source',{
+ // 	"name": name,
+ // 	"orgId": orgId,
+ // 	"apiKey": apiKey,
+ // 	"authToken": authToken,
+ // 	"disabled": disabled});
 
- //RTI schema creation call
- var rtiSchema = rtiPost('/message/schema',{
- 	"name": "Electronics",
- 	"format": "JSON",
- 	"items": []});
+ // //RTI schema creation call
+ // var rtiSchema = rtiPost('/message/schema',{
+ // 	"name": "Electronics",
+ // 	"format": "JSON",
+ // 	"items": []});
 /********************************************************************** **/
 /*End of Solution Integrator Code                                        */
 /********************************************************************** **/
