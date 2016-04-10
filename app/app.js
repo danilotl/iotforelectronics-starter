@@ -336,6 +336,7 @@ app.post('/appliances/internal', function (req, res)
 //TODO: check if we already have registered this appliance?
 app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
 {
+	console.log('JSON log: ', req.body);
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
