@@ -334,17 +334,33 @@ app.post('/appliances/internal', function (req, res)
 /*             serial number, manufacturer, and model          */
 /***************************************************************/
 //TODO: check if we already have registered this appliance?
+// app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
+// {
+// 	console.log('JSON log: ', req.body);
+// 	var formData = req.body;
+// 	formData.userID = req.user.id;
+	
+// 	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+// 	if (err) {
+//     return console.error('upload failed:', err);
+// 	}
+// 	});
+// });
 app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)  
 {
-	console.log('JSON log: ', req.body);
-	var formData = req.body;
-	formData.userID = req.user.id;
-	
-	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
-	if (err) {
-    return console.error('upload failed:', err);
-	}
-	});
+   var bodyIn = req.body;
+   bodyIn.userID = req.user.id;
+   
+   request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal', 
+                 body: JSON.stringify(bodyIn), 
+                 headers: { "content-type": "application/json"}
+                 },
+                 function optionalCallback(err, httpResponse, body) {
+
+		if (!error && response.statusCode == 200) {
+              console.log(bodyIn)
+        }
+   });
 });
 
 app.get("/index", function(req, res)
