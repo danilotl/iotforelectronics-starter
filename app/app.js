@@ -247,7 +247,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url: application.application_uris[0] + '/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	request.post({url: application.application_uris[0] + '/users/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
     return console.error('upload failed:', err);
 	}
@@ -339,7 +339,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	var formData = req.body;
 	formData.userID = req.user.id;
 	
-	req.post({url: application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
+	request.post({url: application.application_uris[0] + '/appliances/internal', formData: formData}, function optionalCallback(err, httpResponse, body) {
 	if (err) {
     return console.error('upload failed:', err);
 	}
@@ -754,13 +754,13 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 // //var ioteCredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 
 
-// //IoT Platform Credentials
- // var name = iotfCredentials["org"];
- // var orgId = iotfCredentials["org"];
- // var apiKey = iotfCredentials["apiKey"];
- // var authToken = iotfCredentials["apiToken"];
- // var baseURI = iotfCredentials["base_uri"];
- // var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+ //IoT Platform Credentials
+  var name = iotfCredentials["org"];
+  var orgId = iotfCredentials["org"];
+  var apiKey = iotfCredentials["apiKey"];
+  var authToken = iotfCredentials["apiToken"];
+  var baseURI = iotfCredentials["base_uri"];
+  var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
  // //RTI Credentials
  // var rtiApiKey = rtiCredentials["apiKey"];
@@ -781,33 +781,33 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 // //var	rtiSchemaName = "Electronics";
 
 // //IoT Platform Config Creation Method.
- // var iotpPost = function iotpPost (path, json) {
- // console.log('calling api to POST: ' + baseURI);
- // console.log('IoTP API URI: ' + apiURI);
- // console.log('calling api on json: ' + JSON.stringify(json));
+  var iotpPost = function iotpPost (path, json) {
+  console.log('calling api to POST: ' + baseURI);
+  console.log('IoTP API URI: ' + apiURI);
+  console.log('calling api on json: ' + JSON.stringify(json));
 
- //   var url = apiURI + path;
- //   var defer = q.defer();
- //   var body = '';
+    var url = apiURI + path;
+    var defer = q.defer();
+    var body = '';
 
- //   request
- //    .post({
- //       url: url,
- //       json: true,
- //       body: json
- //     }).auth(apiKey, authToken, true)
- //     .on('data', function(data) {
- //       body += data;
- //     })
- //     .on('end', function() {
- //       var json = JSON.parse(body);
- //       defer.resolve(json);
- //    })
- //    .on('response', function(response) {
- //       console.log('IoTP status: ' + response.statusCode);
- //   });
- //    return defer.promise;
- // };
+    request
+     .post({
+        url: url,
+        json: true,
+        body: json
+      }).auth(apiKey, authToken, true)
+      .on('data', function(data) {
+        body += data;
+      })
+      .on('end', function() {
+        var json = JSON.parse(body);
+        defer.resolve(json);
+     })
+     .on('response', function(response) {
+        console.log('IoTP status: ' + response.statusCode);
+    });
+     return defer.promise;
+  };
 
 // // //RTI Config Creation Method.
 //  var rtiPost = function rtiPost (path, json) {
@@ -839,12 +839,12 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 //     return defer.promise;
 //   };
 
-// //IoT Platform device type creation call
- // var iotpDeviceType = iotpPost('/device/types',{
- // 	"id": "washingMachine",
- // 	"description": "IoT4E Washing Machine",
- // 	"classId": "Device"
- // });
+ //IoT Platform device type creation call
+  var iotpDeviceType = iotpPost('/device/types',{
+  	"id": "washingMachine",
+  	"description": "IoT4E Washing Machine",
+  	"classId": "Device"
+ });
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
