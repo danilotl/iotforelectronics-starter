@@ -90,6 +90,10 @@ app.use(function (req, res, next) {
 		next();
 });
 
+if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
+	throw "Cannot get IoT-Foundation credentials"
+var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
+
 /***************************************************************/
 //STEPHANIES'S CODE *************
 /***************************************************************/
@@ -268,15 +272,18 @@ app.post('/appliances/internal', function (req, res)
    console.log("POST /applianecs  ==> Inserting device document in Cloudant");
    console.log(req.body.userID);
    console.log(req.body.applianceID);
-	 console.log("API KEY: " +  services.iotf-service.apiKey)
-	 console.log("API TOKEN: " + services.iotf-service.apiToken)
+	 //console.log("API KEY: " +  services.iotf-service.apiKey)
+	// console.log("API TOKEN: " + services.iotf-service.apiToken)
    var doc = {userID: req.body.userID, applianceID: req.body.applianceID, serialNumber: req.body.serialNumber, manufacturer: req.body.manufacturer, name: req.body.name, dateOfPurchase: req.body.dateOfPurchase, model: req.body.model, registrationCreatedOnPlatform: false};
 
 	var https = require('https');
 
     //API keys from IoTF
-    var auth_key = services.iotf-service.apiKey;
-    var auth_token = services.iotf-service.apiToken;
+		var auth_key = iotfCredentials["apiKey"];
+ 		var auth_token = iotfCredentials["apiToken"];
+		console.log("KEY AND TOKEN: " + auth_key + "  " + auth_token)
+    //var auth_key = services.iotf-service.apiKey;
+    //var auth_token = services.iotf-service.apiToken;
 
 		var options =
     {
@@ -774,9 +781,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 });
 
 //get IoT-Foundation credentials
-if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
-	throw "Cannot get IoT-Foundation credentials"
-var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
+
 /********************************************************************** **/
 /*End of Registration Integrator Code                                               */
 /********************************************************************** **/
