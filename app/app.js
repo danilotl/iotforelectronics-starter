@@ -284,11 +284,12 @@ app.post('/appliances/internal', function (req, res)
 		console.log("KEY AND TOKEN: " + auth_key + "  " + auth_token)
     //var auth_key = services.iotf-service.apiKey;
     //var auth_token = services.iotf-service.apiToken;
-
+		var httpHost = iotfCredentials["http_host"]
+		console.log("HTTP HOST: " + httpHost)
 		var options =
     {
-            host: services.iotf-service.http_host,
-            path: ':443/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
+            host: httpHost,
+            path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
 
