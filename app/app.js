@@ -282,11 +282,17 @@ app.post('/appliances/internal', function (req, res)
             path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
-
+  console.log("LINE BEFORE HTTPS.GET")
 	https.get(options, function(platformRes)
 	{
 		console.log("INSIDE OF THE HTTPS.GET BLOCK..." + options)
 		var response = '';
+		platformRes.on('error', function(platformErr)
+		{
+			console.log("*******IN PLATFORM ERR*********")
+			console.log(platformErr.message)
+			console.log("*******IN PLATFORM ERR*********")
+		});
 		platformRes.on('data', function(data)
 		{
 			response += data;
