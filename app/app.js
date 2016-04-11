@@ -951,12 +951,7 @@ try {
 	};
 
 //Start server
-server.listen(app.get('port'), function(req,response) {	
-	setTimeout(function () {
-	   console.log('Time is up');
-	   response.writeHead(200, {"Content-Type": "text/plain"});
-	   response.end('Hello World\n');
-	 }, 3000);	
+server.listen(app.get('port'), function() {	
 	console.log('Server listening on port ' + server.address().port);	
 });
 server.on('error', onError);
