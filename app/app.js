@@ -272,16 +272,27 @@ app.post('/appliances/internal', function (req, res)
    
 	var https = require('https');
 
-	//API keys from IoTF
-	var auth_key = "a-1jw61a-yxv230waqu";
-	var auth_token = "*kr*4(mkdC3e7BQJQC";
+	// //API keys from IoTF
+	// var auth_key = "a-1jw61a-yxv230waqu";
+	// var auth_token = "*kr*4(mkdC3e7BQJQC";
 
-	var options = 
-	{
-			host: '1jw61a.internetofthings.ibmcloud.com',
-			path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
-			auth: auth_key + ':' + auth_token
-	};
+	// var options = 
+	// {
+	// 		host: '1jw61a.internetofthings.ibmcloud.com',
+	// 		path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
+	// 		auth: auth_key + ':' + auth_token
+	// };
+
+    //API keys from IoTF
+    var auth_key = services.iotf-service.apiKey;
+    var auth_token = servicse.iotf-service.apiToken;
+
+    var options =
+    {
+            host: services.iotf-service.base_uri,
+            path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
+            auth: auth_key + ':' + auth_token
+    };	
 
 	https.get(options, function(platformRes)
 	{
