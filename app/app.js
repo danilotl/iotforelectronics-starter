@@ -839,7 +839,8 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 
  // //RTI Config Creation Method.
   var rtiPost = function rtiPost (path, json) {
-    console.log('calling api to POST: ' + path);
+    console.log('calling api to baseURL: ' + rtiBaseUrl);
+    console.log('calling api to Path ' + path);
     console.log('Rti Api: ' + rtiApiKey);
     console.log('Rti Token: ' + rtiAuthToken);
     console.log('calling api on json: ' + JSON.stringify(json));
