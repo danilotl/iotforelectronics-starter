@@ -285,13 +285,16 @@ app.post('/appliances/internal', function (req, res)
 
 	https.get(options, function(platformRes)
 	{
+		console.log("INSIDE OF THE HTTPS.GET BLOCK..." + options)
 		var response = '';
 		platformRes.on('data', function(data)
 		{
 			response += data;
+					console.log("INSIDE OF THE platformRES.ON BLOCK..." + response)
 		});
 		platformRes.on('end', function()
 		{
+								console.log("INSIDE OF THE platformRES.ON END BLOCK..." + response)
 			if (response == '')
 			{
 				console.log(req.body.applianceID + " does not exist.");
