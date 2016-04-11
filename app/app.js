@@ -281,7 +281,7 @@ app.post('/appliances/internal', function (req, res)
 		var options =
     {
             host: services.iotf-service.http_host,
-            path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
+            path: ':443/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
 
