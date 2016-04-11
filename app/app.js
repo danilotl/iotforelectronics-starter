@@ -275,14 +275,13 @@ app.post('/appliances/internal', function (req, res)
 	var https = require('https');
 
     //API keys from IoTF
-    var auth_key = services.iotf-service.apiKey;
-    var auth_token = services.iotf-service.apiToken;
-	 console.log("API KEY: " + auth_key)
-	 console.log("API TOKEN: " + auth_token)
+    var auth_key = req.body.apiKey;
+    var auth_token = req.body.apiToken;
+
     var options =
     {
-            host: services.iotf-service.base_uri,
-            path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
+            host: req.body.urihost,
+            path: req.body.path,
             auth: auth_key + ':' + auth_token
     };
   console.log("LINE BEFORE HTTPS.GET")
@@ -343,7 +342,10 @@ app.post('/appliances/internal', function (req, res)
 app.post('/stephAppliances', function (req, res)
 {
 	var bodyIn = req.body;
-	//bodyIn.userID = req.user.id;
+	bodyIn.apiKey = services.iotf-service.apiKey;
+	bodyIn.apiToken = services.iotf-service.apiToken;
+	bodyIn.urihost = services.iotf-service.base_uri;
+	bodyIn.path = '/device/types/washingMachine/devices/'+ req.body.applianceID;
 
 	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
 								body: JSON.stringify(bodyIn),
