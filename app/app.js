@@ -268,6 +268,8 @@ app.post('/appliances/internal', function (req, res)
    console.log("POST /applianecs  ==> Inserting device document in Cloudant");
    console.log(req.body.userID);
    console.log(req.body.applianceID);
+	 console.log("API KEY: " +  services.iotf-service.apiKey)
+	 console.log("API TOKEN: " + services.iotf-service.apiToken)
    var doc = {userID: req.body.userID, applianceID: req.body.applianceID, serialNumber: req.body.serialNumber, manufacturer: req.body.manufacturer, name: req.body.name, dateOfPurchase: req.body.dateOfPurchase, model: req.body.model, registrationCreatedOnPlatform: false};
 
 	var https = require('https');
@@ -275,7 +277,8 @@ app.post('/appliances/internal', function (req, res)
     //API keys from IoTF
     var auth_key = services.iotf-service.apiKey;
     var auth_token = services.iotf-service.apiToken;
-
+	 console.log("API KEY: " + auth_key)
+	 console.log("API TOKEN: " + auth_token)
     var options =
     {
             host: services.iotf-service.base_uri,
