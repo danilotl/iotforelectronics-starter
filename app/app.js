@@ -272,20 +272,9 @@ app.post('/appliances/internal', function (req, res)
 
 	var https = require('https');
 
-	// //API keys from IoTF
-	// var auth_key = "a-1jw61a-yxv230waqu";
-	// var auth_token = "*kr*4(mkdC3e7BQJQC";
-
-	// var options =
-	// {
-	// 		host: '1jw61a.internetofthings.ibmcloud.com',
-	// 		path: '/api/v0002/device/types/washingMachine/devices/'+ req.body.applianceID,
-	// 		auth: auth_key + ':' + auth_token
-	// };
-
     //API keys from IoTF
     var auth_key = services.iotf-service.apiKey;
-    var auth_token = servicse.iotf-service.apiToken;
+    var auth_token = services.iotf-service.apiToken;
 
     var options =
     {
@@ -293,7 +282,7 @@ app.post('/appliances/internal', function (req, res)
             path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
-
+		
 	https.get(options, function(platformRes)
 	{
 		var response = '';
@@ -339,11 +328,11 @@ app.post('/appliances/internal', function (req, res)
 
 //TEMPORARY EXTERNAL ROUTE FOR POST TO /appliances
 //FOR STEPHANIE TO TEST
-app.post('/stephAppliances', function (req, res)  
+app.post('/stephAppliances', function (req, res)
 {
    var bodyIn = req.body;
    bodyIn.userID = req.user.id;
-
+	 console.log("BODYIN var = " + bodyIn + "#########################################");
    request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
                  body: JSON.stringify(bodyIn),
                  headers: { "content-type": "application/json"}
