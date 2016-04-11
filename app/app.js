@@ -331,7 +331,7 @@ app.post('/appliances/internal', function (req, res)
 app.post('/stephAppliances', function (req, res)
 {
 	var bodyIn = req.body;
-	bodyIn.userID = req.user.id;
+	//bodyIn.userID = req.user.id;
 
 	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
 								body: JSON.stringify(bodyIn),
