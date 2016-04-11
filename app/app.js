@@ -863,7 +863,7 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
         defer.resolve(json);
      })
      .on('response', function(response) {
-        console.log('Response status: ' + response.statusCode); // 200
+        console.log('`RTI status: ' + response.statusCode); // 200
     });
      return defer.promise;
    };
@@ -891,10 +891,10 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
   	"disabled": disabled});
 
  // //RTI schema creation call
- // var rtiSchema = rtiPost('/message/schema',{
- // 	"name": "Electronics",
- // 	"format": "JSON",
- // 	"items": []});
+  var rtiSchema = rtiPost('/message/schema',{
+  	"name": "Electronics",
+  	"format": "JSON",
+  	"items": []});
 /********************************************************************** **/
 /*End of Solution Integrator Code                                        */
 /********************************************************************** **/
