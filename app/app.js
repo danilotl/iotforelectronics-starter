@@ -951,7 +951,7 @@ try {
 	};
 
 //Start server
-server.listen(app.get('port'), function() {	
+server.listen(app.get('port'), function(req,response) {	
 	setTimeout(function () {
 	   console.log('Time is up');
 	   response.writeHead(200, {"Content-Type": "text/plain"});
