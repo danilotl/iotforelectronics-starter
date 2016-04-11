@@ -342,10 +342,10 @@ app.post('/stephAppliances', function (req, res)
 	 if (!err && httpResponse.statusCode == 201) {
 						 res.sendStatus(httpResponse.statusCode);
 						 console.log("SUCCESS: " + bodyIn);
-			 } else (
+			 } else {
 				 console.log("Error in POST /appliances" + httpResponse.statusCode);
 				 res.sendStatus(httpResponse.statusCode);
-			 )
+			 }
 	});
 });
 
@@ -369,10 +369,10 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		if (!err && httpResponse.statusCode == 201) {
 							res.sendStatus(httpResponse.statusCode);
               console.log("SUCCESS: " + bodyIn);
-        } else (
+        } else {
 					console.log("Error in POST /appliances" + httpResponse.statusCode);
 					res.sendStatus(httpResponse.statusCode);
-				)
+				}
    });
 });
 
