@@ -282,7 +282,7 @@ app.post('/appliances/internal', function (req, res)
             path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
-		
+
 	https.get(options, function(platformRes)
 	{
 		var response = '';
@@ -330,19 +330,23 @@ app.post('/appliances/internal', function (req, res)
 //FOR STEPHANIE TO TEST
 app.post('/stephAppliances', function (req, res)
 {
-   var bodyIn = req.body;
-   bodyIn.userID = req.user.id;
-	 console.log("BODYIN var = " + bodyIn + "#########################################");
-   request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
-                 body: JSON.stringify(bodyIn),
-                 headers: { "content-type": "application/json"}
-                 },
-                 function optionalCallback(err, httpResponse, body) {
+	var bodyIn = req.body;
+	bodyIn.userID = req.user.id;
 
-		if (!error && response.statusCode == 200) {
-              console.log(bodyIn)
-        }
-   });
+	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
+								body: JSON.stringify(bodyIn),
+								headers: { "content-type": "application/json"}
+								},
+								function optionalCallback(err, httpResponse, body) {
+
+	 if (!err && httpResponse.statusCode == 201) {
+						 res.sendStatus(httpResponse.statusCode);
+						 console.log("SUCCESS: " + bodyIn);
+			 } else (
+				 console.log("Error in POST /appliances" + httpResponse.statusCode);
+				 res.sendStatus(httpResponse.statusCode);
+			 )
+	});
 });
 
 /***************************************************************/
@@ -362,9 +366,13 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
                  },
                  function optionalCallback(err, httpResponse, body) {
 
-		if (!error && response.statusCode == 200) {
-              console.log(bodyIn)
-        }
+		if (!err && httpResponse.statusCode == 201) {
+							res.sendStatus(httpResponse.statusCode);
+              console.log("SUCCESS: " + bodyIn);
+        } else (
+					console.log("Error in POST /appliances" + httpResponse.statusCode);
+					res.sendStatus(httpResponse.statusCode);
+				)
    });
 });
 
