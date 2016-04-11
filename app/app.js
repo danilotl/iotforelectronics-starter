@@ -275,15 +275,22 @@ app.post('/appliances/internal', function (req, res)
 	var https = require('https');
 
     //API keys from IoTF
-    var auth_key = req.body.apiKey;
-    var auth_token = req.body.apiToken;
-
-    var options =
+    //var auth_key = services.iotf-service.apiKey;
+    //var auth_token = services.iotf-service.apiToken;
+		var auth_key = 'a-49tn8h-gk37bgumn0'
+		var auth_token = 'w_wI-AG8G0DeCGPXR6'
+		var options =
     {
-            host: req.body.urihost,
-            path: req.body.path,
+            host: '49tn8h.staging.internetofthings.ibmcloud.com',
+            path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
             auth: auth_key + ':' + auth_token
     };
+    /*var options =
+    {
+            host: services.iotf-service.base_uri,
+            path: '/device/types/washingMachine/devices/'+ req.body.applianceID,
+            auth: auth_key + ':' + auth_token
+    };*/
   console.log("LINE BEFORE HTTPS.GET")
 	https.get(options, function(platformRes)
 	{
@@ -342,10 +349,6 @@ app.post('/appliances/internal', function (req, res)
 app.post('/stephAppliances', function (req, res)
 {
 	var bodyIn = req.body;
-	bodyIn.apiKey = services.iotf-service.apiKey;
-	bodyIn.apiToken = services.iotf-service.apiToken;
-	bodyIn.urihost = services.iotf-service.base_uri;
-	bodyIn.path = '/device/types/washingMachine/devices/'+ req.body.applianceID;
 
 	request.post({url: 'https://' + application.application_uris[0] + '/appliances/internal',
 								body: JSON.stringify(bodyIn),
