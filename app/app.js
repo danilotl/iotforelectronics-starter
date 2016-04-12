@@ -549,15 +549,7 @@ app.get('appliances/internal/:userID', function (req, res)
 /***************************************************************/
 app.get('/appliancesSteph/:userID', function (req, res)
 {
-	res.redirect('/appliances/internal/' + req.params.userID, function (err, response){
-		if (err){
-			console.log("line 554 ERR: " + response.statusCode)
-			res.sendStatus(response.statusCode);
-		} else {
-			console.log("WORKED 557: " + response.statusCode)
-			res.sendStatus(response.statusCode);
-		}
-	});
+	res.redirect('/appliances/internal/' + req.params.userID);
 
 });
 
