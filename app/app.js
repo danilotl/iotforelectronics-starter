@@ -497,7 +497,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 /*   Internal API            								   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get('appliances/internal/:userID', function (req, res)
+app.get('/appliances/internal/:userID', function (req, res)
 {
 	// create empty array responseDoc, to hold just the appliance docs (will filter out user docs) to return
 	var responseDoc = {docs:[]};
