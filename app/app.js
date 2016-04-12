@@ -429,7 +429,7 @@ app.get("/index", function(req, res)
 /*   Internal API											   */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-app.get("/user/internal/:userID", function(req, res)
+app.get('/user/internal/:userID', function(req, res)
 {
    console.log('GET /user  ==> Begin');
     console.log('GET /users  ==> Incoming userID = '+ req.params.userID);
@@ -479,7 +479,16 @@ app.get("/user/internal/:userID", function(req, res)
 /***************************************************************/
 app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.redirect('user/internal/' + req.user.id);
+	res.redirect('user/internal/' + req.user.id, function (reqest, response){
+		if (response.statusCode == 201) {
+							res.sendStatus(httpResponse.statusCode);
+							console.log("SUCCESS: " + bodyIn);
+				} else {
+					console.log("Error in POST /appliances" + response.statusCode);
+					res.sendStatus(httpResponse.statusCode);
+				}
+	});
+
 });
 
 
@@ -494,7 +503,7 @@ app.get('appliances/internal/:userID', function (req, res)
 	var responseDoc = {docs:[]};
 	//find a device doc given query string with userID and optional applianceID
 	//first query by user, then by applianceID
-
+  console.log(req.params.userID);
 	db.find({selector:{userID:req.params.userID}}, function(err, result)
     {
     	if (err)
@@ -532,12 +541,32 @@ app.get('appliances/internal/:userID', function (req, res)
 	});
 
 });
+
 /***************************************************************/
 /* Route to list all appliance documents for given user   (4)  */
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get("/appliances/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.get('/appliancesSteph/:userID', function (req, res)
+{
+	res.redirect('/appliances/internal/' + req.params.userID, function (err, response){
+		if (err){
+			console.log("line 554 ERR: " + response.statusCode)
+			res.sendStatus(response.statusCode);
+		} else {
+			console.log("WORKED 557: " + response.statusCode)
+			res.sendStatus(response.statusCode);
+		}
+	});
+
+});
+
+/***************************************************************/
+/* Route to list all appliance documents for given user   (4)  */
+/*       													   */
+/* Input: Query string with userID and optional applianceID    */
+/***************************************************************/
+app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	res.redirect('/appliances/internal/' + req.user.id);
 });
