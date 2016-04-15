@@ -5,7 +5,7 @@ var appEnv = require("cfenv").getAppEnv();
 /* GET home page. */
 router.get('/', function(req, res) {
 
-	var platformDashboard = 'https://new-console.ng.bluemix.net/apps/' + appEnv['app'].application_id + '?paneId=connected-objects';
+	var platformDashboard = 'https://new-console.stage1.ng.bluemix.net/apps/' + appEnv['app'].application_id + '?paneId=connected-objects';
 
 	res.render('index', {
 		platformDashboard: platformDashboard
