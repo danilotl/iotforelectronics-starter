@@ -323,7 +323,7 @@ app.post('/appliances/internal', function (req, res)
 			else
 			{
 				//make sure the ApplianceID doesn't exist already for this user at this org
-				db.find({selector:{orgID: currentOrgID, userID:req.body.userID, applianceID: req.body.applianceID}}, function(er, result)
+				db.find({selector:{applianceID: req.body.applianceID}}, function(er, result)
 				{
 					if (er)
 					{
@@ -333,7 +333,7 @@ app.post('/appliances/internal', function (req, res)
 					//if user already exists, send error code
 					if (result.docs.length!=0)
 					{
-					 console.log("ApplianceID already exists for this userID at this orgID.");
+					 console.log("ApplianceID already exists.");
 						res.sendStatus(409)
 					}
 					else
@@ -414,34 +414,67 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
    });
 });
 
-app.get("/index", function(req, res)
+
+// list all indexes...
+app.get("/index", function (req, res)
 {
-	var index = {name:'userId', type:'json', index:{fields:['currentOrgID','userID']}};
+   db.index(function(err, result)
+   {
+      if(err)
+      {
+        console.log('GET /index  ==> Error:', err.statusCode);
+        res.sendStatus(err.statusCode);
+      }
+      else
+      {
+        console.log('The database has %d indexes', result.indexes.length);
+				// try to create all indexes we need - if they already exist, skip
+				var index = {name:'userId', type:'json', index:{fields:['orgID','userID']}};
 
-	   db.index(index, function(err, response)
-	   {
-	     if (err)
-	     {
-	       console.log('GET /index  ==> Error:', err.statusCode);
-	       return;
-	     }
-	     console.log('Index creation result: %s', response.result);
-	   });
+				   db.index(index, function(err, response)
+				   {
+				     if (err)
+				     {
+				       console.log('GET /index  ==> Error:', err.statusCode);
+				       return;
+				     }
+	 					console.log('Index creation result: %s', response.result);
+	 					//res.sendStatus(201);
 
-	//create an index to find appliance doc for given userID and applianceID
-	var index = {name:'applianceByUser', type:'json', index:{fields:['currentOrgID', 'userID', 'applianceID']}};
-	db.index(index, function(er, response)
-	{
-		if (er)
-		{
-			console.log(er);
-			//throw er;
-		}
-		console.log('Index creation result: %s', response.result);
-	})
+				   });
+
+				//create an index to find appliance doc for given userID and applianceID
+				var index = {name:'applianceByUser', type:'json', index:{fields:['orgID', 'userID', 'applianceID']}};
+				db.index(index, function(er, response)
+				{
+					if (er)
+					{
+						console.log(er);
+						return;
+					}
+					console.log('Index creation result: %s', response.result);
+					//res.sendStatus(201);
+
+				});
+
+				//create an index to find appliance doc (we need to know if it exists in db at all)
+				var index = {name:'appliance', type:'json', index:{fields:['applianceID']}};
+				db.index(index, function(er, response)
+				{
+					if (er)
+					{
+						console.log(er);
+						return;
+					}
+					console.log('Index creation result: %s', response.result);
+					//res.sendStatus(201);
+
+				});
+
+      }
+				res.sendStatus(201);
+   });
 });
-
-
 
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
@@ -534,7 +567,7 @@ app.get('/appliances/internal/:userID', function (req, res)
     	}
      if (result.docs.length==0)
      {
-       console.log("app.get /appliance ==> Cannot find document");
+       console.log("app.get /appliance ==> Cannot find userID");
        res.sendStatus(404);
        return;
      }
@@ -660,14 +693,14 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
      {
        console.log("DEL /appliance ==> Error condition");
        console.log(err);
-       res.status(err.statusCode);
+       res.sendStatus(err.statusCode);
        return;
      }
 
      if (result.docs.length==0)
      {
        console.log("DEL /appliance ==> Cannot find document");
-       res.status(404);
+       res.sendStatus(404);
        return;
      }
 
@@ -691,12 +724,12 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
 				console.log('DEL /appliance  ==> Error:', err.statusCode);
 				console.log('DEL /appliance  ==> Error: Error deleting document');
 				console.log(err);
-				res.status(err.statusCode);
+				res.sendStatus(err.statusCode);
 			}
 			else
 			{
 				console.log("DEL /appliance ==> Deleted document for userID: " + req.params.userID + " applianceID: " + req.params.applianceID);
-				res.status(204);
+				res.sendStatus(204);
 			}
 		});
 	}
