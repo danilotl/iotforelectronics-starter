@@ -729,7 +729,7 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
 			else
 			{
 				console.log("DEL /appliance ==> Deleted document for userID: " + req.params.userID + " applianceID: " + req.params.applianceID);
-				res.sendStatus(204);
+				res.sendStatus(200);
 			}
 		});
 	}
@@ -840,7 +840,7 @@ app.delete('/user/internal/:userID', function (req, res)
        }
        i++;
      }
-     res.sendStatus(204);
+     res.sendStatus(200);
   });
 });
 
