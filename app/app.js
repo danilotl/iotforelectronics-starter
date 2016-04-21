@@ -327,7 +327,7 @@ app.post('/appliances/internal', function (req, res)
 				{
 					if (er)
 					{
-						res.sendStatus(er.statusCode);
+						res.sendStatus("DEBUGGING INSIDE LINE 330, db er: + er.statusCode);
 						return;
 					}
 					//if user already exists, send error code
