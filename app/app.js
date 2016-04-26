@@ -167,10 +167,10 @@ app.get('/users/internal/:userID', function(req, res)
   	}
   	if (result.docs.length==0)
   	{
-  		res.status(404).send('404')
+  		res.status(404).send('UserNotFound')
   	}
   	else
-  		res.status(200).send('200');
+  		res.status(200).send('UserExists');
 
     	console.log('Found %d documents with userID', result.docs.length);
     	for (var i = 0; i < result.docs.length; i++)
@@ -216,14 +216,14 @@ app.post("/users/internal", function (req, res)
  	 	 else if (!doc.hasOwnProperty('userID'))
  		 {
 			  console.log("userID is a required field.");
-				res.status(400).send('400');
+				res.status(400).send('userIDMissing');
 				return;
  		 }
 	   //if user already exists, send error code
 	   else if (result.docs.length!=0)
 	   {
 			console.log("User already exists.");
-		   res.status(409).send('409')
+		   res.status(409).send('UserExists')
 	   }
 	   else
 	   {
@@ -232,14 +232,14 @@ app.post("/users/internal", function (req, res)
 			   if(err)
 			   {
 				   console.log('POST /users  ==> Error:', er);
-				   res.status(err.statusCode).send('Error inserting into cloudant.');
+				   res.status(err.statusCode).send('CloudantError');
 			   }
 			   else
 			   {
 				   console.log("POST /users  ==> Inserting user document in Cloudant");
 				   console.log('POST /users  ==> id       = ', data.id);
 				   console.log('POST /users  ==> revision = ', data.rev);
-				   res.status(201).send('201');
+				   res.status(201).send('UserRegisteredSuccess');
 			   }
 		   });
 	   }
@@ -313,7 +313,7 @@ app.post('/appliances/internal', function (req, res)
 		{
 			console.log("*******IN PLATFORM ERR*********")
 			console.log(platformErr.message)
-			res.status(platformErr.message).send('Error retrieving response from IOT platform.')
+			res.status(platformErr.message).send('IOTPError')
 			console.log("*******IN PLATFORM ERR*********")
 		});
 		platformRes.on('data', function(data)
@@ -327,7 +327,7 @@ app.post('/appliances/internal', function (req, res)
 			if (response == '')
 			{
 				console.log(req.body.applianceID + " does not exist.");
-				res.status(409).send('409 Conflict: ' + req.body.applianceID + " does not exist.");
+				res.status(409).send(req.body.applianceID + ' DoesNotExist');
 				return;
 			}
 			else
@@ -344,7 +344,7 @@ app.post('/appliances/internal', function (req, res)
 					if (result.docs.length!=0)
 					{
 					 console.log("ApplianceID already exists.");
-						res.status(409).send('409 Conflict: ApplianceID already exists.')
+						res.status(409).send('req.body.applianceID' +  " AlreadyExists")
 					}
 					else
 					{
@@ -353,7 +353,7 @@ app.post('/appliances/internal', function (req, res)
  					   if (err)
  					   {
  						     console.log('POST /appliances  ==> Error:', err);
- 					       res.status(err.statusCode).send('Error inserting into cloudant.');
+ 					       res.status(err.statusCode).send('CloudantError');
  					       return;
  					   }
  					   else
@@ -362,7 +362,7 @@ app.post('/appliances/internal', function (req, res)
  						   console.log(JSON.stringify(output, null, 2));
  						   console.log('POST /appliances  ==> id       = ', data.id);
  					       console.log('POST /appliances  ==> revision = ', data.rev);
- 					       res.status(201).send('Appliance registered successfully.');
+ 					       res.status(201).send('ApplianceRegisteredSuccess');
  					       return;
  					   }
  					 });
