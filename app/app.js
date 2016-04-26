@@ -167,10 +167,10 @@ app.get('/users/internal/:userID', function(req, res)
   	}
   	if (result.docs.length==0)
   	{
-  		res.sendStatus(404)
+  		res.status(404).send('404')
   	}
   	else
-  		res.sendStatus(200);
+  		res.status(200).send('200');
 
     	console.log('Found %d documents with userID', result.docs.length);
     	for (var i = 0; i < result.docs.length; i++)
@@ -201,20 +201,29 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 app.post("/users/internal", function (req, res)
 {
 	console.log("POST /users  ==> Begin");
+   var doc = JSON.parse(JSON.stringify(req.body));
+	 doc.orgID = currentOrgID;
 
-   var doc = {userID: req.body.userID, name:req.body.name, telephone:req.body.telephone, address:req.body.address, orgID:currentOrgID};
+	 // search for docs at currentOrgID and userID given...
    db.find({selector:{orgID: currentOrgID, userID:req.body.userID}}, function(er, result)
    {
 	   if (er)
 	   {
-		   res.sendStatus(er.statusCode);
+		   res.status(er.statusCode).send('Error from cloudant.');
 		   return;
 	   }
+		 //make sure they gave us a userID (required field)
+ 	 	 else if (!doc.hasOwnProperty('userID'))
+ 		 {
+			  console.log("userID is a required field.");
+				res.status(400).send('400');
+				return;
+ 		 }
 	   //if user already exists, send error code
-	   if (result.docs.length!=0)
+	   else if (result.docs.length!=0)
 	   {
-			console.log("User already exists at this orgID.");
-		   res.sendStatus(409)
+			console.log("User already exists.");
+		   res.status(409).send('409')
 	   }
 	   else
 	   {
@@ -223,14 +232,14 @@ app.post("/users/internal", function (req, res)
 			   if(err)
 			   {
 				   console.log('POST /users  ==> Error:', er);
-				   res.sendStatus(err.statusCode);
+				   res.status(err.statusCode).send('Error inserting into cloudant.');
 			   }
 			   else
 			   {
 				   console.log("POST /users  ==> Inserting user document in Cloudant");
 				   console.log('POST /users  ==> id       = ', data.id);
 				   console.log('POST /users  ==> revision = ', data.rev);
-				   res.sendStatus(201);
+				   res.status(201).send('201');
 			   }
 		   });
 	   }
@@ -304,6 +313,7 @@ app.post('/appliances/internal', function (req, res)
 		{
 			console.log("*******IN PLATFORM ERR*********")
 			console.log(platformErr.message)
+			res.status(platformErr.message).send('Error retrieving response from IOT platform.')
 			console.log("*******IN PLATFORM ERR*********")
 		});
 		platformRes.on('data', function(data)
@@ -317,24 +327,24 @@ app.post('/appliances/internal', function (req, res)
 			if (response == '')
 			{
 				console.log(req.body.applianceID + " does not exist.");
-				res.sendStatus(409);
+				res.status(409).send('409 Conflict: ' + req.body.applianceID + " does not exist.");
 				return;
 			}
 			else
 			{
-				//make sure the ApplianceID doesn't exist already for this user at this org
+				//make sure the ApplianceID doesn't exist
 				db.find({selector:{applianceID: req.body.applianceID}}, function(er, result)
 				{
 					if (er)
 					{
-						res.sendStatus("DEBUGGING INSIDE LINE 330, db er: " + er.statusCode);
+						res.status(er.statusCode).send('Error retrieving response from cloudant.');
 						return;
 					}
-					//if user already exists, send error code
+					//if appliance already exists, send error
 					if (result.docs.length!=0)
 					{
 					 console.log("ApplianceID already exists.");
-						res.sendStatus(409)
+						res.status(409).send('409 Conflict: ApplianceID already exists.')
 					}
 					else
 					{
@@ -343,7 +353,7 @@ app.post('/appliances/internal', function (req, res)
  					   if (err)
  					   {
  						     console.log('POST /appliances  ==> Error:', err);
- 					       res.sendStatus(err.statusCode);
+ 					       res.status(err.statusCode).send('Error inserting into cloudant.');
  					       return;
  					   }
  					   else
@@ -352,7 +362,7 @@ app.post('/appliances/internal', function (req, res)
  						   console.log(JSON.stringify(output, null, 2));
  						   console.log('POST /appliances  ==> id       = ', data.id);
  					       console.log('POST /appliances  ==> revision = ', data.rev);
- 					       res.sendStatus(201);
+ 					       res.status(201).send('Appliance registered successfully.');
  					       return;
  					   }
  					 });
@@ -494,18 +504,19 @@ app.get('/user/internal/:userID', function(req, res)
      {
        console.log("GET /user ==> Error received from database = " + err.statusCode);
        console.log(err);
+			 res.status(err.statusCode).send('Error from cloudant.')
        return;
      }
 
      if (result.docs.length==0)
      {
         console.log("GET /user ==> user:" + req.params.userID + " not in database");
-		res.sendStatus(404);
+				res.status(404).send('userID not found.');
         return;
      }
      else
      {
-	 console.log(result);
+	 	 		console.log(result);
         for (var i = 0; i < result.docs.length; i++)
         {
           if (!('applianceID'  in result.docs[i]))
@@ -562,13 +573,13 @@ app.get('/appliances/internal/:userID', function (req, res)
     	{
 			console.log("app.get ==> Error condition");
 			console.log(err);
-			res.sendStatus(err.statusCode);
+			res.status(err.statusCode).send('Error from cloudant.');
 			return;
     	}
      if (result.docs.length==0)
      {
        console.log("app.get /appliance ==> Cannot find userID");
-       res.sendStatus(404);
+       res.status(404).send('userID not found.');
        return;
      }
 
@@ -635,13 +646,13 @@ app.get('/appliances/internal2/:userID/:applianceID', function (req, res)
     	{
 			console.log("app.get ==> Error condition");
 			console.log(err);
-			res.sendStatus(err.statusCode);
+			res.status(err.statusCode).send('Error from cloudant.');
 			return;
     	}
      if (result.docs.length==0)
      {
        console.log("app.get /appliance ==> Cannot find document");
-       res.sendStatus(404);
+       res.status(404).send('Appliance not found.');
        return;
      }
 
@@ -683,7 +694,7 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
    if (req.params.userID == null || req.params.applianceID == null)
    {
       console.log("DEL /appliance ==> userID and/or applianceID not provided");
-      res.sendStatus(400);
+      res.status(400).send('userID and applianceID are required to delete an appliance.');
       return;
    }
 
@@ -693,14 +704,14 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
      {
        console.log("DEL /appliance ==> Error condition");
        console.log(err);
-       res.sendStatus(err.statusCode);
+       res.status(err.statusCode).send('Error from cloudant.');
        return;
      }
 
      if (result.docs.length==0)
      {
        console.log("DEL /appliance ==> Cannot find document");
-       res.sendStatus(404);
+       res.status(404).send('Appliance ' + req.params.applianceID + ' not found.');
        return;
      }
 
@@ -724,12 +735,12 @@ app.del('/appliances/internal/:userID/:applianceID', function(req, res)
 				console.log('DEL /appliance  ==> Error:', err.statusCode);
 				console.log('DEL /appliance  ==> Error: Error deleting document');
 				console.log(err);
-				res.sendStatus(err.statusCode);
+				res.status(err.statusCode).send('Error from cloudant on delete.');
 			}
 			else
 			{
 				console.log("DEL /appliance ==> Deleted document for userID: " + req.params.userID + " applianceID: " + req.params.applianceID);
-				res.sendStatus(200);
+				res.status(204).send('Deleted appliance document for userID: ' + req.params.userID + ' applianecID: ' + req.params.applianceID);
 			}
 		});
 	}
@@ -751,12 +762,12 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete('/user/internal/:userID', function (req, res)
+app.del('/user/internal/:userID', function (req, res)
 {
    if (req.params.userID == null)
    {
       console.log("DEL /user ==> userID not provided");
-      res.sendStatus(400);
+      res.status(400).send('userID is a required field.');
       return;
    }
 
@@ -766,14 +777,14 @@ app.delete('/user/internal/:userID', function (req, res)
      {
        console.log("DEL /user ==> Error condition");
        console.log(err);
-       res.sendStatus(err.statusCode);
+       res.status(err.statusCode).send('Error from cloudant.');
        return;
      }
 
      if (result.docs.length==0)
      {
        console.log("DEL /user ==> Cannot find document in Cloudant");
-       res.sendStatus(404);
+       res.status(404).send('Cannot find userID ' + req.params.userID);
        return;
      }
 
@@ -808,7 +819,7 @@ app.delete('/user/internal/:userID', function (req, res)
                  console.log('DEL /appliance  ==> Error:', err.statusCode);
                  console.log('DEL /appliance  ==> Error: Error deleting document');
                  console.log(err);
-                 res.sendStatus(err.statusCode);
+                 res.status(err.statusCode).send('Error from cloudant on delete.');
                }
                else
                {
@@ -830,7 +841,7 @@ app.delete('/user/internal/:userID', function (req, res)
                console.log('DEL /user  ==> Error:', err.statusCode);
                console.log('DEL /user  ==> Error: Error deleting document');
                console.log(err);
-               res.sendStatus(err.statusCode);
+               res.status(err.statusCode).send('Error from cloudant on delete.');
              }
              else
              {
@@ -840,7 +851,7 @@ app.delete('/user/internal/:userID', function (req, res)
        }
        i++;
      }
-     res.sendStatus(200);
+     res.status(204).send('userID ' + req.params.userID + ' successfully deleted.');
   });
 });
 
