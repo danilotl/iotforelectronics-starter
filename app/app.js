@@ -353,7 +353,8 @@ app.post('/appliances/internal', function (req, res)
  						   console.log(JSON.stringify(output, null, 2));
  						   console.log('POST /appliances  ==> id       = ', data.id);
  					       console.log('POST /appliances  ==> revision = ', data.rev);
- 					       res.status(201).send('Appliance registered successfully.');
+ 					       res.send({ 201: '200' });
+ 					       //res.status(201).send('Appliance registered successfully.');
  					       return;
  					   }
  					 });
