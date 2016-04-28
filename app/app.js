@@ -1017,7 +1017,11 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   	"orgId": orgId,
   	"apiKey": apiKey,
   	"authToken": authToken,
-  	"disabled": disabled});
+  	"disabled": disabled})
+  		.then(function(json) {
+			defer.resolve(json);
+			console.log('RTI Source Return: ' + JSON.stringify(json));
+		});;
 
  // //RTI schema creation call
   var rtiSchema = rtiPost('/message/schema',{
