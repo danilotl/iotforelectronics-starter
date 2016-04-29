@@ -68,6 +68,21 @@ var host = (process.env.VCAP_APP_HOST || 'localhost');
 //global HTTP routers
 httpRouter = require('./routes/httpRouter');
 
+//Add a handler to inspect the req.secure flag (see
+//http://expressjs.com/api#req.secure). This allows us
+//to know whether the request was via http or https.
+app.use(function (req, res, next) {
+	res.set({
+		'Cache-Control': 'no-store',
+		'Pragma': 'no-cache'
+	});
+	//force https
+	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')
+		res.redirect('https://' + req.headers.host + req.url);
+	else
+		next();
+});
+
 //allow cross domain calls
 app.use(cors());
 app.use(logger('dev'));
@@ -83,21 +98,6 @@ app.use('/', httpRouter);
 app.use('/', device);
 app.use('/', simulator);
 app.use('/api', apiRouter);
-
-//Add a handler to inspect the req.secure flag (see
-//http://expressjs.com/api#req.secure). This allows us
-//to know whether the request was via http or https.
-app.use(function (req, res, next) {
-	res.set({
-		'Cache-Control': 'no-store',
-		'Pragma': 'no-cache'
-	});
-	//force https
-	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')
-		res.redirect('https://' + req.headers.host + req.url);
-	else
-		next();
-});
 
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
