@@ -34,6 +34,14 @@ var path            = require('path'),
     apiRouter       = require('./routes/api');
 
 var jsonParser = bodyParser.json();
+var i18n = require("i18n");
+
+i18n.configure({
+    directory: __dirname + '/locales',
+    defaultLocale: 'en',
+    queryParameter: 'lang',
+    objectNotation: true
+});
 
 dumpError = function(msg, err) {
 	if (typeof err === 'object') {
@@ -66,6 +74,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(i18n.init);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
