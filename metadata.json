@@ -4,10 +4,6 @@
         {
             "name": "ibmiotforelectronics",
             "plan": "ibmiotforelectronicsplan"
-        },
-        {
-            "name": "iotf-service",
-            "plan": "iotf-service-free"
         }
     ],
     "defaultMemory": 512,
