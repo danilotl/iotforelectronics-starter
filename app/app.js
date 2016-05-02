@@ -962,10 +962,10 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   	throw "Cannot get RTI credentials"
   var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
-// //Get IoT for Electronics credentials
-// //if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
-// //	throw "Cannot get IoT4E credentials"
-// //var ioteCredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+//Get IoT for Electronics credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
+	throw "Cannot get IoT4E credentials"
+var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 
 
  //IoT Platform Credentials
@@ -976,14 +976,14 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   var baseURI = iotfCredentials["base_uri"];
   var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
- // //RTI Credentials
+//RTI Credentials
   var rtiApiKey = rtiCredentials["apiKey"];
   var rtiAuthToken = rtiCredentials["authToken"];
   var rtiBaseUrl = rtiCredentials["baseUrl"];
   var disabled = false;
 
-// //IoT for Electronics Credentials
-// //var ioteUser = ioteCredentials["userid"];
+//IoT for Electronics Credentials
+  var iotETenant = iotECredentials["tenantID"];
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
@@ -1092,6 +1092,8 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   	"deviceType": "washingMachine",
   	"eventType": "+",
   	"schemaId": "Electronics"});
+
+console.log('IoT4E Credentials: ' + iotETenant);  
 /********************************************************************** **/
 /*End of Solution Integrator Code                                        */
 /********************************************************************** **/
