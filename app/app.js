@@ -91,6 +91,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(i18n.init);
 
+app.use(function(req, res, next){
+  if(req.query.mocked === 'true'){
+    var locale = req.getLocale();
+    req.setLocale('mocked_' + req.getLocale());
+    if(req.getLocale() !== 'mocked_' + locale){
+      req.setLocale(locale);
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
