@@ -1057,7 +1057,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   		.then(function(json) {
 			defer.resolve(json);
 			console.log('RTI Source Return: ' + JSON.stringify(json));
-		});;
+		});
 
  // //RTI schema creation call
   var rtiSchema = rtiPost('/message/schema',{
