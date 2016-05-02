@@ -37,7 +37,7 @@
 		"back_to_top": "Back to top",
 		"explore_more": "EXPLORE MORE",
 		"manage_devices": "Manage your device on the platform >",
-		"device_deleted": "Success! Device {deviceID} was successfully deleted."
+		"device_deleted": "Success! Device {0} was successfully deleted."
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
