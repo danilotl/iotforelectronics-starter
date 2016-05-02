@@ -20,10 +20,17 @@
 		"no_washers_added": "No washers have been added.",
 		"must_add_washer": "You must add a washer before continuing with the mobile app experience.",
 		"mobile_app_heading": "Next, install the mobile app on an iOS phone",
-		"download_app": "Download the app to your workstation",
-		"download": "Download",
-		"install_app": " Install on your iOS phone",
-		"instructions": "Follow instructions in the README",
+		"download_app": "Download the app",
+		"download_app_p1": "Download to your phone from the App Store (search for \"ibm iot\")",
+		"download_app_p2": {
+			"text": "Download to iTunes and install on your phone from your computer.",
+			"link_on": "Download"
+		},
+		"install_app": " Get started on your iOS phone",
+		"instructions": {
+			"text": "Follow these instructions.",
+			"link_on" : "these instructions"
+		},
 		"scan_heading": "In the mobile app on your phone, you'll be asked to scan QR Codes",
 		"scan_p1": "The first time you use your mobile app on your phone, you'll be asked to scan this code to connect your mobile app to the platform.",
 		"scan_p2": "You'll be asked to scan a different QR Code to register a washer on your mobile app with the platform. You will then go to the Add Washer section on this screen and click the washer being used. The window that opens displays the QR Code for the washer.",

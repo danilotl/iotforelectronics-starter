@@ -84,19 +84,22 @@
       <div class="container">
         <h2><%= __('main_page.mobile_app_heading') %></h2>
         <section class="col-xs-12 col-md-10 content">
-          <div class="col-xs-12 col-md-5">
+          <div class="col-xs-12 col-md-4">
             <img class="mobile-image" src="/images/Phone.svg"/>
           </div>
-          <div class="col-xs-12 col-md-7 instructions-section">
+          <div class="col-xs-12 col-md-8 instructions-section">
             <div class="install-info">
               <h3> <img src="/images/Install_Step1.svg"/>
-              <%= __('main_page.download_app') %><br/>
-              <a href="https://github.com/ibm-watson-iot/iote-mobile" target="_blank"><%= __('main_page.download') %></a></h3>
+                <%= __('main_page.download_app') %>
+                <p>- <%= __('main_page.download_app_p1') %></p>
+                <p>- <%- mobileDownload %></p>
+              </h3>
             </div>
             <div class="install-info">
               <h3> <img src="/images/Install_Step2.svg"/>
-              <%= __('main_page.install_app') %><br/>
-              <a href="https://github.com/ibm-watson-iot/iote-mobile/blob/master/README.md" target="_blank"><%= __('main_page.instructions') %></a></h3>
+                <%= __('main_page.install_app') %>
+                <p><%- mobileInstructions %></p>
+              </h3>
             </div>
           </div>
         </section>
