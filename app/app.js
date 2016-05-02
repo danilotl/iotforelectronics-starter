@@ -34,6 +34,14 @@ var path            = require('path'),
     apiRouter       = require('./routes/api');
 
 var jsonParser = bodyParser.json();
+var i18n = require("i18n");
+
+i18n.configure({
+    directory: __dirname + '/locales',
+    defaultLocale: 'en',
+    queryParameter: 'lang',
+    objectNotation: true
+});
 
 dumpError = function(msg, err) {
 	if (typeof err === 'object') {
@@ -60,21 +68,6 @@ var host = (process.env.VCAP_APP_HOST || 'localhost');
 //global HTTP routers
 httpRouter = require('./routes/httpRouter');
 
-//allow cross domain calls
-app.use(cors());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-app.use('/', httpRouter);
-app.use('/', device);
-app.use('/', simulator);
-app.use('/api', apiRouter);
-
 //Add a handler to inspect the req.secure flag (see
 //http://expressjs.com/api#req.secure). This allows us
 //to know whether the request was via http or https.
@@ -89,6 +82,35 @@ app.use(function (req, res, next) {
 	else
 		next();
 });
+
+//allow cross domain calls
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(i18n.init);
+
+app.use(function(req, res, next){
+  if(req.query.mocked === 'true'){
+    var locale = req.getLocale();
+    req.setLocale('mocked_' + req.getLocale());
+    if(req.getLocale() !== 'mocked_' + locale){
+      req.setLocale(locale);
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/', httpRouter);
+app.use('/', device);
+app.use('/', simulator);
+app.use('/api', apiRouter);
 
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
@@ -353,8 +375,7 @@ app.post('/appliances/internal', function (req, res)
  						   console.log(JSON.stringify(output, null, 2));
  						   console.log('POST /appliances  ==> id       = ', data.id);
  					       console.log('POST /appliances  ==> revision = ', data.rev);
- 					       res.send({ 201: '200' });
- 					       //res.status(201).send('Appliance registered successfully.');
+ 					       res.status(201).json({'resultcode': '200'});
  					       return;
  					   }
  					 });
