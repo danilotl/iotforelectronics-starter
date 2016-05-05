@@ -984,6 +984,8 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 
 //IoT for Electronics Credentials
   var iotETenant = iotECredentials["tenantID"];
+  var iotEAuthToken = iotECredentials["authToken"];
+  
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
@@ -1076,7 +1078,6 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   	"authToken": authToken,
   	"disabled": disabled})
   		.then(function(json) {
-			defer.resolve(json);
 			console.log('RTI Source Return: ' + JSON.stringify(json));
 		});
 
