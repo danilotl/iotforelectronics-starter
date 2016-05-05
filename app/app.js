@@ -171,7 +171,7 @@ app.use(passport.initialize());
 /* Input: url params that contains the userID 			       */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + req.user.id + '/' + currentOrgID + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken)
 });
@@ -183,7 +183,7 @@ app.get('/users/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', passpor
 /*             address, and telephone			               */
 /***************************************************************/
 // passport.authenticate('mca-backend-strategy', {session: false }),
-app.post("/users/:orgID/:tenantID/:apiKey/:authToken/:ioteToken", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
+app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
 {
 	var formData = req.body;
 	formData.userID = req.user.id;
@@ -204,7 +204,7 @@ app.post("/users/:orgID/:tenantID/:apiKey/:authToken/:ioteToken", passport.authe
 /* Input: JSON structure that contains the userID, applianceID,*/
 /*             serial number, manufacturer, and model          */
 /***************************************************************/
-app.post('/appliances/:orgID/:tenantID/:apiKey/:authToken/:httpHost/:ioteToken', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
    var bodyIn = req.body;
    bodyIn.userID = req.user.id;
@@ -233,7 +233,7 @@ app.post('/appliances/:orgID/:tenantID/:apiKey/:authToken/:httpHost/:ioteToken',
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-app.get('/user/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/user/internal/' + req.user.id + '/' +  currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, function (reqest, response){
 		if (response.statusCode == 201) {
@@ -254,7 +254,7 @@ app.get('/user/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', passport
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get('/appliances/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + req.user.id + '/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
@@ -265,7 +265,7 @@ app.get('/appliances/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken', pa
 /*       													   				*/
 /* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
-app.get("/appliances/:userID/:applianceID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
@@ -275,7 +275,7 @@ app.get("/appliances/:userID/:applianceID/:orgID/:tenantID/:apiKey/:authToken/:i
 /* Route to delete appliance records                           */
 /*    Internal API											   */
 /***************************************************************/
-app.del("/appliances/:userID/:applianceID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
@@ -287,7 +287,7 @@ app.del("/appliances/:userID/:applianceID/:orgID/:tenantID/:apiKey/:authToken/:i
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete("/user/:userID/:orgID/:tenantID/:apiKey/:authToken/:ioteToken", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/user/internal/' + req.user.id +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
