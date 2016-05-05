@@ -210,7 +210,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
    
    var httpHost = iotfCredentials["http_host"]
 
-   request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken',
+   request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
                  body: JSON.stringify(bodyIn),
                  headers: { "content-type": "application/json"}
                  },
