@@ -370,9 +370,9 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 /*Solution Integrator Code                                               */
 /********************************************************************** **/
   //Get RTI credentials
-  if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
-  	throw "Cannot get RTI credentials"
-  var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+  //if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+  //	throw "Cannot get RTI credentials"
+  //var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
 //Get IoT for Electronics credentials
 if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
@@ -389,15 +389,16 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 
 //RTI Credentials
-  var rtiApiKey = rtiCredentials["apiKey"];
-  var rtiAuthToken = rtiCredentials["authToken"];
-  var rtiBaseUrl = rtiCredentials["baseUrl"];
-  var disabled = false;
+//  var rtiApiKey = rtiCredentials["apiKey"];
+//  var rtiAuthToken = rtiCredentials["authToken"];
+//  var rtiBaseUrl = rtiCredentials["baseUrl"];
+//  var disabled = false;
 
 //IoT for Electronics Credentials
   var iotETenant = iotECredentials["tenantID"];
   var iotEAuthToken = iotECredentials["authToken"];
 
+console.log('About to store IoTP Credentials');
 var storeIOTPCredentials = function(req,res){
 	console.log('calling api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
@@ -487,29 +488,29 @@ var storeIOTPCredentials = function(req,res){
 // //  "deviceId": "washingMachineElec"
 // //});
 
-  //RTI data source creation call
-  var rtiSource = rtiPost('/message/source',{
-  	"name": name,
-  	"orgId": orgId,
-  	"apiKey": apiKey,
-  	"authToken": authToken,
-  	"disabled": disabled})
-  		.then(function(json) {
-			console.log('RTI Source Return: ' + JSON.stringify(json));
-		});
+//RTI data source creation call
+//var rtiSource = rtiPost('/message/source',{
+//	"name": name,
+//	"orgId": orgId,
+//	"apiKey": apiKey,
+//	"authToken": authToken,
+//	"disabled": disabled})
+//		.then(function(json) {
+//			console.log('RTI Source Return: ' + JSON.stringify(json));
+//		});
 
- // //RTI schema creation call
-  var rtiSchema = rtiPost('/message/schema',{
-  	"name": "Electronics",
-  	"format": "JSON",
-  	"items": []});
+// //RTI schema creation call
+//  var rtiSchema = rtiPost('/message/schema',{
+//  	"name": "Electronics",
+//  	"format": "JSON",
+//  	"items": []});
 
- //RTI route creation call
-  var rtiRoute = rtiPost('/message/route',{
-  	"sourceId": name,
-  	"deviceType": "washingMachine",
-  	"eventType": "+",
-  	"schemaId": "Electronics"});
+//RTI route creation call
+//  var rtiRoute = rtiPost('/message/route',{
+//  	"sourceId": name,
+//  	"deviceType": "washingMachine",
+//  	"eventType": "+",
+//  	"schemaId": "Electronics"});
 
 console.log('IoT4E Credentials: ' + iotETenant);  
 /********************************************************************** **/
