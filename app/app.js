@@ -160,8 +160,6 @@ var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
 /***************************************************************/
 /* Set up express server & passport                            */
 /***************************************************************/
-
-
 passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
@@ -399,7 +397,12 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 //IoT for Electronics Credentials
   var iotETenant = iotECredentials["tenantID"];
   var iotEAuthToken = iotECredentials["authToken"];
-  
+
+var storeIOTPCredentials = function(req,res){
+	console.log('calling api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken)
+};
+
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
