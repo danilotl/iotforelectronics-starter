@@ -187,7 +187,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	formData.userID = req.user.id;
 	formData.orgID = currentOrgID;
 
-	request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken}, formData: formData}, 
+	request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, formData: formData}, 
 		      function optionalCallback(err, httpResponse, body) {
 			if (err) {
     				return console.error('upload failed:', err);
@@ -400,7 +400,7 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 
 var storeIOTPCredentials = function(req,res){
 	console.log('calling api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken)
+	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 };
 
 // //var iotePass = ioteCredentials["password"];
