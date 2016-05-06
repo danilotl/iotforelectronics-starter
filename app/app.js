@@ -179,17 +179,18 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEAuthKey,
+		method: GET,
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	https.get(options, (res)){
-		console.log('statusCode: ', res.statusCode);
- 		console.log('headers: ', res.headers);
+	https.request(options, (res) => {
+		console.log('statusCode: ', res.statusCode)
+ 		console.log('headers: ', res.headers)
 		
 	}).on('error', (e) => {
  	console.log(e);
-});
+	});
 });
 
 /***************************************************************/
@@ -207,7 +208,7 @@ app.get('/usersTest/:userID', function(req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	https.get(options, (res){
+	https.get(options, (res)){
 		console.log('statusCode: ', res.statusCode);
  		console.log('headers: ', res.headers);
 		
