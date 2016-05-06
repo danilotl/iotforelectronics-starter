@@ -33,6 +33,26 @@ var path            = require('path'),
 var jsonParser = bodyParser.json();
 var i18n = require("i18n");
 
+var AorgId = '3whjfy';
+var AapiKey = 'a-3whjfy-zjifdssd8z';
+var AauthToken = 'b(Q4nrMr+29M!LuKum';
+var AiotEAuthToken = '4bea244b-acde-4f15-a9b4-11424afe82d6';
+
+var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', AorgId, AapiKey, AauthToken, AiotEAuthToken].join('/');
+
+console.log('About to store IoTP Credentials');
+console.log('Credentials API URL:', url);
+
+request
+  .get(url)
+  .on('response', function(response){
+    console.log('Response received.');
+  })
+  .on('error', function(error){
+    console.log(error);
+  });
+console.log('Credentials Stored');
+
 i18n.configure({
     directory: __dirname + '/locales',
     defaultLocale: 'en',
@@ -402,18 +422,18 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var iotEAuthToken = iotECredentials["authToken"];
   var iotEApiKey = iotECredentials["apiKey"];
 
-console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken].join('/');
-console.log('Credentials API URL:', url);
-request
-    .get(url)
-    .on('response', function(response){
-        console.log('Response received.');
-    })
-    .on('error', function(error){
-        console.log(error);
-    });
-	console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+//console.log('About to store IoTP Credentials');
+//var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken].join('/');
+//console.log('Credentials API URL:', url);
+//request
+//    .get(url)
+//    .on('response', function(response){
+//        console.log('Response received.');
+//    })
+//    .on('error', function(error){
+//        console.log(error);
+//    });
+//	console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 
 // //var iotePass = ioteCredentials["password"];
 
