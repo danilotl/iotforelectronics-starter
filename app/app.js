@@ -201,7 +201,7 @@ app.get('/users/:userID', function(req, res)
 	var options =
 	{
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
-		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		path: '/users/internalSteph/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEAuthKey,
 		headers: {
     				'Content-Type': 'application/json'
@@ -260,7 +260,7 @@ app.post("/users", function (req, res)
 	var options =
 	{
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
-		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		path: '/users/internalSteph/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEAuthKey,
 		headers: {
     				'Content-Type': 'application/json'
