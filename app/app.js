@@ -7,7 +7,7 @@ var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
 if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
 	process.env.STAGING = 1;
 
-var express         = require('express');
+var express = require('express');
 var cfenv = require('cfenv');
 var log4js = require('log4js');
 
@@ -28,10 +28,7 @@ var path            = require('path'),
     request         = require('request'),
     _               = require("underscore"),
     appEnv          = cfenv.getAppEnv(),
-    debug           = require('debug')('virtualDevices:server'),
-    WebSocketServer = require('ws').Server,
-    q               = require('q'),
-    apiRouter       = require('./routes/api');
+    q               = require('q');
 
 var jsonParser = bodyParser.json();
 var i18n = require("i18n");
@@ -40,7 +37,14 @@ i18n.configure({
     directory: __dirname + '/locales',
     defaultLocale: 'en',
     queryParameter: 'lang',
-    objectNotation: true
+    objectNotation: true,
+    fallbacks: {
+      'pt'   : 'pt_BR',
+      'pt-BR': 'pt_BR',
+      'zh-CN': 'zh_CN',
+      'zh-TW': 'zh_TW'
+    },
+    prefix: 'electronics-'
 });
 
 dumpError = function(msg, err) {
@@ -110,7 +114,6 @@ app.use('/', routes);
 app.use('/', httpRouter);
 app.use('/', device);
 app.use('/', simulator);
-app.use('/api', apiRouter);
 
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
@@ -596,7 +599,6 @@ server.listen(app.get('port'), function() {
 	console.log('Server listening on port ' + server.address().port);
 });
 server.on('error', onError);
-server.on('listening', onListening);
 
 //set the server in the app object
 app.server = server;
@@ -647,35 +649,6 @@ function onError(error) {
 	default:
 		throw error;
 	}
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-	var addr = server.address();
-	var bind = typeof addr === 'string'
-		? 'pipe ' + addr
-				: 'port ' + addr.port;
-	debug('Listening on ' + bind);
-
-	var devicesManager = require("./devicesManager");
-//	web socket for index page
-	var wss = new WebSocketServer({ server: app.server, path :  '/serverStatus'});
-	wss.on('connection', function(ws) {
-		var id = setInterval(function() {
-			var stats = devicesManager.getStats();
-			_.extend(stats, process.memoryUsage());
-			ws.send(JSON.stringify(stats), function() { /* ignore errors */ });
-		}, 5000);
-		console.log('started server status client interval');
-		ws.on('close', function() {
-			console.log('stopping server status client interval');
-			clearInterval(id);
-		});
-	});
-//	var devicesManager = require("./devicesManager").createFromModelFiles();
 }
 
 // app.use(function(req, res, next){
