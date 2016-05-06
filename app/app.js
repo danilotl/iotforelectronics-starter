@@ -42,7 +42,8 @@ i18n.configure({
       'pt-BR': 'pt_BR',
       'zh-CN': 'zh_CN',
       'zh-TW': 'zh_TW'
-    }
+    },
+    prefix: 'electronics-'
 });
 
 dumpError = function(msg, err) {
