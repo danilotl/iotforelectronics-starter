@@ -44,14 +44,16 @@ console.log('About to store IoTP Credentials');
 console.log('Credentials API URL:', url);
 
 request
-  .get(url)
+  .get(url, {timeout: 3000})
   .on('response', function(response){
     console.log('Response received.');
   })
   .on('error', function(error){
-    console.log(error);
-  });
-console.log('Credentials Stored');
+    if(error.code === 'ETIMEDOUT')
+      console.log('Request timed out.');
+    else
+      console.log(error);
+  }); 
 
 i18n.configure({
     directory: __dirname + '/locales',
