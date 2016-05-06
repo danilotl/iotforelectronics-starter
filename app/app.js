@@ -179,7 +179,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: GET,
+		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
   		}
@@ -204,7 +204,7 @@ app.get('/usersTest/:userID', function(req, res)
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: GET,
+		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
   		}
@@ -235,7 +235,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: POST,
+		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json'
   		}
@@ -265,7 +265,7 @@ app.post("/usersTest", function (req, res)
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: POST,
+		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json'
   		}
