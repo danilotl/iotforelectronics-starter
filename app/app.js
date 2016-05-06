@@ -183,7 +183,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
     				'Content-Type': 'application/json'
   		}
 	};
-	https.get(options, (res){
+	https.get(options, (res)){
 		console.log('statusCode: ', res.statusCode);
  		console.log('headers: ', res.headers);
 		
