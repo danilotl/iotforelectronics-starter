@@ -193,6 +193,30 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 });
 
 /***************************************************************/
+/* Route to get 1 user document from Cloudant (1)              */
+/*TEST!!!!!!!!!!!!!!!!
+/***************************************************************/
+app.get('/users/:userID', function(req, res)
+{
+	var options =
+	{
+		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEAuthKey,
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.get(options, (res){
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
+});
+
+/***************************************************************/
 /* Route to add 1 user document to Cloudant.   (2)             */
 /*                                                             */
 /* Input: JSON structure that contains the userID, name,       */
@@ -200,6 +224,35 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 /***************************************************************/
 // passport.authenticate('mca-backend-strategy', {session: false }),
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
+{
+	var formData = req.body;
+	formData.userID = req.user.id;
+	formData.orgID = currentOrgID;
+	var options =
+	{
+		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEAuthKey,
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.post(options, formData, (res){
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
+
+});
+
+/***************************************************************/
+/* Route to add 1 user document to Cloudant.   (2)             */
+/* TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!			       */
+/***************************************************************/
+// passport.authenticate('mca-backend-strategy', {session: false }),
+app.post("/users", function (req, res)
 {
 	var formData = req.body;
 	formData.userID = req.user.id;
