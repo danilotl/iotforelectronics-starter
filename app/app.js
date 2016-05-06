@@ -168,13 +168,28 @@ app.use(passport.initialize());
 
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
-/*															   */
-/* Input: url params that contains the userID 			       */
+/*					  		   	*/
+/* Input: url params that contains the userID 			 */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
 app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + req.user.id + '/' + currentOrgID + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken)
+	var options =
+	{
+		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEAuthKey,
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.get(options, (res){
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
 });
 
 /***************************************************************/
@@ -189,13 +204,23 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	var formData = req.body;
 	formData.userID = req.user.id;
 	formData.orgID = currentOrgID;
+	var options =
+	{
+		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEAuthKey,
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.post(options, formData, (res){
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
 
-	request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, formData: formData}, 
-		      function optionalCallback(err, httpResponse, body) {
-			if (err) {
-    				return console.error('upload failed:', err);
-			}
-	});
 });
 
 
