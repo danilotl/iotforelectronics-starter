@@ -166,6 +166,8 @@ var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
 passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
+const https = require('https');
+
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
 /*					  		   	*/
