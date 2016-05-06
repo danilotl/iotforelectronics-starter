@@ -209,7 +209,7 @@ app.get('/usersTest/:userID', function(req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	https.get(options, (res) => {
+	https.request(options, (res) => {
 		console.log('statusCode: ', res.statusCode);
  		console.log('headers: ', res.headers);
 		
