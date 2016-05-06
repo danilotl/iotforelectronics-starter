@@ -403,20 +403,17 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var iotEApiKey = iotECredentials["apiKey"];
 
 console.log('About to store IoTP Credentials');
-var storeIOTPCredentials = function (){
-	console.log('calling api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
-    var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken].join('/');
-    request
-        .get(url)
-        .on('response', function(response){
-            console.log('Response received.');
-         })
-        .on('error', function(error){
-            console.log(error);
-         });
-};
-storeIOTPCredentials();
-
+var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken].join('/');
+console.log('Credentials API URL:', url);
+request
+    .get(url)
+    .on('response', function(response){
+        console.log('Response received.');
+    })
+    .on('error', function(error){
+        console.log(error);
+    });
+	console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 
 // //var iotePass = ioteCredentials["password"];
 
