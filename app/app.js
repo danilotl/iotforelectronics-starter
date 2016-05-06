@@ -265,11 +265,12 @@ app.post("/usersTest", function (req, res)
 		host: 'https://iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internalSteph/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEAuthKey,
+		method: POST,
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	https.post(options, formData, (res){
+	https.request(options, formData, (res) => {
 		console.log('statusCode: ', res.statusCode);
  		console.log('headers: ', res.headers);
 		
