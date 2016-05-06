@@ -399,11 +399,11 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var iotEAuthToken = iotECredentials["authToken"];
 
 console.log('About to store IoTP Credentials');
-var storeIOTPCredentials = function (req){
+var storeIOTPCredentials = function (){
 	console.log('calling api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
-	req.get('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	request.get('https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 };
-storeIOTPCredentials(request);
+storeIOTPCredentials();
 
 
 // //var iotePass = ioteCredentials["password"];
