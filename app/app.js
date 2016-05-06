@@ -178,7 +178,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 {
 	var options =
 	{
-		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		host: 'iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
@@ -203,7 +203,7 @@ app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
-		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		host: 'iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
@@ -234,7 +234,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	formData.orgID = currentOrgID;
 	var options =
 	{
-		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		host: 'iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'POST',
@@ -264,7 +264,7 @@ app.post("/usersTest", function (req, res)
 	formData.orgID = currentOrgID;
 	var options =
 	{
-		host: 'https://iotforelectronicstile.stage1.bluemix.net',
+		host: 'iotforelectronicstile.stage1.bluemix.net',
 		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'POST',
