@@ -39,6 +39,7 @@ i18n.configure({
     queryParameter: 'lang',
     objectNotation: true,
     fallbacks: {
+      'pt'   : 'pt_BR',
       'pt-BR': 'pt_BR',
       'zh-CN': 'zh_CN',
       'zh-TW': 'zh_TW'
