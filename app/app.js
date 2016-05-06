@@ -196,7 +196,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 /* Route to get 1 user document from Cloudant (1)              */
 /*TEST!!!!!!!!!!!!!!!!
 /***************************************************************/
-app.get('/users/:userID', function(req, res)
+app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
@@ -252,7 +252,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 /* TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!			       */
 /***************************************************************/
 // passport.authenticate('mca-backend-strategy', {session: false }),
-app.post("/users", function (req, res)
+app.post("/usersTest", function (req, res)
 {
 	var formData = req.body;
 	formData.userID = req.user.id;
