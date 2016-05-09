@@ -179,7 +179,7 @@ app.post('/bulkLoadDocs', function(req, res)
 
 
 	//Write all the documents to Cloudant at the same time
-	db.bulk({docs:JSON.parse(req.body)}, function(bulkError)
+	db.bulk({docs: req.body}, function(bulkError)
 	{
 		if (bulkError)
   	{
