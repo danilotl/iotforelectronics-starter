@@ -180,7 +180,7 @@ app.post('/bulkLoadDocs', function(req, res)
 	var bulkLoadDocs = [];
 
 	//Place incoming documents into the array
-	bulkLoadDocs.push(req.body);
+	bulkLoadDocs.push(JSON.parse(req.body));
 
 	//Write all the documents to Cloudant at the same time
 	db.bulk({docs:bulkLoadDocs}, function(bulkError)
