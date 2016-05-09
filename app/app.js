@@ -176,14 +176,10 @@ const https = require('https');
 /***************************************************************/
 app.post('/bulkLoadDocs', function(req, res)
 {
-	//Create array to hold documents
-	var bulkLoadDocs = [];
 
-	//Place incoming documents into the array
-	bulkLoadDocs.push(JSON.parse(req.body));
 
 	//Write all the documents to Cloudant at the same time
-	db.bulk({docs:bulkLoadDocs}, function(bulkError)
+	db.bulk({docs:JSON.parse(req.body)}, function(bulkError)
 	{
 		if (bulkError)
   	{
