@@ -182,11 +182,13 @@ app.post('/bulkLoadDocs', function(req, res)
 	db.bulk({docs: req.body}, function(bulkError)
 	{
 		if (bulkError)
-  	{
-    	console.log("Error condition doing bulk insert into Cloudant");
-    	console.log("Error is - " + bulkError);
-  	}
-
+  		{
+    			console.log("Error condition doing bulk insert into Cloudant");
+    			console.log("Error is - " + bulkError);
+    			res.sendStatus(bulkError.statusCode);
+            		return;
+  		}
+	res.sendStatus(201);
   	console.log('Inserted all documents');
 	});
 });
@@ -205,7 +207,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
-		port: '80',
+		port: '443',
 		headers: {
     				'Content-Type': 'application/json'
   		}
