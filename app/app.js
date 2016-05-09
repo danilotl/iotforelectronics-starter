@@ -218,6 +218,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		
 	}).on('error', (e) => {
  	console.log(e);
+ 	console.log("Inside the .on error")
 	});
 });
 
