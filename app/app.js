@@ -219,7 +219,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	}).on('error', (e) => {
  	console.log(e);
  	console.log("Inside the .on error")
-	});
+	}).on;
 });
 
 /***************************************************************/
@@ -243,7 +243,16 @@ app.get('/usersTest/:userID', function(req, res)
  		console.log('headers: ', res.headers);
 		
 	}).on('error', (e) => {
- 	console.log(e);
+ 	console.log(e)
+ 	}).on('data', function(data) {
+        console.log("on data")
+      })
+      .on('end', function() {
+        console.log("on end")
+     })
+     .on('response', function(response) {
+        console.log('on response');
+    });
 });
 });
 
