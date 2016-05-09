@@ -182,7 +182,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
-		port: '3000',
+		port: '80',
 		headers: {
     				'Content-Type': 'application/json'
   		}
