@@ -203,16 +203,14 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 {
 	var options =
 	{
-		host: 'iotforelectronicstile.stage1.bluemix.net',
-		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.user.id + '/' + iotETenant',
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
-		port: '443',
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	https.request(options, (res) => {
+	request(options, (res) => {
 		console.log('statusCode: ', res.statusCode)
  		console.log('headers: ', res.headers)
 		
