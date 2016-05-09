@@ -203,7 +203,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.user.id + '/' + iotETenant',
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
