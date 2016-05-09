@@ -168,6 +168,33 @@ app.use(passport.initialize());
 
 const https = require('https');
 
+
+
+/***************************************************************/
+/* API to bulk load documents into Cloudant                    */
+/* This is an unprotected test API - STEPHANIE 5/9/16          */
+/***************************************************************/
+app.post('/bulkLoadDocs', function(req, res)
+{
+	//Create array to hold documents
+	//var bulkLoadDocs = [];
+
+	//Place incoming documents into the array
+	//bulkLoadDocs.push(req.body);
+
+	//Write all the documents to Cloudant at the same time
+	db.bulk({docs:req.body}, function(bulkError)
+	{
+		if (bulkError)
+  	{
+    	console.log("Error condition doing bulk insert into Cloudant");
+    	console.log("Error is - " + bulkError);
+  	}
+
+  	console.log('Inserted all documents');
+	});
+});
+
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
 /*					  		   	*/
