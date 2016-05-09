@@ -254,7 +254,6 @@ app.get('/usersTest/:userID', function(req, res)
         console.log('on response');
     });
 });
-});
 
 /***************************************************************/
 /* Route to add 1 user document to Cloudant.   (2)             */
