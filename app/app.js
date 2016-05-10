@@ -166,15 +166,85 @@ var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
 passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
+const https = require('https');
+
+
+
+/***************************************************************/
+/* API to bulk load documents into Cloudant                    */
+/* This is an unprotected test API - STEPHANIE 5/9/16          */
+/***************************************************************/
+app.post('/bulkLoadDocs', function(req, res)
+{
+
+
+	//Write all the documents to Cloudant at the same time
+	db.bulk({docs: req.body}, function(bulkError)
+	{
+		if (bulkError)
+  		{
+    			console.log("Error condition doing bulk insert into Cloudant");
+    			console.log("Error is - " + bulkError);
+    			res.sendStatus(bulkError.statusCode);
+            		return;
+  		}
+	res.sendStatus(201);
+  	console.log('Inserted all documents');
+	});
+});
+
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
-/*															   */
-/* Input: url params that contains the userID 			       */
+/*					  		   	*/
+/* Input: url params that contains the userID 			 */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
 app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + req.user.id + '/' + currentOrgID + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken)
+	var options =
+	{
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body)
+        	}else{
+        	console.log(error)
+        	}
+        		
+        	});
+});
+
+/***************************************************************/
+/* Route to get 1 user document from Cloudant (1)              */
+/*TEST!!!!!!!!!!!!!!!!
+/***************************************************************/
+app.get('/usersTest/:userID', function(req, res)
+{
+	var options =
+	{
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body)
+        	}else{
+        	console.log(error)
+        	}
+        		
+        	});
 });
 
 /***************************************************************/
@@ -189,13 +259,54 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	var formData = req.body;
 	formData.userID = req.user.id;
 	formData.orgID = currentOrgID;
+	var options =
+	{
+		host: 'iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		method: 'POST',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.request(options, formData, (res) => {
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
 
-	request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, formData: formData}, 
-		      function optionalCallback(err, httpResponse, body) {
-			if (err) {
-    				return console.error('upload failed:', err);
-			}
-	});
+});
+
+/***************************************************************/
+/* Route to add 1 user document to Cloudant.   (2)             */
+/* TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!			       */
+/***************************************************************/
+// passport.authenticate('mca-backend-strategy', {session: false }),
+app.post("/usersTest", function (req, res)
+{
+	var formData = req.body;
+	formData.userID = req.params.id;
+	formData.orgID = currentOrgID;
+	var options =
+	{
+		host: 'iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		method: 'POST',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	https.request(options, formData, (res) => {
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+});
+
 });
 
 
@@ -278,7 +389,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 /***************************************************************/
 app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 
