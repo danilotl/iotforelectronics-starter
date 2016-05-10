@@ -80,8 +80,6 @@ simulationClient.prototype.loadConfiguration = function(simulationConfigFile, re
 
 		db.get(app_id, function(err, result){
 			if(err){
-				console.log(err);
-				console.log(JSON.stringify(err));
 	          if(err.message === 'missing' || err.message === 'deleted'){
 	          	simulationConfigFile = (simulationConfigFile) ? simulationConfigFile: "./simulationConfig.json";
 	          	_.extend(_this.simulationConfig, fs.readJsonSync(simulationConfigFile));
@@ -89,7 +87,7 @@ simulationClient.prototype.loadConfiguration = function(simulationConfigFile, re
 	            	_.extend(_this.simulationConfig, {"_id": body.id, "_rev": body.rev});
 	            });
 	          } else {
-	          	console.log(err);
+	          	throw new Error("Error trying to create record: " + err);
 	          }
 	        } else {
 	        	_.extend(_this.simulationConfig, result);
@@ -124,7 +122,7 @@ simulationClient.prototype.saveSimulationConfig = function(){
 			if(!err){
 				_this.simulationConfig._rev = body.rev;
 			} else {
-				console.log(err);
+				throw new Error("Error trying to update record: " + err);
 			}
 		});
 	});
@@ -139,7 +137,7 @@ simulationClient.prototype.startSimulation = function(){
 		return _this.createws(resp.wsurl);		
 	}).fail(function(err){
 		consloe.error(err.message);
-		throw new Error("Cannot start simulation " + err.message);		
+		throw new Error("Cannot start simulation " + err.message);
 	});
 };
 
