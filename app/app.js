@@ -291,22 +291,22 @@ app.post("/usersTest", function (req, res)
 	formData.orgID = currentOrgID;
 	var options =
 	{
-		host: 'iotforelectronicstile.stage1.bluemix.net',
-		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	https.request(options, formData, (res) => {
-		console.log('statusCode: ', res.statusCode);
- 		console.log('headers: ', res.headers);
-		
-	}).on('error', (e) => {
- 	console.log(e);
-});
-
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body)
+        	}else{
+        	console.log(error)
+        	}
+        		
+        	});
 });
 
 
