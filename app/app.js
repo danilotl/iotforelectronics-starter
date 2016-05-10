@@ -214,7 +214,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
-        	else (){
+        	}else (){
         	console.log(error)
         	}
         		
