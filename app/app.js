@@ -403,7 +403,7 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var iotEApiKey = iotECredentials["apiKey"];
 
 console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken].join('/');
+var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken,iotEApiKey].join('/');
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
