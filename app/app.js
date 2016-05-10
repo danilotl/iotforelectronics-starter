@@ -229,7 +229,7 @@ app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.params.id + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
