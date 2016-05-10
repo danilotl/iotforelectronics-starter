@@ -210,14 +210,15 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
     				'Content-Type': 'application/json'
   		}
 	};
-	request(options, (res) => {
-		console.log('statusCode: ', res.statusCode)
- 		console.log('headers: ', res.headers)
-		
-	}).on('error', (e) => {
- 	console.log(e);
- 	console.log("Inside the .on error")
-	}).on;
+	request(options, (error, response, body) => {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body)
+        	else (){
+        	console.log(error)
+        	}
+        		
+        	});
 });
 
 /***************************************************************/
@@ -395,7 +396,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 /***************************************************************/
 app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 
