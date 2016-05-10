@@ -210,15 +210,14 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
     				'Content-Type': 'application/json'
   		}
 	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body)
-        	}else{
-        	console.log(error)
-        	}
-        		
-        	});
+	request(options, (res) => {
+		console.log('statusCode: ', res.statusCode)
+ 		console.log('headers: ', res.headers)
+		
+	}).on('error', (e) => {
+ 	console.log(e);
+ 	console.log("Inside the .on error")
+	}).on;
 });
 
 /***************************************************************/
@@ -229,22 +228,29 @@ app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.params.id + '/' + iotETenant,
+		host: 'iotforelectronicstile.stage1.bluemix.net',
+		path: '/users/internalSteph/'+ req.params.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body)
-        	}else{
-        	console.log(error)
-        	}
-        		
-        	});
+	https.request(options, (res) => {
+		console.log('statusCode: ', res.statusCode);
+ 		console.log('headers: ', res.headers);
+		
+	}).on('error', (e) => {
+ 	console.log(e)
+ 	}).on('data', function(data) {
+        console.log("on data")
+      })
+      .on('end', function() {
+        console.log("on end")
+     })
+     .on('response', function(response) {
+        console.log('on response');
+    });
 });
 
 /***************************************************************/
