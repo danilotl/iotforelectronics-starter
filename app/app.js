@@ -302,7 +302,7 @@ app.post("/usersTest", function (req, res)
 	formData.orgID = currentOrgID;
 	
 	//verify that userID coming in MCA matches doc userID, 
-	if (formData.userID ! = req.user.id)
+	if (formData.userID != req.user.id)
 	{
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
