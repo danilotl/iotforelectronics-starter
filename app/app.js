@@ -259,11 +259,18 @@ app.get('/usersTest/:userID', function(req, res)
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
 {
 	var formData = req.body;
-	formData.userID = req.params.id;
 	formData.orgID = currentOrgID;
+	
+	//verify that userID coming in MCA matches doc userID, 
+	if (formData.userID ! = req.user.id)
+	{
+		//see if logic ^ works first before finishing this
+		console.log("doc userID and mca userID do not match")
+	}
+	
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		headers: {
     				'Content-Type': 'application/json'
@@ -292,8 +299,15 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 app.post("/usersTest", function (req, res)
 {
 	var formData = req.body;
-	formData.userID = req.params.id;
 	formData.orgID = currentOrgID;
+	
+	//verify that userID coming in MCA matches doc userID, 
+	if (formData.userID ! = req.user.id)
+	{
+		//see if logic ^ works first before finishing this
+		console.log("doc userID and mca userID do not match")
+	}
+	
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
@@ -302,15 +316,15 @@ app.post("/usersTest", function (req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	request.post(options, function (error, response, body) {
+	request.post(options, formData, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
+        	response.status(200).send("Successful POST")
         	}else{
         	console.log(error)
+        	response.status(error.statusCode).send("Error on POST")
         	}
-        		
-        	});
 });
 
 
