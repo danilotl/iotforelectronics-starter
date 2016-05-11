@@ -289,7 +289,6 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
         	});
 });
 
-});
 
 /***************************************************************/
 /* Route to add 1 user document to Cloudant.   (2)             */
