@@ -203,7 +203,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internal/'+ req.user.id + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
@@ -229,7 +229,7 @@ app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
@@ -270,7 +270,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		headers: {
     				'Content-Type': 'application/json'
@@ -311,7 +311,7 @@ app.post("/usersTest", function (req, res)
 	
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		headers: {
     				'Content-Type': 'application/json'
@@ -343,7 +343,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
    
    var httpHost = iotfCredentials["http_host"]
 
-   request.post({url: 'https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
+   request.post({url: 'https://iotforelectronicstile.mystage1.bluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
                  body: JSON.stringify(bodyIn),
                  headers: { "content-type": "application/json"}
                  },
@@ -366,7 +366,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 /***************************************************************/
 app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/user/internal/' + req.user.id + '/' +  currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, function (reqest, response){
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/' + req.user.id + '/' +  currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken, function (reqest, response){
 		if (response.statusCode == 201) {
 							res.sendStatus(httpResponse.statusCode);
 							console.log("SUCCESS: " + bodyIn);
@@ -387,7 +387,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 /***************************************************************/
 app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal/' + req.user.id + '/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/' + req.user.id + '/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 
@@ -398,7 +398,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 /****************************************************************************/
 app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 
@@ -408,7 +408,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 /***************************************************************/
 app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/' + req.user.id + '/' + req.params.applianceID +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 
@@ -420,7 +420,7 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 /*******************************************************************************************/
 app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.bluemix.net/user/internal/' + req.user.id +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/' + req.user.id +'/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 });
 
 //get IoT-Foundation credentials
@@ -533,7 +533,7 @@ var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
   var iotEApiKey = iotECredentials["apiKey"];
 
 console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.bluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken,iotEApiKey].join('/');
+var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken,iotEApiKey].join('/');
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
@@ -546,7 +546,7 @@ request
     else
       console.log(error);
   }); 
-console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.bluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
+console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.mybluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 
 // //var iotePass = ioteCredentials["password"];
 
