@@ -300,9 +300,11 @@ app.post("/usersTest", function (req, res)
 {
 	var formData = req.body;
 	formData.orgID = currentOrgID;
+	var fakeUserID = '12345';
 	
-	//verify that userID coming in MCA matches doc userID, 
-	if (formData.userID ! = req.user.id)
+	//verify that userID coming in MCA matches doc userID
+	//test!!
+	if (formData.userID ! = fakeUserID)
 	{
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
