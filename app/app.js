@@ -236,7 +236,7 @@ app.get('/usersTest/:userID', function(req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	request(options, function (error, response, body) {
+	req(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
@@ -317,7 +317,7 @@ app.post("/usersTest", function (req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	request.post(options, formData, function (error, response, body) {
+	req.post(options, formData, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
@@ -326,8 +326,8 @@ app.post("/usersTest", function (req, res)
         	console.log(error)
         	response.status(error.statusCode).send("Error on POST")
         	}
+  });
 });
-
 
 /***************************************************************/
 /* Route to add 1 appliance document to registration Cloudant.(3) */
