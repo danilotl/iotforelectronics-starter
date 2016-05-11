@@ -236,14 +236,14 @@ app.get('/usersTest/:userID', function(req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	req(options, function (error, response, body) {
+	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
-        	console.log(body)
-        	response.status(200).send("Successful test GET")
+        	console.log(body);
+        	//response.status(200).send("Successful test GET")
 	    }else{
-        	console.log(error)
-        	response.status(error.statusCode).send("ERROR on test GET")
+        	console.log(error);
+        	//response.status(error.statusCode).send("ERROR on test GET")
         	}
         	
         	});
@@ -317,14 +317,14 @@ app.post("/usersTest", function (req, res)
     				'Content-Type': 'application/json'
   		}
 	};
-	req.post(options, formData, function (error, response, body) {
+	request.post(options, formData, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
-        	console.log(body)
-        	response.status(200).send("Successful POST")
+        	console.log(body);
+        	//response.status(200).send("Successful POST")
         	}else{
-        	console.log(error)
-        	response.status(error.statusCode).send("Error on POST")
+        	console.log(error);
+        	//response.status(error.statusCode).send("Error on POST")
         	}
   });
 });
@@ -343,7 +343,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
    
    var httpHost = iotfCredentials["http_host"]
 
-   request.post({url: 'https://iotforelectronicstile.mystage1.bluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
+   request.post({url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
                  body: JSON.stringify(bodyIn),
                  headers: { "content-type": "application/json"}
                  },
