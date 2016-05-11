@@ -240,10 +240,12 @@ app.get('/usersTest/:userID', function(req, res)
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
-        	}else{
+        	response.status(200).send("Successful test GET")
+	    }else{
         	console.log(error)
+        	response.status(error.statusCode).send("ERROR on test GET")
         	}
-        		
+        	
         	});
 });
 
@@ -257,24 +259,27 @@ app.get('/usersTest/:userID', function(req, res)
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
 {
 	var formData = req.body;
-	formData.userID = req.user.id;
+	formData.userID = req.params.id;
 	formData.orgID = currentOrgID;
 	var options =
 	{
-		host: 'iotforelectronicstile.stage1.bluemix.net',
-		path: '/users/internal/'+ req.user.id + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	https.request(options, formData, (res) => {
-		console.log('statusCode: ', res.statusCode);
- 		console.log('headers: ', res.headers);
-		
-	}).on('error', (e) => {
- 	console.log(e);
+	request.post(options, formData, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body)
+        	response.status(200).send("Successful POST")
+        	}else{
+        	console.log(error)
+        	response.status(error.statusCode).send("Error on POST")
+        	}
+        		
+        	});
 });
 
 });
@@ -293,12 +298,11 @@ app.post("/usersTest", function (req, res)
 	{
 		url: 'https://iotforelectronicstile.stage1.bluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	request(options, function (error, response, body) {
+	request.post(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body)
