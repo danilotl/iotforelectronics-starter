@@ -548,6 +548,24 @@ request
   }); 
 console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.mybluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
 
+
+/***************************************************************/
+/* Route to show one user doc using Cloudant Query             */
+/* Takes a userID in the url params                            */
+/***************************************************************/
+app.get('/validation', function(req, res)
+{
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey, function (reqest, response){
+	if (response.statusCode == 201) {
+			res.sendStatus(httpResponse.statusCode);
+			console.log("SUCCESS: " + bodyIn);
+	} else {
+			console.log("Error in POST /appliances" + response.statusCode);
+			res.sendStatus(httpResponse.statusCode);
+	}
+});
+});
+
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
