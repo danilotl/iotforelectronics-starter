@@ -555,17 +555,27 @@ console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectr
 /***************************************************************/
 app.get('/validation', function(req, res)
 {
-	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey, function (reqest, response){
-	if (response.statusCode == 201) {
-			res.sendStatus(httpResponse.statusCode);
-			console.log("SUCCESS: " + bodyIn);
-	} else {
-			console.log("Error in POST /appliances" + response.statusCode);
-			res.sendStatus(httpResponse.statusCode);
-	}
+	var options =
+	{
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body);
+        	//response.status(200).send("Successful test GET")
+	    }else{
+        	console.log(error);
+        	//response.status(error.statusCode).send("ERROR on test GET")
+        	}
+        	
+        	});
 });
-});
-
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
