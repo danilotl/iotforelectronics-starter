@@ -264,6 +264,7 @@ app.get('/usersTest/:userID', function(req, res)
 	    }else{
         	console.log("IN THE ELSE BLOCK OF REQUEST " + error);
         	res.status(error.statusCode);
+        	return;
         	}
         	
         	});
