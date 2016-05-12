@@ -543,8 +543,6 @@ request
   .on('error', function(error){
     if(error.code === 'ETIMEDOUT')
       console.log('Request timed out.');
-    else if(error.code === 'ECONNREFUSED')
-      console.log('Connection Refused.');
     else
       console.log(error);
   }); 
@@ -555,18 +553,18 @@ console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectr
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-//app.get('/validation', function(req, res)
-//{
-//	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey, function (reqest, response){
-//	if (response.statusCode == 201) {
-//			res.sendStatus(httpResponse.statusCode);
-//			console.log("SUCCESS: " + bodyIn);
-//	} else {
-//			console.log("Error in POST /appliances" + response.statusCode);
-//			res.sendStatus(httpResponse.statusCode);
-//	}
-//});
-//});
+app.get('/validation', function(req, res)
+{
+	res.redirect('https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey, function (reqest, response){
+	if (response.statusCode == 201) {
+			res.sendStatus(httpResponse.statusCode);
+			console.log("SUCCESS: " + bodyIn);
+	} else {
+			console.log("Error in POST /appliances" + response.statusCode);
+			res.sendStatus(httpResponse.statusCode);
+	}
+});
+});
 
 // //var iotePass = ioteCredentials["password"];
 
