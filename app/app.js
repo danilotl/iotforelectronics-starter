@@ -328,28 +328,21 @@ app.post("/usersTest", function (req, res)
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
 	}
-	
-	var options =
-	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
+	request({
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		body: formData,
+		json: JSON.parse(formData) ,
+		method: 'POST', 
 		headers: {
     				'Content-Type': 'application/json'
   		}
-	};
-	console.log(options.url)
-	request.post(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body);
-        	//response.status(200).send("Successful POST")
-       	}else{
-       		console.log("Else of the post error")
-        	console.log(error);
-        	//response.status(error.statusCode).send("Error on POST")
-       	}
-  });
+
+    	}, function(error, response, body){
+    		if(error) {
+        		console.log(error);
+    		} else {
+        		console.log(response.statusCode, body);
+		}});
 }); 
 
 /***************************************************************/
