@@ -328,10 +328,11 @@ app.post("/usersTest", function (req, res)
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
 	}
+	console.log('JSON value --->', JSON.parse(formData));
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		json: JSON.parse(formData) ,
+		body: JSON.parse(formData) ,
 		method: 'POST', 
 		headers: {
     				'Content-Type': 'application/json'
