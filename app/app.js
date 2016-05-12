@@ -238,7 +238,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(500);
+        	res.sendStatus(500);
         	return;
         	}
         	
@@ -268,7 +268,7 @@ app.get('/usersTest/:userID', function(req, res)
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(500);
+        	res.sendStatus(500);
         	return;
         	}
         	
