@@ -543,6 +543,8 @@ request
   .on('error', function(error){
     if(error.code === 'ETIMEDOUT')
       console.log('Request timed out.');
+    else if(error.code === 'ECONNREFUSED')
+      console.log('Connection Refused.');
     else
       console.log(error);
   }); 
