@@ -317,7 +317,8 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 // passport.authenticate('mca-backend-strategy', {session: false }),
 app.post("/usersTest", function (req, res)
 {
-	var formData = req.body;
+	//var formData = req.body;
+	var formData = JSON.parse(JSON.stringify(req.body)); 
 	formData.orgID = currentOrgID;
 	var fakeUserID = '12345';
 	
@@ -327,7 +328,7 @@ app.post("/usersTest", function (req, res)
 	{
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
-		console.log('JSON value --->', JSON.parse(formData));
+		console.log('JSON value --->', formData);
 		console.log('JSON log should have been sent');
 	}
 	request({
