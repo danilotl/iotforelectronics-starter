@@ -263,7 +263,8 @@ app.get('/usersTest/:userID', function(req, res)
         	res.sendStatus(200);
 	    }else{
         	console.log("IN THE ELSE BLOCK OF REQUEST " + error);
-        	res.status(error.statusCode);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(500);
         	return;
         	}
         	
