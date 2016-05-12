@@ -233,11 +233,15 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
-        	console.log(body)
-        	}else{
-        	console.log(error)
+        	console.log(body);
+        	res.sendStatus(200);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(500);
+        	return;
         	}
-        		
+        	
         	});
 });
 
@@ -262,7 +266,7 @@ app.get('/usersTest/:userID', function(req, res)
         	console.log(body);
         	res.sendStatus(200);
 	    }else{
-        	console.log("IN THE ELSE BLOCK OF REQUEST " + error);
+        	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(500);
         	return;
@@ -280,35 +284,37 @@ app.get('/usersTest/:userID', function(req, res)
 // passport.authenticate('mca-backend-strategy', {session: false }),
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
 {
-	var formData = req.body;
+	//var formData = req.body;
+	var formData = JSON.parse(JSON.stringify(req.body)); 
 	formData.orgID = currentOrgID;
+	var fakeUserID = '12345';
 	
-	//verify that userID coming in MCA matches doc userID, 
-	if (formData.userID != req.user.id)
+	//verify that userID coming in MCA matches doc userID
+	//test!!
+	if (formData.userID != fakeUserID)
 	{
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
+		console.log('JSON value --->', formData);
+		console.log('JSON log should have been sent');
 	}
-	
-	var options =
-	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
+	request({
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
+		json: formData,
+		method: 'POST', 
 		headers: {
     				'Content-Type': 'application/json'
   		}
-	};
-	request.post(options, formData, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body)
-        	response.status(200).send("Successful POST")
-        	}else{
-        	console.log(error)
-        	response.status(error.statusCode).send("Error on POST")
-        	}
-        		
-        	});
+
+    	}, function(error, response, body){
+    		if(error) {
+        		console.log(error);
+        		res.sendStatus(response);
+    		} else {
+        		console.log(response.statusCode, body);
+        		res.sendStatus(response);
+		}});
 });
 
 
@@ -345,8 +351,10 @@ app.post("/usersTest", function (req, res)
     	}, function(error, response, body){
     		if(error) {
         		console.log(error);
+        		res.sendStatus(response);
     		} else {
         		console.log(response.statusCode, body);
+        		res.sendStatus(response);
 		}});
 }); 
 
