@@ -313,21 +313,24 @@ app.post("/usersTest", function (req, res)
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
+		body: formData,
 		headers: {
     				'Content-Type': 'application/json'
   		}
 	};
-	request.post(options, formData, function (error, response, body) {
+	console.log(options.url)
+	request.post(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
         	//response.status(200).send("Successful POST")
-        	}else{
+       	}else{
+       		console.log("Else of the post error")
         	console.log(error);
         	//response.status(error.statusCode).send("Error on POST")
-        	}
+       	}
   });
-});
+}); 
 
 /***************************************************************/
 /* Route to add 1 appliance document to registration Cloudant.(3) */
