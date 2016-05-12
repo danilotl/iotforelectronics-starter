@@ -334,7 +334,7 @@ app.post("/usersTest", function (req, res)
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		body: JSON.parse(formData) ,
+		json: formData,
 		method: 'POST', 
 		headers: {
     				'Content-Type': 'application/json'
