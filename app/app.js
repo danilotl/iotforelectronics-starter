@@ -331,7 +331,7 @@ app.post("/usersTest", function (req, res)
 	
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		body: formData,
 		headers: {
