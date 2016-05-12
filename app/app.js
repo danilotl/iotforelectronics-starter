@@ -327,8 +327,9 @@ app.post("/usersTest", function (req, res)
 	{
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
+		console.log('JSON value --->', JSON.parse(formData));
+		console.log('JSON log should have been sent');
 	}
-	console.log('JSON value --->', JSON.parse(formData));
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.body.userID + '/' + iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
