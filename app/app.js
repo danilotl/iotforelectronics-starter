@@ -260,10 +260,10 @@ app.get('/usersTest/:userID', function(req, res)
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.status(200).send("Successful test GET")
+        	res.sendStatus(200);
 	    }else{
-        	console.log(error);
-        	res.status(error.statusCode).send("ERROR on test GET")
+        	console.log("IN THE ELSE BLOCK OF REQUEST " + error);
+        	res.status(error.statusCode);
         	}
         	
         	});
