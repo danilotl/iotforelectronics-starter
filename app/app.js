@@ -115,9 +115,29 @@ app.use('/', httpRouter);
 app.use('/', device);
 app.use('/', simulator);
 
+//Get credentials of related services.
+//Get IoTP credentials
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
 var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
+
+//Get IoT for Electronics credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
+	throw "Cannot get IoT4E credentials"
+var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+
+//IoT Platform Credentials
+var name = iotfCredentials["org"];
+var orgId = iotfCredentials["org"];
+var apiKey = iotfCredentials["apiKey"];
+var authToken = iotfCredentials["apiToken"];
+var baseURI = iotfCredentials["base_uri"];
+var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+
+//IoT for Electronics Credentials
+var iotETenant = iotECredentials["tenantID"];
+var iotEAuthToken = iotECredentials["authToken"];
+var iotEApiKey = iotECredentials["apiKey"];
 
 /***************************************************************/
 //STEPHANIES'S CODE *************
@@ -510,30 +530,11 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   //	throw "Cannot get RTI credentials"
   //var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
-//Get IoT for Electronics credentials
-if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
-	throw "Cannot get IoT4E credentials"
-var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
-
-
- //IoT Platform Credentials
-  var name = iotfCredentials["org"];
-  var orgId = iotfCredentials["org"];
-  var apiKey = iotfCredentials["apiKey"];
-  var authToken = iotfCredentials["apiToken"];
-  var baseURI = iotfCredentials["base_uri"];
-  var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
-
 //RTI Credentials
 //  var rtiApiKey = rtiCredentials["apiKey"];
 //  var rtiAuthToken = rtiCredentials["authToken"];
 //  var rtiBaseUrl = rtiCredentials["baseUrl"];
 //  var disabled = false;
-
-//IoT for Electronics Credentials
-  var iotETenant = iotECredentials["tenantID"];
-  var iotEAuthToken = iotECredentials["authToken"];
-  var iotEApiKey = iotECredentials["apiKey"];
 
 console.log('About to store IoTP Credentials');
 var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken,iotEApiKey].join('/');
