@@ -221,6 +221,12 @@ app.post('/bulkLoadDocs', function(req, res)
 /***************************************************************/
 app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
+	//make sure userID on params matches userID coming in thru MCA
+	if (req.params.userID != req.user.id)
+	{
+		res.status(500).send("User ID on request does not match MCA authenticated user.")
+		//might need a return here, needs test
+	}
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant,
@@ -290,9 +296,10 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	var fakeUserID = '12345';
 	
 	//verify that userID coming in MCA matches doc userID
-	//test!!
-	if (formData.userID != fakeUserID)
+	if (formData.userID != req.user.id)
 	{
+		res.status(500).send("User ID in request does not match MCA authenticated user.")
+		//might need a return here, needs test
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
 		console.log('JSON value --->', formData);
@@ -309,7 +316,8 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 
     	}, function(error, response, body){
     		if(error) {
-        		console.log(error);
+        		console.log('ERROR: ' + error);
+			console.log('BODY: ' + error);
         		res.status(500).send(response);
     		} else {
         		console.log(response.statusCode, body);
@@ -350,7 +358,8 @@ app.post("/usersTest", function (req, res)
 
     	}, function(error, response, body){
     		if(error) {
-        		console.log(error);
+        		console.log('ERROR: ' + error);
+			console.log('BODY: ' + error);
         		res.sendStatus(500);
     		} else {
         		console.log(response.statusCode, body);
