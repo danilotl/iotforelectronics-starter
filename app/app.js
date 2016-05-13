@@ -294,7 +294,6 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	//var formData = req.body;
 	var formData = JSON.parse(JSON.stringify(req.body)); 
 	formData.orgID = currentOrgID;
-	var fakeUserID = '12345';
 	
 	//verify that userID coming in MCA matches doc userID
 	if (formData.userID != req.user.id)
@@ -307,7 +306,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		console.log('JSON log should have been sent');
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ iotETenant,
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		json: formData,
 		method: 'POST', 
@@ -376,26 +375,28 @@ app.post("/usersTest", function (req, res)
 /***************************************************************/
 app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-   var bodyIn = req.body;
-   bodyIn.userID = req.user.id;
-   bodyIn.orgID = currentOrgID;
-   
-   var httpHost = iotfCredentials["http_host"]
+	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+   	bodyIn.userID = req.user.id;
+   	bodyIn.orgID = currentOrgID;
 
-   request.post({url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/' + currentOrgID + '/' + iotETenant + '/' + apiKey + '/' + authToken + '/' + httpHost + '/' + iotEAuthToken,
-                 body: JSON.stringify(bodyIn),
-                 headers: { "content-type": "application/json"}
-                 },
-                 function optionalCallback(err, httpResponse, body) {
-
-		if (!err && httpResponse.statusCode == 201) {
-			res.sendStatus(httpResponse.statusCode);
-              		console.log("SUCCESS: " + bodyIn);
-		} else {
-				console.log("Error in POST /appliances" + httpResponse.statusCode);
-				res.sendStatus(httpResponse.statusCode);
+	request({
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ iotETenant,
+		auth: iotEAuthToken + ':' + iotEApiKey,
+		json: bodyIn,
+		method: 'POST', 
+		headers:{
+			'Content-Type': 'application/json'
+		}
+		}, function(error, response, body){
+			if(error) {
+				console.log('ERROR: ' + error);
+				console.log('BODY: ' + error);
+				res.status(500).send(response);
+			} else {
+				console.log(response.statusCode, body);
+				res.status(200).send(response);
 			}
-   });
+		});
 });
 
 
