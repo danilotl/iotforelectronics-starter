@@ -310,10 +310,10 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
     	}, function(error, response, body){
     		if(error) {
         		console.log(error);
-        		res.sendStatus(response);
+        		res.status(500).send(response);
     		} else {
         		console.log(response.statusCode, body);
-        		res.sendStatus(response);
+        		res.status(200).send(response);
 		}});
 });
 
@@ -351,7 +351,7 @@ app.post("/usersTest", function (req, res)
     	}, function(error, response, body){
     		if(error) {
         		console.log(error);
-        		res.sendStatus(response);
+        		res.sendStatus(500);
     		} else {
         		console.log(response.statusCode, body);
         		res.sendStatus(response);
