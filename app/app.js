@@ -133,6 +133,7 @@ var apiKey = iotfCredentials["apiKey"];
 var authToken = iotfCredentials["apiToken"];
 var baseURI = iotfCredentials["base_uri"];
 var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
+var iotpHttpHost = iotfCredentials["http_host"];
 
 //IoT for Electronics Credentials
 var iotETenant = iotECredentials["tenantID"];
@@ -552,7 +553,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 //  var disabled = false;
 
 console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotEAuthToken,iotEApiKey].join('/');
+var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
@@ -565,8 +566,6 @@ request
     else
       console.log(error);
   }); 
-console.log('called api to Store IOTP Credentials on : ' + 'https://iotforelectronicstile.stage1.mybluemix.net/credentials/' + orgId + '/' + apiKey + '/' + authToken + '/' + iotEAuthToken);
-
 
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
