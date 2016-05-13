@@ -441,9 +441,8 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
         	}
         	
         	});
-	});
-
 });
+
 
 
 
