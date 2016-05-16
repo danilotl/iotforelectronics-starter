@@ -223,32 +223,34 @@ app.post('/bulkLoadDocs', function(req, res)
 /***************************************************************/
 app.put('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	if (req.params.userID != req.user.id)
+	//var formData = req.body;
+	var userDocIn = JSON.parse(JSON.stringify(req.body)); 
+	userDocIn.orgID = currentOrgID;
+	
+	//verify that userID coming in MCA matches doc userID
+	if (userDocIn.userID != req.user.id)
 	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
+		res.status(500).send("User ID in request does not match MCA authenticated user.")
+		console.log("doc userID and mca userID do not match")
 	}
-	var options =
-	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+	request({
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID + '/' +  iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		method: 'PUT',
+		json: formData,
+		method: 'PUT', 
 		headers: {
     				'Content-Type': 'application/json'
   		}
-	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body);
-        	res.sendStatus(200);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
-        	return;
-        	}
+
+    	}, function(error, response, body){
+    		if(error) {
+        		console.log('ERROR: ' + error);
+			console.log('BODY: ' + error);
+        		res.status(500).send(response);
+    		} else {
+        		console.log(response.statusCode, body);
+        		res.status(200).send(response);
+		}});
 }
 
 /***************************************************************/
