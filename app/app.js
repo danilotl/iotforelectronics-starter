@@ -221,7 +221,7 @@ app.post('/bulkLoadDocs', function(req, res)
 /* Input: url params that contains the userID 		       */
 /* Returns:  404 for user not found, 200 for success           */
 /***************************************************************/
-app.put('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.put('/user', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	//var formData = req.body;
 	var userDocIn = JSON.parse(JSON.stringify(req.body)); 
@@ -234,9 +234,9 @@ app.put('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID + '/' +  iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
 		auth: iotEAuthToken + ':' + iotEApiKey,
-		json: formData,
+		json: userDocIn,
 		method: 'PUT', 
 		headers: {
     				'Content-Type': 'application/json'
