@@ -251,7 +251,7 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
         		console.log(response.statusCode, body);
         		res.status(200).send(response);
 		}});
-}
+});
 
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
