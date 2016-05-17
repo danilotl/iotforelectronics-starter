@@ -8,7 +8,11 @@
         {
             "name": "iotf-service",
             "plan": "iotf-service-free"
-        },       
+        },
+        {
+            "name": "IoT Real-Time Insight",
+            "plan": "Lite"
+        },        
         {
             "name": "AdvancedMobileAccess",
             "plan": "Gold"
