@@ -838,12 +838,12 @@ app.get('/validation', function(req, res)
      return defer.promise;
    };
 
-////IoT Platform device type creation call
-//  var iotpDeviceType = iotpPost('/device/types',{
-//  	"id": "washingMachine",
-//  	"description": "IoT4E Washing Machine",
-// 	"classId": "Device"
-//});
+//IoT Platform device type creation call
+  var iotpDeviceType = iotpPost('/device/types',{
+  	"id": "washingMachine",
+  	"description": "IoT4E Washing Machine",
+ 	"classId": "Device"
+});
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
@@ -853,15 +853,15 @@ app.get('/validation', function(req, res)
 // //});
 
 //RTI data source creation call
-//var rtiSource = rtiPost('/message/source',{
-//	"name": name,
-//	"orgId": orgId,
-//	"apiKey": apiKey,
-//	"authToken": authToken,
-//	"disabled": disabled})
-//		.then(function(json) {
-//			console.log('RTI Source Return: ' + JSON.stringify(json));
-//});
+var rtiSource = rtiPost('/message/source',{
+	"name": name,
+	"orgId": orgId,
+	"apiKey": apiKey,
+	"authToken": authToken,
+	"disabled": disabled})
+		.then(function(json) {
+			console.log('RTI Source Return: ' + JSON.stringify(json));
+});
 
 // //RTI schema creation call
 //  var rtiSchema = rtiPost('/message/schema',{
