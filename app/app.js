@@ -858,7 +858,7 @@ var rtiSource = rtiPost('/message/source',{
 	"orgId": orgId,
 	"apiKey": apiKey,
 	"authToken": authToken,
-	"disabled": disabled})
+	"disabled": false})
 		.then(function(json) {
 			console.log('RTI Source Return: ' + JSON.stringify(json));
 });
