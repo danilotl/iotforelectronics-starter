@@ -716,9 +716,9 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 /*Solution Integrator Code                                               */
 /********************************************************************** **/
   //Get RTI credentials
-  //if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
-  //	throw "Cannot get RTI credentials"
-  //var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+ if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+  	throw "Cannot get RTI credentials"
+ var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
 //RTI Credentials
   var rtiApiKey = rtiCredentials["apiKey"];
