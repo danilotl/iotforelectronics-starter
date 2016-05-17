@@ -22,6 +22,7 @@
          "passport": "^0.3.2",
          "log4js": "^0.6.29",
          "i18n": "^0.8.2",
+         "seq-queue": "0.0.5",
          "ejs": "",
          "node-uuid": "",
          "cors": "",
