@@ -721,10 +721,10 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   //var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
 //RTI Credentials
-//  var rtiApiKey = rtiCredentials["apiKey"];
-//  var rtiAuthToken = rtiCredentials["authToken"];
-//  var rtiBaseUrl = rtiCredentials["baseUrl"];
-//  var disabled = false;
+  var rtiApiKey = rtiCredentials["apiKey"];
+  var rtiAuthToken = rtiCredentials["authToken"];
+  var rtiBaseUrl = rtiCredentials["baseUrl"];
+  var disabled = false;
 
 console.log('About to store IoTP Credentials');
 var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
@@ -858,7 +858,7 @@ var rtiSource = rtiPost('/message/source',{
 	"orgId": orgId,
 	"apiKey": apiKey,
 	"authToken": authToken,
-	"disabled": false})
+	"disabled": disabled})
 		.then(function(json) {
 			console.log('RTI Source Return: ' + JSON.stringify(json));
 });
