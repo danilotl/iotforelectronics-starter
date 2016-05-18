@@ -870,16 +870,16 @@ var rtiSource = rtiPost('/message/source',{
 			  	"items": []})
 			  .then(function(json){
 			  	console.log('RTI Schema Return: ' + JSON.stringify(json));
+			  	var schemaValues = JSON.parse(JSON.stringify(json)); 
+				//RTI route creation call
+				  var rtiRoute = rtiPost('/message/route',{
+				  	"sourceId": sourceValues.id,
+				  	"deviceType": "washingMachine",
+				  	"eventType": "+",
+				  	"schemaId": schemaValues.id});
 			  });
 });
 
-
-//RTI route creation call
-//  var rtiRoute = rtiPost('/message/route',{
-//  	"sourceId": name,
-//  	"deviceType": "washingMachine",
-//  	"eventType": "+",
-//  	"schemaId": "Electronics"});
 
 console.log('IoT4E Credentials: ' + iotETenant);  
 /********************************************************************** **/
