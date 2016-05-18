@@ -861,6 +861,8 @@ var rtiSource = rtiPost('/message/source',{
 	"disabled": disabled})
 		.then(function(json) {
 			console.log('RTI Source Return: ' + JSON.stringify(json));
+			var sourceValues = JSON.parse(JSON.stringify(json)); 
+			console.log('RTI Source ID: ' + sourceValues.id);
 			//RTI schema creation call
 			  var rtiSchema = rtiPost('/message/schema',{
 			  	"name": "Electronics",
