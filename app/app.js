@@ -861,13 +861,16 @@ var rtiSource = rtiPost('/message/source',{
 	"disabled": disabled})
 		.then(function(json) {
 			console.log('RTI Source Return: ' + JSON.stringify(json));
+			//RTI schema creation call
+			  var rtiSchema = rtiPost('/message/schema',{
+			  	"name": "Electronics",
+			  	"format": "JSON",
+			  	"items": []})
+			  .then(function(json){
+			  	console.log('RTI Schema Return: ' + JSON.stringify(json));
+			  });
 });
 
-// //RTI schema creation call
-//  var rtiSchema = rtiPost('/message/schema',{
-//  	"name": "Electronics",
-//  	"format": "JSON",
-//  	"items": []});
 
 //RTI route creation call
 //  var rtiRoute = rtiPost('/message/route',{
