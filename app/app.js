@@ -235,7 +235,6 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 	}
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		json: userDocIn,
 		method: 'PUT', 
 		headers: {
@@ -270,7 +269,6 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -300,7 +298,6 @@ app.get('/usersTest/:userID', function(req, res)
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -346,7 +343,6 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 	}
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		json: formData,
 		method: 'POST', 
 		headers: {
@@ -388,7 +384,6 @@ app.post("/usersTest", function (req, res)
 	}
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ iotETenant,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		json: formData,
 		method: 'POST', 
 		headers: {
@@ -426,7 +421,6 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	}
 	request({
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		json: bodyIn,
 		method: 'POST', 
 		headers:{
@@ -461,7 +455,6 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -501,7 +494,6 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -539,7 +531,6 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.user.id + '/' + req.body.applianceID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -579,7 +570,6 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	}
 	request({
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.params.userID + '/' + req.params.applianceID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'DELETE', 
 		headers:{
 			'Content-Type': 'application/json'
@@ -615,7 +605,6 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 	var options =
 	{
 		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json'
