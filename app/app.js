@@ -82,7 +82,7 @@ app.use(function (req, res, next) {
 	});
 	//force https
 	if(!appEnv.isLocal && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http')
-		res.redirect('https://' + req.headers.host + req.url);
+		res.redirect(308, 'https://' + req.headers.host + req.url);
 	else
 		next();
 });
