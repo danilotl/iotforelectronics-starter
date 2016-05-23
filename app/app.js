@@ -694,7 +694,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 
     var userObject = userRepository[username];
 
-    if (userObject && userObject.password == password ){
+    //if (userObject && userObject.password == password ){
         logger.debug("Login success for userId ::", username);
         responseJson.status = "success";
         responseJson.userIdentity = {
@@ -704,9 +704,9 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
                 dob: userObject.dob
             }
         };
-    } else {
-        logger.debug("Login failure for userId ::", username);
-    }
+    //} else {
+    //    logger.debug("Login failure for userId ::", username);
+    //}
 
     res.status(200).json(responseJson);
 });
