@@ -48,6 +48,8 @@
 		"board_failure": "Board failure",
 		"strong_vibration": "Strong vibration",
 		"water_leak": "Water leak",
+		"start": "Start",
+		"stop": "Stop",
 		"fix_machine": "Fix machine",
 		"delete_washer": "Delete washer",
 		"device_id": "Device ID",
