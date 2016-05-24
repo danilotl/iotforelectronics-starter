@@ -493,7 +493,7 @@ app.get('/appliancesTest/:userID', function (req, res)
 	}*/
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.params.userID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
