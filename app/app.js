@@ -278,11 +278,11 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(200).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(500).send(response);
         	return;
         	}
         	
@@ -297,7 +297,7 @@ app.get('/usersTest/:userID', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ req.params.userID + '/' + iotETenant,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.params.userID + '/' + iotETenant,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
@@ -307,11 +307,11 @@ app.get('/usersTest/:userID', function(req, res)
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(200).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(500).send(response);
         	return;
         	}
         	
