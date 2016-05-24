@@ -502,7 +502,8 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 	request(options, function (error, response, body) {
 	    if (!error) {
         	// Print out the response body
-        	console.log(body);
+        	console.log("body: " + body);
+        	console.log("response: " + response);
         	res.status(response.statusCode).json(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
