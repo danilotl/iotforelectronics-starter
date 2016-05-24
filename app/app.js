@@ -306,7 +306,8 @@ app.get('/usersTest/:userID', function(req, res)
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
-        	console.log(body);
+        	console.log('body: ' + body);
+        	console.log('response: ' + response)
         	res.status(200).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
