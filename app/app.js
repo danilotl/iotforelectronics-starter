@@ -465,7 +465,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -504,7 +504,7 @@ app.get('/appliancesTest/:userID', function (req, res)
         	// Print out the response body
         	console.log("body: " + body);
         	console.log("response: " + response);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -542,7 +542,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	// Print out the response body
         	console.log("body: " + body);
         	console.log("response: " + response);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -579,7 +579,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
