@@ -383,7 +383,7 @@ app.post("/usersTest", function (req, res)
 		console.log('JSON log should have been sent');
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ iotETenant,+ '/' + iotEApiKey + '/' + iotEAuthToken,
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internalSteph/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
    		json: formData,
 		method: 'POST', 
 		headers: {
