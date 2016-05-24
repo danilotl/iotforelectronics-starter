@@ -278,11 +278,11 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.status(200).send(response);
+        	res.status(response.statusCode).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(500).send(response);
+        	res.status(response.statusCode).send(response);
         	return;
         	}
         	
@@ -353,10 +353,10 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
     		if(error) {
         		console.log('ERROR: ' + error);
 			console.log('BODY: ' + error);
-        		res.status(500).send(response);
+        		res.status(response.statusCode).send(response);
     		} else {
         		console.log(response.statusCode, body);
-        		res.status(200).send(response);
+        		res.status(response.statusCode).send(response);
 		}});
 });
 
@@ -430,10 +430,10 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(500).send(response);
+				res.status(response.statusCode).send(response);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(200).send(response);
+				res.status(response.statusCode).send(response);
 			}
 		});
 });
@@ -464,11 +464,11 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(response.statusCode).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(response.statusCode).send(response);
         	return;
         	}
         	
@@ -503,11 +503,11 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(response.statusCode).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(response.statusCode).send(response);
         	return;
         	}
         	
@@ -540,11 +540,11 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(response.statusCode).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(response.statusCode).send(response);
         	return;
         	}
         	
@@ -578,10 +578,10 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(500).send(response);
+				res.status(response.statusCode).send(response);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(200).send(response);
+				res.status(response.statusCode).send(response);
 			}
 		});
 });
@@ -614,11 +614,11 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.sendStatus(200);
+        	res.status(response.statusCode).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.sendStatus(500);
+        	res.status(response.statusCode).send(response);
         	return;
         	}
         	
