@@ -394,10 +394,10 @@ app.post("/usersTest", function (req, res)
     		if(error) {
         		console.log('ERROR: ' + error);
 			console.log('BODY: ' + error);
-        		res.sendStatus(500);
+        		res.status(error.statusCode).send(error);
     		} else {
         		console.log(response.statusCode, body);
-        		res.sendStatus(response);
+        		res.status(response.statusCode).send(body);
 		}});
 }); 
 
