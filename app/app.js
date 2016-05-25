@@ -751,7 +751,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   var disabled = false;
 
 //Stephanie's deletedDoc Doc creation for Metering
-console.log('Creating doc to track deleted docs');
+/*console.log('Creating doc to track deleted docs');
 var urlDel = ['https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs', orgId].join('/');
 console.log('Deleted Docs API URL:', urlDel);
 request
@@ -764,7 +764,7 @@ request
       console.log('Request timed out.');
     else
       console.log(error);
-  }); 
+  }); */
   
 console.log('About to store IoTP Credentials');
 var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
