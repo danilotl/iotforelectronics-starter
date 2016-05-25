@@ -538,7 +538,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	// Print out the response body
         	console.log("body: " + body);
         	console.log("response: " + response);
-        	res.status(response.statusCode).json(body);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
