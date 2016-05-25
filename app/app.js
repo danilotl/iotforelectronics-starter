@@ -306,7 +306,8 @@ app.get('/usersTest/:userID', function(req, res)
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
-        	console.log(body);
+        	console.log('body: ' + body);
+        	console.log('response: ' + response)
         	res.status(200).send(response);
 	    }else{
         	console.log("The request came back with an error: " + error);
@@ -464,7 +465,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -476,6 +477,43 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 });
 
 
+
+/***************************************************************/
+/* Route to list all appliance documents for given user   (4)  */
+/*       													   */
+/* Input: Query string with userID and optional applianceID    */
+/***************************************************************/
+app.get('/appliancesTest/:userID', function (req, res)
+{
+	//make sure userID on params matches userID coming in thru MCA
+	/*if (req.params.userID != req.user.id)
+	{
+		res.status(500).send("User ID on request does not match MCA authenticated user.")
+		//might need a return here, needs test
+	}*/
+	var options =
+	{
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.params.userID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log("body: " + body);
+        	console.log("response: " + response);
+        	res.status(response.statusCode).send(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	
+        	});
+});
 
 
 /***************************************************************/
@@ -504,7 +542,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	// Print out the response body
         	console.log("body: " + body);
         	console.log("response: " + response);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -541,7 +579,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).json(response);
+        	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
