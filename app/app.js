@@ -754,6 +754,22 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   var rtiBaseUrl = rtiCredentials["baseUrl"];
   var disabled = false;
 
+//Stephanie's deletedDoc Doc creation for Metering
+console.log('Creating doc to track deleted docs');
+var urlDel = ['https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs', orgId].join('/');
+console.log('Deleted Docs API URL:', urlDel);
+request
+  .get(urlDel, {timeout: 3000})
+  .on('response', function(response){
+    console.log('Response received.');
+  })
+  .on('error', function(error){
+    if(error.code === 'ETIMEDOUT')
+      console.log('Request timed out.');
+    else
+      console.log(error);
+  }); 
+  
 console.log('About to store IoTP Credentials');
 var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 console.log('Credentials API URL:', url);
