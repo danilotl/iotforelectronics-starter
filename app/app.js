@@ -69,9 +69,6 @@ dumpError = function(msg, err) {
 //The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
 
-//global HTTP routers
-httpRouter = require('./routes/httpRouter');
-
 //Add a handler to inspect the req.secure flag (see
 //http://expressjs.com/api#req.secure). This allows us
 //to know whether the request was via http or https.
@@ -111,7 +108,6 @@ app.use(function(req, res, next){
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/', httpRouter);
 app.use('/', device);
 app.use('/', simulator);
 
@@ -542,7 +538,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	// Print out the response body
         	console.log("body: " + body);
         	console.log("response: " + response);
-        	res.status(response.statusCode).json(body);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
@@ -754,6 +750,22 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
   var rtiBaseUrl = rtiCredentials["baseUrl"];
   var disabled = false;
 
+//Stephanie's deletedDoc Doc creation for Metering
+/*console.log('Creating doc to track deleted docs');
+var urlDel = ['https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs', orgId].join('/');
+console.log('Deleted Docs API URL:', urlDel);
+request
+  .get(urlDel, {timeout: 3000})
+  .on('response', function(response){
+    console.log('Response received.');
+  })
+  .on('error', function(error){
+    if(error.code === 'ETIMEDOUT')
+      console.log('Request timed out.');
+    else
+      console.log(error);
+  }); */
+  
 console.log('About to store IoTP Credentials');
 var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', orgId, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 console.log('Credentials API URL:', url);

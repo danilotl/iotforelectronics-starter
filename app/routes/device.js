@@ -70,6 +70,16 @@ deviceRouter.get('/washingMachine/:deviceID/getAttributes', device.getAttributes
  * ************ PUT REQUESTS ************
  * ************ ************ ************/
 
+ /**
+ * Start the washing cycle for the given device
+ */
+deviceRouter.put('/washingMachine/:deviceID/startWashing', device.startWashing);
+
+/**
+ * Stop the washing cycle for the given device
+ */
+deviceRouter.put('/washingMachine/:deviceID/stopWashing', device.stopWashing);
+
 /**
  * Change the value of a specific attribute for a specific device
  * @Param: attribute - the name of the attribute to change (program, doorOpen, currentCycle, etc)
