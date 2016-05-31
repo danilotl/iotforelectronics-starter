@@ -752,7 +752,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 
 //Stephanie's deletedDoc Doc creation for Metering
 console.log('Creating doc to track deleted docs');
-var urlDel = 'https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs/' + orgID;
+var urlDel = 'https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs/' + orgId;
 console.log('Deleted Docs API URL:', urlDel);
 request
   .get(urlDel, {timeout: 3000})
