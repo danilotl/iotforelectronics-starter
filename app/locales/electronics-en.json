@@ -69,6 +69,7 @@
 		"vibration_unit": "mps",
 		"water_pressure": "Water pressure",
 		"water_pressure_unit": "psi",
+		"appliance_code": "Appliance Code",
 		"qr_text": "When you try the consumer app, you can scan the QR code to see this washer's status and other events on your phone.",
 		"delete_prompt": "This action cannot be undone. Are you sure?",
 		"cancel": "Cancel",
