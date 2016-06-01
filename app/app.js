@@ -740,15 +740,15 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 /*Solution Integrator Code                                               */
 /********************************************************************** **/
   //Get RTI credentials
- if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
-  	throw "Cannot get RTI credentials"
- var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
+// if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
+//  	throw "Cannot get RTI credentials"
+// var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
 //RTI Credentials
-  var rtiApiKey = rtiCredentials["apiKey"];
-  var rtiAuthToken = rtiCredentials["authToken"];
-  var rtiBaseUrl = rtiCredentials["baseUrl"];
-  var disabled = false;
+//  var rtiApiKey = rtiCredentials["apiKey"];
+//  var rtiAuthToken = rtiCredentials["authToken"];
+//  var rtiBaseUrl = rtiCredentials["baseUrl"];
+//  var disabled = false;
 
 //Stephanie's deletedDoc Doc creation for Metering
 console.log('Creating doc to track deleted docs');
@@ -893,7 +893,7 @@ app.get('/validation', function(req, res)
 // //});
 
 //RTI data source creation call
-var rtiSource = rtiPost('/message/source',{
+/*var rtiSource = rtiPost('/message/source',{
 	"name": name,
 	"orgId": orgId,
 	"apiKey": apiKey,
@@ -918,7 +918,7 @@ var rtiSource = rtiPost('/message/source',{
 				  	"eventType": "+",
 				  	"schemaId": schemaValues.id});
 			  });
-});
+});*/
 
 
 console.log('IoT4E Credentials: ' + iotETenant);  
