@@ -77,6 +77,7 @@ $(document).ready(function(){
         }
        }
      });
+	 window.analytics.track("IoT for Electronics -> Add Device", {});
   }
 
   getDevices();
