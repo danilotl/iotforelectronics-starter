@@ -137,6 +137,8 @@ $(document).ready(function(){
 
   function validateAppExperienceWasherMessage(){
     var appNoWasherMessage = $('.appxp-washer-message');
+    var installationSection = $('.installation-section');
+    var 
     if ($('.selection-box.active').attr('name') === 'selection-box-2'){
       if(numberOfDevices < 1){
         appNoWasherMessage.removeClass('hidden');
