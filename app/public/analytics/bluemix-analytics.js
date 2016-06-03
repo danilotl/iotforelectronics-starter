@@ -1095,7 +1095,7 @@ function loadNPS(json, cf_id) {
 		    }
 			else if ( config.segment && getSite() === 'IOTPLATFORM' ){
 				console.log("xxxxxxxxxxxxx SITE = IOTPLATFORM!!!!!");
-				_$.async_script('/js/sources/analytics-atlas.js' );
+				_$.async_script('js/sources/analytics-atlas.js' );
 		    }
 		    else if (config.segment && getSite() === 'BLUEMIX_CLASSIC' ) {
 				_$.async_script('js/sources/analytics-classic.js' );

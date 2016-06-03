@@ -496,8 +496,8 @@
 		}
 
 		function addIotElectronicsTags(){
-			var category = "IoT for Electronics";
-			var name = category;
+			var category = "IoT";
+			var name = "Electronics";
 			var properties =getPageProperties();
 			var options = getPageOptions();
 
@@ -590,7 +590,9 @@
         addIotPlatformTags();
     }
 	else if (page_id === 'IOTELECTRONICS'){
+		console.log('Inside If');
         addIotElectronicsTags();
+		console.log('Going out If');
     }
 
     addCommonTags();
