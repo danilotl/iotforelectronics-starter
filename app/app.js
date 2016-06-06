@@ -273,7 +273,7 @@ app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {se
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
 	    	//we already have a user, so do nothing
-        	console.log('User exists, won't create one.' + body);
+        	console.log('User exists, wont create one.' + body);
 	    }else if (error){
         	console.log("The request came back with an error: " + error);
         	return;
