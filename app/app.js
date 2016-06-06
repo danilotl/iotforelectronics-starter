@@ -231,9 +231,11 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 /***************************************************/
 app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {session: false}), function(req,res)
 {
+	console.log("inside createUser API");
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
 	{
+		console.log("inside 236 if. userID on params doesn't match MCA user.");
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 	}
 	
@@ -254,6 +256,7 @@ app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {se
         	console.log("The request came back with an error: " + error);
         	return;
         	}else{
+        		console.log("inside the else 258");
         		//no user doc found, register this user
         		userDoc = [];
         		userDoc.orgID = currentOrgID;
