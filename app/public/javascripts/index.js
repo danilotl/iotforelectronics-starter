@@ -70,7 +70,7 @@ $(document).ready(function(){
          
          validateNoWasherMessage();
          validateAppExperienceWasherMessage();
-         analytics.track("IoT for Electronics -> Add Device", {});
+         //analytics.track("IoT for Electronics -> Add Device", {});
        },
        error: function(x, t, m){
         if(t === "timeout") {
