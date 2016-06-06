@@ -188,30 +188,6 @@ const https = require('https');
 
 
 /***************************************************************/
-/* API to bulk load documents into Cloudant                    */
-/* This is an unprotected test API - STEPHANIE 5/9/16          */
-/***************************************************************/
-app.post('/bulkLoadDocs', function(req, res)
-{
-
-
-	//Write all the documents to Cloudant at the same time
-	db.bulk({docs: req.body}, function(bulkError)
-	{
-		if (bulkError)
-  		{
-    			console.log("Error condition doing bulk insert into Cloudant");
-    			console.log("Error is - " + bulkError);
-    			res.sendStatus(bulkError.statusCode);
-            		return;
-  		}
-	res.sendStatus(201);
-  	console.log('Inserted all documents');
-	});
-});
-
-
-/***************************************************************/
 /* Route to update 1 user document in Cloudant                 */
 /*					        	       */
 /* Input: url params that contains the userID 		       */
@@ -340,35 +316,6 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
         	});
 });
 
-/***************************************************************/
-/* Route to get 1 user document from Cloudant (1)              */
-/*TEST!!!!!!!!!!!!!!!!
-/***************************************************************/
-app.get('/usersTest/:userID', function(req, res)
-{
-	var options =
-	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.params.userID + '/' + iotETenant,
-		method: 'GET',
-		headers: {
-    				'Content-Type': 'application/json'
-  		}
-	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log('body: ' + body);
-        	console.log('response: ' + response)
-        	res.status(200).send(response);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(500).send(response);
-        	return;
-        	}
-        	
-        	});
-});
 
 /***************************************************************/
 /* Route to add 1 user document to Cloudant.   (2)             */
@@ -412,46 +359,6 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		}});
 });
 
-
-/***************************************************************/
-/* Route to add 1 user document to Cloudant.   (2)             */
-/* TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!			       */
-/***************************************************************/
-// passport.authenticate('mca-backend-strategy', {session: false }),
-app.post("/usersTest", function (req, res)
-{
-	//var formData = req.body;
-	var formData = JSON.parse(JSON.stringify(req.body)); 
-	formData.orgID = currentOrgID;
-	var fakeUserID = '12345';
-	
-	//verify that userID coming in MCA matches doc userID
-	//test!!
-	if (formData.userID != fakeUserID)
-	{
-		//see if logic ^ works first before finishing this
-		console.log("doc userID and mca userID do not match")
-		console.log('JSON value --->', formData);
-		console.log('JSON log should have been sent');
-	}
-	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-   		json: formData,
-		method: 'POST', 
-		headers: {
-    				'Content-Type': 'application/json'
-  		}
-
-    	}, function(error, response, body){
-    		if(error) {
-        		console.log('ERROR: ' + error);
-			console.log('BODY: ' + error);
-        		res.status(error.statusCode).send(error);
-    		} else {
-        		console.log(response.statusCode, body);
-        		res.status(response.statusCode).send(body);
-		}});
-}); 
 
 /***************************************************************/
 /* Route to add 1 appliance document to registration Cloudant.(3) */
@@ -517,45 +424,6 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
         	// Print out the response body
         	console.log(body);
         	res.status(response.statusCode).json(body);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-        	
-        	});
-});
-
-
-
-/***************************************************************/
-/* Route to list all appliance documents for given user   (4)  */
-/*       													   */
-/* Input: Query string with userID and optional applianceID    */
-/***************************************************************/
-app.get('/appliancesTest/:userID', function (req, res)
-{
-	//make sure userID on params matches userID coming in thru MCA
-	/*if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}*/
-	var options =
-	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.params.userID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
-		method: 'GET',
-		headers: {
-    				'Content-Type': 'application/json'
-  		}
-	};
-	request(options, function (error, response, body) {
-	    if (!error) {
-        	// Print out the response body
-        	console.log("body: " + body);
-        	console.log("response: " + response);
-        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
