@@ -96,6 +96,7 @@
 
         // Send Failure Event
         $('.problem-machine-icons p').click(function(e) {
+		  analytics.track("IoT for Electronics -> Washer failed", {});
           e.preventDefault();
           if($('#resetMachines').prop('disabled')) {
             $('#resetMachines').prop('disabled', false);
@@ -141,6 +142,7 @@
 
         // Reset Machine
         $('.problem-machine-buttons #resetMachines').click(function(e) {
+		  analytics.track("IoT for Electronics -> Washer Fixed", {});
           e.preventDefault();
           $('#resetMachines').prop('disabled', true);
           $('#actionWasher').prop('disabled', false);
