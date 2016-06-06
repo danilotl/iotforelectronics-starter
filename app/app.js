@@ -657,13 +657,55 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
         //create a user doc for this user if one doesn't already exist
         if (username != 'conrad')
         {
-        	res.redirect('/createUser/' + username);
+        	console.log('user is not conrad.')
+		//first see if the user exists
+		var options =
+		{
+			url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+			method: 'GET',
+			headers:{
+    					'Content-Type': 'application/json'
+  			}
+		};
+		request(options, function (error, response, body) {
+	    	if (!error && response.statusCode == 200) {
+		    	//we already have a user, so do nothing
+        		console.log('User exists, wont create one.' + body);
+	    	}else if (error){
+	        	console.log("The request came back with an error: " + error);
+        		return;
+        		}else{
+	        		console.log("inside the else 258");
+        			//no user doc found, register this user
+        			userDoc = [];
+        			userDoc.orgID = currentOrgID;
+        			userDoc.userID = req.user.id;
+			
+		
+				request({
+	   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+					json: userDoc,
+					method: 'POST', 
+					headers: {
+    							'Content-Type': 'application/json'
+  					}
+	
+	    			}, function(error, response, body){
+		    			if(error) {
+	        				console.log('ERROR: ' + error);
+						console.log('BODY: ' + error);
+    					} else {
+			        		console.log(response.statusCode, body);
+					}
+    		   		});
+        		}
+        	});
         }
-    } else {
-        logger.debug("Login failure for userId ::", username);
-    }
-
-    res.status(200).json(responseJson);
+    	} else {
+	        logger.debug("Login failure for userId ::", username);
+    	}
+	
+    	res.status(200).json(responseJson);
 });
 
 
