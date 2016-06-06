@@ -248,6 +248,62 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		}});
 });
 
+/***************************************************/
+/* Admin. API specifically for adding a user doc   */
+/* on mobile login, when one doesn't already exist */
+/* for the user logging in                         */
+/***************************************************/
+app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {session: false}), function(req,res)
+{
+	//make sure userID on params matches userID coming in thru MCA
+	if (req.params.userID != req.user.id)
+	{
+		res.status(500).send("User ID on request does not match MCA authenticated user.")
+	}
+	
+	//first see if the user exists
+	var options =
+	{
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+	    	//we already have a user, so do nothing
+        	console.log('User exists, won't create one.' + body);
+	    }else if (error){
+        	console.log("The request came back with an error: " + error);
+        	return;
+        	}else{
+        		//no user doc found, register this user
+        		userDoc = [];
+        		userDoc.orgID = currentOrgID;
+        		userDoc.userID = req.user.id;
+		
+	
+			request({
+   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+				json: userDoc,
+				method: 'POST', 
+				headers: {
+    						'Content-Type': 'application/json'
+  				}
+
+	    		}, function(error, response, body){
+	    			if(error) {
+	        			console.log('ERROR: ' + error);
+					console.log('BODY: ' + error);
+    				} else {
+		        		console.log(response.statusCode, body);
+				}
+    		   	});
+        	}
+        });
+});
+
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
 /*					  		   	*/
@@ -260,7 +316,6 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
 	}
 	var options =
 	{
@@ -718,7 +773,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 
     var userObject = userRepository[username];
 
-    //if (userObject && userObject.password == password ){
+    if (userObject && userObject.password == password ){
         logger.debug("Login success for userId ::", username);
         responseJson.status = "success";
         responseJson.userIdentity = {
@@ -728,9 +783,11 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
                 dob: userObject.dob
             }
         };
-    //} else {
-    //    logger.debug("Login failure for userId ::", username);
-    //}
+        //create a user doc for this user if one doesn't already exist
+        res.redirect('/createUser/' + username);
+    } else {
+        logger.debug("Login failure for userId ::", username);
+    }
 
     res.status(200).json(responseJson);
 });
