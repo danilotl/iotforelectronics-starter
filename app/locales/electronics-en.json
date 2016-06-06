@@ -1,4 +1,11 @@
 {
+	"copyright": [
+		"Licensed Materials - Property of IBM",
+		"5725-X28",
+		"(C) Copyright IBM Corp. 2016",
+		"US Government Users Restricted Rights - Use, duplication, or disclosure",
+		"restricted by GSA ADP Schedule Contract with IBM Corp."
+	],
 	"main_page": {
 		"page_title": "IoT for Electronics",
 		"top_title": "IoT for Electronics Starter Experience",
