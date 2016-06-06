@@ -652,7 +652,10 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
             }
         };
         //create a user doc for this user if one doesn't already exist
-        res.redirect('/createUser/' + username);
+        if (username != 'conrad')
+        {
+        	res.redirect('/createUser/' + username);
+        }
     } else {
         logger.debug("Login failure for userId ::", username);
     }
