@@ -70,7 +70,7 @@ $(document).ready(function(){
          
          validateNoWasherMessage();
          validateAppExperienceWasherMessage();
-         $window.analytics.track("IoT for Electronics -> Add Device", {});
+         analytics.track("IoT for Electronics -> Add Device", {});
        },
        error: function(x, t, m){
         if(t === "timeout") {
@@ -84,6 +84,7 @@ $(document).ready(function(){
   validateAppExperienceWasherMessage();
 
   $(document).on('click', '#addNewDeviceButton', function(e){
+    analytics.track("IoT for Electronics -> Add Device", {});
     e.preventDefault();
     $('#addNewDeviceButton').prop('disabled', true);
     $('#addNewDeviceButton img').attr("src","../images/PlusWasher_dis.svg");
