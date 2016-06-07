@@ -224,21 +224,14 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		}});
 });
 
-/***************************************************/
-/* Admin. API specifically for adding a user doc   */
-/* on mobile login, when one doesn't already exist */
-/* for the user logging in                         */
-/***************************************************/
-app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {session: false}), function(req,res)
+/********************************************************/
+/* Admin. function specifically for adding a user doc   */
+/* on mobile login, when one doesn't already exist      */
+/* for the user logging in                              */
+/********************************************************/
+createUser = function (username)
 {
-	console.log("inside createUser API");
-	//make sure userID on params matches userID coming in thru MCA
-	if (req.params.userID != req.user.id)
-	{
-		console.log("inside 236 if. userID on params doesn't match MCA user.");
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-	}
-	
+	console.log("inside createUser function");
 	//first see if the user exists
 	var options =
 	{
@@ -252,17 +245,15 @@ app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {se
 	    if (!error && response.statusCode == 200) {
 	    	//we already have a user, so do nothing
         	console.log('User exists, wont create one.' + body);
+        	return;
 	    }else if (error){
         	console.log("The request came back with an error: " + error);
         	return;
         	}else{
-        		console.log("inside the else 258");
         		//no user doc found, register this user
         		userDoc = {};
         		userDoc.orgID = currentOrgID;
-        		userDoc.userID = req.user.id;
-		
-	
+        		userDoc.userID = username;
 			request({
    				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
 				json: userDoc,
@@ -275,13 +266,16 @@ app.get('/createUser/:userID', passport.authenticate('mca-backend-strategy', {se
 	    			if(error) {
 	        			console.log('ERROR: ' + error);
 					console.log('BODY: ' + error);
+					return;
     				} else {
 		        		console.log(response.statusCode, body);
+		        		return;
 				}
     		   	});
         	}
         });
-});
+}
+
 
 /***************************************************************/
 /* Route to get 1 user document from Cloudant (1)              */
@@ -655,7 +649,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
             }
         };
         //create a user doc for this user if one doesn't already exist
-        res.redirect('/createUser/' + username);
+        createUser(username);
     	} else {
 	        logger.debug("Login failure for userId ::", username);
     	}
