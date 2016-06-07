@@ -235,7 +235,7 @@ createUser = function (username)
 	//first see if the user exists
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ username + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
