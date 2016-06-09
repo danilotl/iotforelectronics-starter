@@ -212,7 +212,7 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 
@@ -243,7 +243,7 @@ createUser = function (username)
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -267,7 +267,7 @@ createUser = function (username)
 				headers: {
     						'Content-Type': 'application/json',
     						'tenantID':iotETenant,
-    						'orgID':orgID
+    						'orgID':currentOrgID
   				},
   				auth: {user:iotEApiKey, pass:iotEAuthToken}
 
@@ -306,7 +306,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -354,7 +354,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 
@@ -395,7 +395,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -431,7 +431,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -471,7 +471,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -512,7 +512,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -552,7 +552,7 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -590,7 +590,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
-    				'orgID':orgID
+    				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
