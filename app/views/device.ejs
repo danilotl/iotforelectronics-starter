@@ -223,7 +223,7 @@
               $('#actionWasher').text("<%= __('appliance_page.stop') %>");
               switch(device.currentCycle){
                 case 'Filling':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.filling') %>"); break;
-                case 'Litespinning': $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.litespinning') %>"); break;
+                case 'Washing':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.washing') %>"); break;
                 case 'Soaking':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.soaking') %>"); break;
                 case 'Spinning':     $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.spinning') %>"); break;
                 case 'Draining':     $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.draining') %>"); break;
