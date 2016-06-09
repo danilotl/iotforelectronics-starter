@@ -206,12 +206,15 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
 		json: userDocIn,
 		method: 'PUT', 
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 
     	}, function(error, response, body){
     		if(error) {
@@ -235,11 +238,14 @@ createUser = function (username)
 	//first see if the user exists
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ username + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ username),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
@@ -255,12 +261,15 @@ createUser = function (username)
         		userDoc.orgID = currentOrgID;
         		userDoc.userID = username;
 			request({
-   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
 				json: userDoc,
 				method: 'POST', 
 				headers: {
-    						'Content-Type': 'application/json'
-  				}
+    						'Content-Type': 'application/json',
+    						'tenantID':iotETenant,
+    						'orgID':orgID
+  				},
+  				auth: {user:iotEApiKey, pass:iotEAuthToken}
 
 	    		}, function(error, response, body){
 	    			if(error) {
@@ -292,11 +301,14 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	}
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id), 
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
@@ -334,16 +346,17 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		//might need a return here, needs test
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
-		console.log('JSON value --->', formData);
-		console.log('JSON log should have been sent');
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
 		json: formData,
 		method: 'POST', 
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 
     	}, function(error, response, body){
     		if(error) {
@@ -376,12 +389,15 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		//might need a return here, needs test
 	}
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal',
 		json: bodyIn,
 		method: 'POST', 
-		headers:{
-			'Content-Type': 'application/json'
-		}
+		headers: {
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
 			if(error) {
 				console.log('ERROR: ' + error);
@@ -410,11 +426,14 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error) {
@@ -447,11 +466,14 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 	}
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.user.id),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error) {
@@ -485,11 +507,14 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	}
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.user.id + '/' + req.body.applianceID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.user.id + '/' + req.body.applianceID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error) {
@@ -504,9 +529,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
         	}
         	
         	});
-	
 });
-
 
 /***************************************************************/
 /* Route to delete appliance records                           */
@@ -524,11 +547,14 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		//might need a return here, needs test
 	}
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.params.userID + '/' + req.params.applianceID + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE', 
-		headers:{
-			'Content-Type': 'application/json'
-		}
+		headers: {
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
 			if(error) {
 				console.log('ERROR: ' + error);
@@ -559,11 +585,14 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 	}
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.user.id + '/' + iotETenant + '/' + iotEApiKey + '/' + iotEAuthToken,
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.user.id),
 		method: 'DELETE',
 		headers: {
-    				'Content-Type': 'application/json'
-  		}
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':orgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error) {
