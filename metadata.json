@@ -27,10 +27,10 @@
     "headingIcon": "500x190.png",
     "system_tags": ["ibm_created", "ibm_experimental"],
     "source" : {
-  		"scmType" : "git",
+        "scmType" : "git",
         "url" : "https://github.com/danilotl/iotforelectronics-starter.git",
-  		"appPath" : "app"
-  	},
+        "appPath" : "app"
+    },
     "docURL": "https://new-console.stage1.ng.bluemix.net/docs/starters/IotElectronics/iotelectronics_overview.html",
     "runtime_id": "763dcb4a-8642-4676-ae17-ca5bd032ad9e",
     "runtime_template_id": "nodejsHelloWorld",
@@ -38,5 +38,5 @@
         "name": "SDK for Node.js™",
         "description": "Quickly get started with SDK for Node.js™."
     },
-    "categories": ["boilerplate"]    
+    "categories": ["boilerplate"]
 }
