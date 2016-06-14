@@ -664,7 +664,8 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
     if (userRepository[username] == null) {
         userRepository[username]={password: password, displayName: username, dob:"December 31, 2016"};
     }
-
+	//create a user doc in registration for this user if one doesn't already exist
+        createUser(username);
     var userObject = userRepository[username];
 
     if (userObject && userObject.password == password ){
@@ -677,8 +678,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
                 dob: userObject.dob
             }
         };
-        //create a user doc for this user if one doesn't already exist
-        createUser(username);
+        
     	} else {
 	        logger.debug("Login failure for userId ::", username);
     	}
