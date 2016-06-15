@@ -21,4 +21,8 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.get('/socket.io/admin', function (req, res){
+	res.status(404);
+});
+
 module.exports = router;
