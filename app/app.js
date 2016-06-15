@@ -12,6 +12,7 @@ var cfenv = require('cfenv');
 var log4js = require('log4js');
 
 var app = express();
+
 //set the app object to export so it can be required
 module.exports = app;
 
