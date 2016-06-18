@@ -141,6 +141,16 @@ var iotEApiKey = iotECredentials["apiKey"];
 //STEPHANIES'S CODE *************
 /***************************************************************/
 /***************************************************************/
+
+// SETUP CLOUDANT
+//Key whichispermandencellansp
+//Password a8ba75e7534498a85a9f0c11adbe11e09ae03177 //
+var passport   = require('passport');
+var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
+var services = JSON.parse(process.env.VCAP_SERVICES)
+var application = JSON.parse(process.env.VCAP_APPLICATION)
+var currentOrgID = iotfCredentials["org"];
+
 /***************************************************************/
 /* Set up express server & passport                            */
 /***************************************************************/
