@@ -141,43 +141,6 @@ var iotEApiKey = iotECredentials["apiKey"];
 //STEPHANIES'S CODE *************
 /***************************************************************/
 /***************************************************************/
-
-// SETUP CLOUDANT
-//Key whichispermandencellansp
-//Password a8ba75e7534498a85a9f0c11adbe11e09ae03177 //
-var id = 'ca15409e-9847-4b9e-9d8c-ec26c4cf01ae-bluemix';
-var pword = 'f1ad812df21ef96a09dbfbaff6de261e3085b0a5da0518bede7ab69a1caff3f7';
-var host  = 'ca15409e-9847-4b9e-9d8c-ec26c4cf01ae-bluemix.cloudant.com';
-var CLOUDANT_URL='https://' + id + ':' + pword + '@' + host;
-var dbname   = 'iot_for_electronics_registration';
-
-var passport   = require('passport');
-var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
-var Cloudant   = require('cloudant');
-
-var services = JSON.parse(process.env.VCAP_SERVICES)
-var application = JSON.parse(process.env.VCAP_APPLICATION)
-var currentOrgID = iotfCredentials["org"];
-
-var cloudant = Cloudant(CLOUDANT_URL, function(err,cloudant){
-	db = cloudant.db.use(dbname);
-	//make sure it is created
-	cloudant.db.get(dbname, function(err, body) {
-		if(err){
-			console.log('creating ' + dbname);
-			cloudant.db.create(dbname, function(err,body) {
-				if (!err)
-					console.log('DB created ');
-				else
-					console.error('Err creating DB ' + err );
-			});
-		}
-		else {
-			console.log("connected to DB");
-		}
-});
-});
-
 /***************************************************************/
 /* Set up express server & passport                            */
 /***************************************************************/
