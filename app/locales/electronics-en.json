@@ -52,7 +52,9 @@
 		"back_to_top": "Back to top",
 		"explore_more": "EXPLORE MORE",
 		"manage_devices": "Now you can manage your devices from the platform >",
-		"device_deleted": "Success! Device {0} was successfully deleted."	
+		"device_deleted": "Success! Device {0} was successfully deleted.",
+		"timeout_list": "The request to list the devices has timed out, the simulation will restart. Please, refresh the page and try again.",
+		"timeout_create": "The request to create a device has timed out, the simulation will restart. Please, refresh the page and try again."
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
