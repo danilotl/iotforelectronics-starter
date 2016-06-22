@@ -180,7 +180,7 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 		json: userDocIn,
 		method: 'PUT', 
 		headers: {
@@ -212,7 +212,7 @@ createUser = function (username)
 	//first see if the user exists
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ username),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ username),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ createUser = function (username)
         		userDoc.orgID = currentOrgID;
         		userDoc.userID = username;
 			request({
-   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
+   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 				json: userDoc,
 				method: 'POST', 
 				headers: {
@@ -275,7 +275,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	}
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/users/internal/'+ req.user.id), 
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.user.id), 
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -322,7 +322,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/users/internal',
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 		json: formData,
 		method: 'POST', 
 		headers: {
@@ -363,7 +363,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		//might need a return here, needs test
 	}
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal',
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
 		json: bodyIn,
 		method: 'POST', 
 		headers: {
@@ -400,7 +400,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 	
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.params.userID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -440,7 +440,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 	}
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal/'+ req.user.id),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -481,7 +481,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	}
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.user.id + '/' + req.body.applianceID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id + '/' + req.body.applianceID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -521,7 +521,7 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		//might need a return here, needs test
 	}
 	request({
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/appliances/internal2/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE', 
 		headers: {
     				'Content-Type': 'application/json',
@@ -559,7 +559,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 	}
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/user/internal/'+ req.user.id),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.user.id),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
