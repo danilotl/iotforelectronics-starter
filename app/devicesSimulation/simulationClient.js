@@ -418,6 +418,7 @@ simulationClient.prototype.onDeviceFirmwareUpdate = function(deviceID){
 };
 
 simulationClient.prototype.onDeviceConnectionError = function(deviceID, errMsg, errStack){
+	this.deleteDevice(deviceID);
 	debug("Simulation event: onDeviceConnectionError deviceID: " + deviceID + "errMsg: " + errMsg + " stacktrace: " + errStack);
 	this.emit("deviceConnectionError", deviceID, errMsg, errStack);
 	this.emit("error", {errType: "deviceConnectionError", deviceID: deviceID, message: errMsg, errStack: errStack});
