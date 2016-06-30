@@ -697,7 +697,7 @@ console.log('About to store IoTP Credentials');
 console.log('Stephanie Testing API credentials');
 var options =
 	{
-		url: ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+		url: ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/'),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json'
