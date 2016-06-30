@@ -37,7 +37,8 @@
          "object.observe": "",
          "eval": "",
          "validator": "",
-         "basic-auth": ""
+         "basic-auth": "",
+         "async":""
     },
     "repository": {}
 }
