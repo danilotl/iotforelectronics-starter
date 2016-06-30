@@ -695,7 +695,8 @@ console.log('About to store IoTP Credentials');
 //var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 //console.log('Credentials API URL:', url);
 console.log('Stephanie Testing API credentials');
-var options =
+credentials = function(err, response) {
+	var options =
 	{
 		url: ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/'),
 		method: 'GET',
@@ -703,7 +704,7 @@ var options =
     				'Content-Type': 'application/json'
   		}
 	};
-async.retry(5, request(options, function(err, response, body){
+	request(options, function(err, response, body){
 	if (!error && response.statusCode == 201) {
         	// Print out the response body
         	console.log('body: ' + body);
@@ -714,7 +715,9 @@ async.retry(5, request(options, function(err, response, body){
         	console.log('error: ' + error);
         	//response.status(error.statusCode).send("ERROR on test GET")
         	}
-}), function(err, result) {
+	})
+};
+async.retry(5, credentials, function(err, result) {
     if (err) {
       console.log('credentials failed to be added');
     } else {
