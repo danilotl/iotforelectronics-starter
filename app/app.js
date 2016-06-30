@@ -692,9 +692,30 @@ request
   }); 
   
 console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
-console.log('Credentials API URL:', url);
-request
+//var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+//console.log('Credentials API URL:', url);
+console.log('Stephanie Testing API credentials');
+var options =
+	{
+		url: ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json'
+  		}
+	};
+async.retry(5, request(options, function(err, response, body)){
+	if (!error && response.statusCode == 201) {
+        	// Print out the response body
+        	console.log('body: ' + body);
+        	console.log('response: ' + response);
+        	console.log('got a 201 back.');
+        	//response.status(200).send("Successful test GET")
+	    }else{
+        	console.log('error: ' + error);
+        	//response.status(error.statusCode).send("ERROR on test GET")
+        	}
+});
+/*request
   .get(url, {timeout: 3000})
   .on('response', function(response){
     console.log('Response received.');
@@ -704,7 +725,7 @@ request
       console.log('Request timed out.');
     else
       console.log(error);
-  }); 
+  }); */
 
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
