@@ -10,7 +10,7 @@ if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
 var express = require('express');
 var cfenv = require('cfenv');
 var log4js = require('log4js');
-
+var async = require ('async');
 var app = express();
 
 //set the app object to export so it can be required
