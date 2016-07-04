@@ -733,6 +733,28 @@ app.get('/validation', function(req, res)
         	
         	});
 });
+
+/***************************************************************/
+/* Route to send the IoTP credentials to the tile again        */
+/* 									                           */
+/***************************************************************/
+app.get('/', function(req, res)
+{
+	console.log('About to store IoTP Credentials');
+    var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+	console.log('Credentials API URL:', url);
+	request
+  	.get(url, {timeout: 3000})
+  	.on('response', function(response){
+    	console.log('Response received.');
+  	})
+  	.on('error', function(error){
+    	if(error.code === 'ETIMEDOUT')
+      		console.log('Request timed out.');
+    	else
+      		console.log(error);
+  	}); 
+});
 // //var iotePass = ioteCredentials["password"];
 
 // //IoT Platform Device Types
