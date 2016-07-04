@@ -486,10 +486,16 @@ footer.main-section{
 	text-align: left;
 	padding: 0px 25px;
 }
+
 .problem-machine-icons img{
 	width: 40px;
 	height: 40px;
 }
+
+.problem-machine-icons{
+  width: 300px;
+}
+
 .problem-machine .problem-machine-icons button{
 	border: none;
 	display: inline-block;
@@ -534,9 +540,9 @@ footer.main-section{
 	display: block;
 	background: #FFF;
 	margin: 7px 0px;
-	padding: 8px;
-	width: 140px;
-	height: 40px;
+    padding: 5px;
+    width: 185px;
+    height: 40px;
 	border: 1px solid #000;
 	outline: 0 !important;
 }
