@@ -677,7 +677,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 
 //Stephanie's deletedDoc Doc creation for Metering
 console.log('Creating doc to track deleted docs');
-var urlDel = 'https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs/' + currentOrgID + '/' + iotEApiKey;
+var urlDel = 'https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs/' + currentOrgID;
 console.log('Deleted Docs API URL:', urlDel);
 request
   .get(urlDel, {timeout: 3000})
@@ -692,12 +692,12 @@ request
   }); 
   
 console.log('About to store IoTP Credentials');
-var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
   .on('response', function(response){
-  	console.log('Response Object --->', response);
+  	//console.log('Response Object --->', response);
   	console.log('Response Status Code --->', response.statusCode);
     console.log('Response received.');
   })
