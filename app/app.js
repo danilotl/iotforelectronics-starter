@@ -698,7 +698,6 @@ request
     	   else
       	      console.log(error);
   	   });
-  	});
   }
   .on('error', function(error){
     if(error.code === 'ETIMEDOUT')
