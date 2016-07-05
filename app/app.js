@@ -691,7 +691,7 @@ request
   	   .get(urlDel, {timeout: 3000})
   	   .on('response', function(response){
   	   console.log('***Response Status Code --->', response.statusCode);
-	   console.log('***Response received.');
+	   console.log('***Response received: ' + response.message);
   	   })
 	   .on('error', function(error){
     	   if(error.code === 'ETIMEDOUT')
