@@ -697,6 +697,8 @@ console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
   .on('response', function(response){
+  	console.log('Response Object --->', response);
+  	console.log('Response Status Code --->', response.statusCode);
     console.log('Response received.');
   })
   .on('error', function(error){
