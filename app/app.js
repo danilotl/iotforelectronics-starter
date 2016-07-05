@@ -684,7 +684,22 @@ request
   .on('response', function(response){
   console.log('***Response Status Code --->', response.statusCode);
     console.log('***Response received.');
-  })
+    if (response.statusCode === 404)
+    {
+    	console.log('Response was 404. Trying again.');
+    	request
+  	   .get(urlDel, {timeout: 3000})
+  	   .on('response', function(response){
+  	   console.log('***Response Status Code --->', response.statusCode);
+	   console.log('***Response received.');
+	   .on('error', function(error){
+    	   if(error.code === 'ETIMEDOUT')
+      	      console.log('***Request timed out.');
+    	   else
+      	      console.log(error);
+  	   });
+  	});
+  }
   .on('error', function(error){
     if(error.code === 'ETIMEDOUT')
       console.log('***Request timed out.');
