@@ -692,7 +692,7 @@ request
       console.log(error);
   }); 
   
-console.log('About to store IoTP Credentials');
+/*console.log('About to store IoTP Credentials');
 var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
 console.log('Credentials API URL:', url);
 request
@@ -708,7 +708,7 @@ request
     else
       console.log(error);
   }); 
-
+*/
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
