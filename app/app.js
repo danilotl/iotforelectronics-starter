@@ -692,6 +692,7 @@ request
   	   .on('response', function(response){
   	   console.log('***Response Status Code --->', response.statusCode);
 	   console.log('***Response received.');
+  	   })
 	   .on('error', function(error){
     	   if(error.code === 'ETIMEDOUT')
       	      console.log('***Request timed out.');
@@ -699,6 +700,7 @@ request
       	      console.log(error);
   	   });
   }
+  })
   .on('error', function(error){
     if(error.code === 'ETIMEDOUT')
       console.log('***Request timed out.');
