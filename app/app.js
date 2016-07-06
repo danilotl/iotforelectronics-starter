@@ -682,7 +682,7 @@ console.log('Deleted Docs API URL:', urlDel);
 request
   .get(urlDel, {timeout: 3000})
   .on('response', function(response){
-  console.log('***Response Status Code --->', response.statusCode);
+    console.log('***Response Status Code --->', response.statusCode);
     console.log('***Response received.');
   })
   .on('error', function(error){
@@ -744,11 +744,12 @@ app.get('/validation', function(req, res)
 app.get('*', function(req, res)
 {
 	console.log('About to store IoTP Credentials');
-    var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+    var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials/' + currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost  + '/' + iotEAuthToken + '/' + iotEApiKey;
 	console.log('Credentials API URL:', url);
 	request
   	.get(url, {timeout: 3000})
   	.on('response', function(response){
+  		console.log('***Response Status Code --->', response.statusCode);
     	console.log('Response received.');
   	})
   	.on('error', function(error){
