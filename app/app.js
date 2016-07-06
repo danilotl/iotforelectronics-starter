@@ -766,6 +766,7 @@ app.get('*', function(req, res)
   	.get(url, {timeout: 3000})
   	.on('response', function(response){
   		console.log('***Response Status Code --->', response.statusCode);
+  		console.log('***Response received: ' + response.message);
     	console.log('Response received.');
   	})
   	.on('error', function(error){
