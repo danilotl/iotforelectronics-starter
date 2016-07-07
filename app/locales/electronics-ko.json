@@ -52,7 +52,9 @@
 		"back_to_top": "맨 위로 돌아가기",
 		"explore_more": "자세히 살펴보기",
 		"manage_devices": "이제 플랫폼에서 디바이스를 관리할 수 있습니다. >",
-		"device_deleted": "축하합니다! {0} 디바이스가 삭제되었습니다. "	
+		"device_deleted": "축하합니다! {0} 디바이스가 삭제되었습니다. ",
+		"timeout_list": "디바이스 목록화 요청의 제한시간이 초과되어 시뮬레이션을 다시 시작합니다. 페이지를 새로 고치고 다시 시도하십시오.",
+		"timeout_create": "디바이스 작성 요청의 제한시간이 초과되어 시뮬레이션을 다시 시작합니다. 페이지를 새로 고치고 다시 시도하십시오."
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",

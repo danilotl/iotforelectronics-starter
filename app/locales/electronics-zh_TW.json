@@ -52,7 +52,9 @@
 		"back_to_top": "回到頂端",
 		"explore_more": "進一步探索",
 		"manage_devices": "現在，可以從平台管理裝置 >",
-		"device_deleted": "成功！裝置 {0} 已順利地刪除。"	
+		"device_deleted": "成功！裝置 {0} 已順利地刪除。",
+		"timeout_list": "要求列出裝置時發生逾時，將重新啟動模擬作業。請重新整理頁面，然後再試一次。",
+		"timeout_create": "要求建立裝置時發生逾時，將重新啟動模擬作業。請重新整理頁面，然後再試一次。"
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
@@ -85,7 +87,7 @@
 		"ready": "備妥",
 		"stopped": "已停止",
 		"filling": "填充中",
-		"washing": "輕柔脫水",
+		"washing": "清洗中",
 		"soaking": "浸泡中",
 		"spinning" : "旋轉中",
 		"draining": "排水中",
