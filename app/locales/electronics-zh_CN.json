@@ -8,7 +8,7 @@
 	],
 	"main_page": {
 		"page_title": "IoT for Electronics",
-		"top_title": "IoT for Electronics 入门体验",
+		"top_title": "IoT for Electronics Starter 体验",
 		"sections_preheading": "从制造商和消费者的角度来体验 IoT for Electronics",
 		"sections_headingx": "选择您要执行的操作：",
 		"sections_heading": "连接和管理模拟家电",
@@ -22,7 +22,7 @@
 		"consumer_app_text": "使用移动应用来了解消费者将如何体验该解决方案。",
 		"simulate_appliance_subtitle": "管理模拟家电",
 		"simulate_appliance_p1": "在此处创建模拟家电、发送命令并查看响应。",
-		"simulate_appliance_p2": "使用本入门产品中基于 Web 的应用监视来自您自家家电的实时流数据。您的家电将自动连接到 IBM Watson IoT Platform。在该平台上，您可以查看自己的设备以及由这些设备发送的数据和消息。",
+		"simulate_appliance_p2": "使用本入门产品中基于 Web 的应用来监视来自您自家家电的实时流数据。您的家电将自动连接到 IBM Watson IoT 平台。在该平台上，您可以查看自己的设备以及由这些设备发送的数据和消息。",
 		"learn_more": "了解更多信息",
 		"consumer_app_subtitle": "探究消费者体验",
 		"consumer_app_p1": "家电所有者可以在移动设备上通过移动应用来控制和监视新洗衣机。",
