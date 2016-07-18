@@ -629,7 +629,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 
     logger.debug("handleChallengeAnswer", tenantId, realmName, challengeAnswer);
 
-    var username = req.body.challengeAnswer["username"].trim();
+    var username = req.body.challengeAnswer["username"].replace(/\s+/g, '');
     var password = req.body.challengeAnswer["password"];
 
     var responseJson = { status: "failure" };
