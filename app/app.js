@@ -678,7 +678,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 //Stephanie's deletedDoc Doc creation for Metering
 //And storing credentials
 console.log('Creating doc to track deleted docs');
-console.log('Deleted Docs API URL:', urlDel);
+//console.log('Deleted Docs API URL:', urlDel);
 console.log('About to store credentials into Cloudant.');
 var body = {
 		"orgID":currentOrgID,
