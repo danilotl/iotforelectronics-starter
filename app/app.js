@@ -892,11 +892,11 @@ app.get('*', function(req, res)
    };
 
 //IoT Platform device type creation call
- var iotpDeviceType = iotpPost('/device/types',{
- 	"id": "washingMachine",
- 	"description": "IoT4E Washing Machine",
-	"classId": "Device"
-});
+ //var iotpDeviceType = iotpPost('/device/types',{
+ //	"id": "washingMachine",
+ //	"description": "IoT4E Washing Machine",
+//	"classId": "Device"
+//});
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
