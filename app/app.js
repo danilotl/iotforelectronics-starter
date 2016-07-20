@@ -7,6 +7,9 @@ var iotf_host = VCAP_SERVICES["iotf-service"][0]["credentials"].http_host;
 if(iotf_host.search('.staging.internetofthings.ibmcloud.com') > -1)
 	process.env.STAGING = 1;
 
+console.log("IoTF Host: ", iotf_host);
+console.log("Is Staging?: ", process.env.STAGING);
+
 var express = require('express');
 var cfenv = require('cfenv');
 var log4js = require('log4js');

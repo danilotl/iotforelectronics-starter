@@ -51,6 +51,12 @@ $(document).ready(function(){
           $('.alert-messages, #alertError').fadeTo(500, 1);
           restartSimulator();
         }
+        /****** Adionar esse if ***/
+        else if (t === 'error'){
+          $('#ajaxBusy').hide(); // tirar o spin
+          $('#alertError p').html(m)
+          $('.alert-messages, #alertError').fadeTo(500, 1);
+        }        
       }
     });
   }
