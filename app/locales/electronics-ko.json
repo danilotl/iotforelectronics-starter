@@ -8,7 +8,7 @@
 	],
 	"main_page": {
 		"page_title": "IoT for Electronics",
-		"top_title": "IoT for Electronics 스타터 경험",
+		"top_title": "IoT for Electronics Starter 경험",
 		"sections_preheading": "제조업체 및 소비자의 관점에서 IoT for Electronics를 경험해보십시오. ",
 		"sections_headingx": "수행할 작업 선택: ",
 		"sections_heading": "시뮬레이션된 어플라이언스 연결 및 관리",
@@ -31,7 +31,7 @@
 	    "consumer_app_p4": "어플라이언스 회사는 소비자의 관심을 유도하고 기존 고객을 놓치지 않고 보유하기 위해 이러한 유형의 앱과 서비스를 제공할 수 있습니다. 또한 수집된 데이터를 사용하여 자사 제품의 기능을 향상시키고 새로운 서비스를 제공할 수도 있습니다. ",
 		"add_washer_heading": "다음으로, 새롭게 시뮬레이션된 세탁기 선택 또는 추가",
 		"add_washer_message1": "최대 5대까지 세탁기를 추가할 수 있습니다. ",
-		"add_washer_message2": "5대 세탁기의 한계에 도달했습니다. ",
+		"add_washer_message2": "5대 세탁기가 추가되어 한계에 도달했습니다. ",
 		"your_washers": "사용자 세탁기",
 		"select_washer": "해당하는 시뮬레이션된 데이터를 제어할 세탁기를 선택하십시오. 새 창이 열립니다. ",
 		"no_washers_added": "추가된 세탁기가 없습니다. ",
@@ -43,8 +43,7 @@
 		"connect_app": "앱 연결",	
 		"connect_app_p1": "폰에서 앱을 시작하십시오. ",
 		"connect_app_p2": "IoT for Electronics 환경에 연결하기 위해 프롬프트가 표시되면 아래 연결 QR 코드를 스캔하십시오. ",
-		"mobile_download_more_details": "자세한 지시사항을 확인하려면 ",
-		"mobile_download_instructions_here" : "여기를 클릭하십시오. ",
+		"mobile_download_more_details": "자세한 지시사항은 문서를 참조하십시오.",
 		"scan_heading": "앱을 환경에 연결하기 위해 이 QR 코드를 스캔하십시오.",
 		"connection_code": "연결 QR 코드",
 		"scan_p1": "처음으로 폰에서 모바일 소비자 앱을 사용하는 경우 이 코드를 스캔하여 모바일 디바이스를 IoT for Electronics Bluemix 환경에 연결합니다. ",
@@ -95,4 +94,3 @@
 		"no_data": "데이터 없음"
 	}
 }
-

@@ -43,8 +43,7 @@
 		"connect_app": "Connecter l'application",	
 		"connect_app_p1": "Démarrez l'application sur votre téléphone.",
 		"connect_app_p2": "Scannez le code Quick Response de connexion ci-dessous lorsque vous êtes invité à vous connecter à l'environnement IoT for Electronics.",
-		"mobile_download_more_details": "Pour des instructions détaillées, cliquez ",
-		"mobile_download_instructions_here" : "ici",
+		"mobile_download_more_details": "Pour des instructions détaillées, voir la documentation.",
 		"scan_heading": "Pour connecter l'application à l'environnement, vous devez scanner ce code Quick Response",
 		"connection_code": "Code Quick Response de connexion",
 		"scan_p1": "Si vous utilisez l'application de consommateur mobile pour la première fois sur votre téléphone, vous devez scanner ce code pour connecter votre périphérique mobile à l'environnement Bluemix IoT for Electronics.",
@@ -95,4 +94,3 @@
 		"no_data": "Pas de données"
 	}
 }
-

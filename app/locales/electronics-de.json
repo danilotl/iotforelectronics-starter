@@ -43,8 +43,7 @@
 		"connect_app": "Verbindung zur App herstellen",	
 		"connect_app_p1": "Starten Sie die App auf dem Telefon.",
 		"connect_app_p2": "Scannen Sie den unten angezeigten QR-Code für die Verbindung, wenn Sie dazu aufgefordert werden, eine Verbindung zur IoT for Electronics-Umgebung herzustellen.",
-		"mobile_download_more_details": "Für detaillierte Anweisungen klicken Sie ",
-		"mobile_download_instructions_here" : "hier.",
+		"mobile_download_more_details": "Die Dokumentation enthält detaillierte Anweisungen.",
 		"scan_heading": "Zur Herstellung einer Verbindung von der App zur Umgebung werden Sie dazu aufgefordert, diesen QR-Code zu scannen.",
 		"connection_code": "QR-Code für die Verbindung",
 		"scan_p1": "Wenn Sie die mobile Nutzer-App zum ersten Mal auf Ihrem Telefon verwenden, scannen Sie diesen Code, um eine Verbindung vom mobilen Gerät zur IoT for Electronics-Bluemix-Umgebung herzustellen.",
@@ -53,8 +52,8 @@
 		"explore_more": "Weitere Informationen",
 		"manage_devices": "Sie können nun Geräte über die Plattform verwalten. >",
 		"device_deleted": "Erfolgreich! Das Gerät {0} wurde erfolgreich gelöscht.",
-		"timeout_list": "Die Anforderung zum Auflisten der Geräte hat das zulässige Zeitlimit überschritten, die Simulation wird erneut gestartet. Aktualisieren Sie die Seite und wiederholen Sie die Aktion. ",
-		"timeout_create": "Die Anforderung zum Erstellen eines Geräts hat das zulässige Zeitlimit überschritten, die Simulation wird erneut gestartet. Aktualisieren Sie die Seite und wiederholen Sie die Aktion. "
+		"timeout_list": "Die Anforderung zum Auflisten der Geräte hat das zulässige Zeitlimit überschritten, die Simulation wird erneut gestartet. Aktualisieren Sie die Seite und wiederholen Sie die Aktion.",
+		"timeout_create": "Die Anforderung zum Erstellen eines Geräts hat das zulässige Zeitlimit überschritten, die Simulation wird erneut gestartet. Aktualisieren Sie die Seite und wiederholen Sie die Aktion."
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
@@ -95,4 +94,3 @@
 		"no_data": "Keine Daten"
 	}
 }
-

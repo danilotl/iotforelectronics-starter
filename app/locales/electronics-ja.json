@@ -8,7 +8,7 @@
 	],
 	"main_page": {
 		"page_title": "IoT for Electronics",
-		"top_title": "IoT for Electronics の簡単な擬似体験",
+		"top_title": "IoT for Electronics Starter の擬似体験",
 		"sections_preheading": "メーカーと購入者の両方の視点で IoT for Electronics を体験してみましょう",
 		"sections_headingx": "作業を選択:",
 		"sections_heading": "擬似的な電化製品の接続と管理",
@@ -26,7 +26,7 @@
 		"learn_more": "詳細を表示",
 		"consumer_app_subtitle": "購入者の体験を確認",
 		"consumer_app_p1": "このモバイル・アプリは、モバイル・デバイスを使用して電化製品メーカーが新しい洗濯機の制御や監視ができるようにします。 ",
-		"consumer_app_p2": "iOS スマートフォンにモバイル・アプリをダウンロードして、プラットフォームから電化製品にコマンドを送信する方法を体験してみましょう。",
+		"consumer_app_p2": "iOS スマートフォンにモバイル・アプリをダウンロードして、プラットフォームから電化製品にコマンドを送信する方法を体験してみましょう。  ",
 		"consumer_app_p3": "洗濯機シミュレーションでは、洗濯機の障害イベントを擬似的に作成して、購入者のモバイル・アプリで結果を確認します。",		
 	    "consumer_app_p4": "電化製品メーカーでは、このようなタイプのアプリとサービスを提供することによってお客様を引き寄せてつなぎとめることができます。 収集したデータを使って、製品の機能を向上させ、新しいサービスを提供することも可能です。",
 		"add_washer_heading": "次に、擬似的な洗濯機を選択するか新しく追加します",
@@ -43,8 +43,7 @@
 		"connect_app": "アプリの接続",	
 		"connect_app_p1": "スマートフォンでアプリを開始します。",
 		"connect_app_p2": "IoT for Electronics の環境に接続するように求められたら、下にある接続 QR コードをスキャンします。",
-		"mobile_download_more_details": "詳細な手順については、次のリンクをクリックしてください: ",
-		"mobile_download_instructions_here" : "こちら",
+		"mobile_download_more_details": "詳しい手順は資料をご覧ください。",
 		"scan_heading": "アプリを環境に接続するために、この QR コードをスキャンするように指示があります",
 		"connection_code": "接続 QR コード",
 		"scan_p1": "スマートフォンでモバイル購入者アプリを初めて使用する際にモバイル・デバイスを IoT for Electronics Bluemix の環境に接続するためにこのコードをスキャンします。",
@@ -53,8 +52,8 @@
 		"explore_more": "もっと体験する",
 		"manage_devices": "これで、プラットフォームからデバイスを管理できます >",
 		"device_deleted": "処理完了。 デバイス {0} は正常に削除されました。",
-		"timeout_list": "デバイスのリスト要求がタイムアウトしました。シミュレーションを再始動します。ページをリフレッシュしてやり直してください。",
-		"timeout_create": "デバイスの作成要求がタイムアウトしました。シミュレーションを再始動します。ページをリフレッシュしてやり直してください。"
+		"timeout_list": "デバイスのリスト要求がタイムアウトしました。シミュレーションを再始動します。 ページをリフレッシュしてやり直してください。",
+		"timeout_create": "デバイスの作成要求がタイムアウトしました。シミュレーションを再始動します。 ページをリフレッシュしてやり直してください。"
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
@@ -80,7 +79,7 @@
 		"water_pressure_unit": "psi",
 		"appliance_code": "電化製品コード",
 		"qr_text": "購入者アプリでは、QR コードをスキャンして、該当する洗濯機の状況や他のイベントをスマートフォンで確認できます。",
-		"delete_prompt": "この操作を元に戻すことはできません。実行しますか?",
+		"delete_prompt": "この操作を元に戻すことはできません。 実行しますか?",
 		"cancel": "キャンセル",
 		"delete": "削除",
 		"failure": "障害",
@@ -95,4 +94,3 @@
 		"no_data": "データなし"
 	}
 }
-

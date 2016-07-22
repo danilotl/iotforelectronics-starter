@@ -43,8 +43,7 @@
 		"connect_app": "连接应用",	
 		"connect_app_p1": "在您的手机上启动该应用。",
 		"connect_app_p2": "在出现提示时扫描下方的连接 QR 代码以连接到 IoT for Electronics 环境",
-		"mobile_download_more_details": "有关详细的指示信息，请单击",
-		"mobile_download_instructions_here" : "此处",
+		"mobile_download_more_details": "有关详细指示信息，请参阅文档。",
 		"scan_heading": "要将该应用连接到此环境，您需要扫描该 QR 代码",
 		"connection_code": "连接 QR 代码",
 		"scan_p1": "首次在您的手机上使用移动消费者应用时，您需要扫描该代码以将移动设备连接到 IoT for Electronics Bluemix 环境。",
@@ -95,4 +94,3 @@
 		"no_data": "无数据"
 	}
 }
-
