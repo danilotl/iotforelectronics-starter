@@ -34,7 +34,8 @@ var path            = require('path'),
     request         = require('request'),
     _               = require("underscore"),
     appEnv          = cfenv.getAppEnv(),
-    q               = require('q');
+    q               = require('q'),
+    helmet			= require('helmet');
 
 var jsonParser = bodyParser.json();
 var i18n = require("i18n");
@@ -91,6 +92,7 @@ app.use(function (req, res, next) {
 });
 
 //allow cross domain calls
+app.use(helmet());
 app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
