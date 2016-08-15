@@ -241,6 +241,7 @@ createUser = function (username)
         		userDoc = {};
         		userDoc.orgID = currentOrgID;
         		userDoc.userID = username;
+        		userDoc.userDetail = {};
 			request({
    				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 				json: userDoc,
