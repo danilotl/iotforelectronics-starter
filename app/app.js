@@ -706,7 +706,7 @@ var options =
 	};
 function retryRequest(body, options)
 {
-	request(options, function (error, responseR, bodyR) {
+	request(options, function (error, response, body) {
 		if (!error) {
    			// Print out the response body
    			console.log('***Response Status Code --->', response.statusCode);
