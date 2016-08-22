@@ -706,25 +706,26 @@ var options =
 	};
 function retryRequest(body, options)
 {
-	request(options, function (errorR, responseR, bodyR) {
+	request(options, function (error, responseR, bodyR) {
 		if (!error) {
-       			// Print out the response body
-       			console.log('***Response Status Code --->', response.statusCode);
+   			// Print out the response body
+   			console.log('***Response Status Code --->', response.statusCode);
 			console.log('***Response received: ' + response.message);
 			if (response.statusCode === 404)
 			{
 				retryRequest();
 			}
 	    		}else{
-        			console.log("The request came back with an error: " + error);
+       			console.log("The request came back with an error: " + error);
 				console.log("Error code: " + error.statusCode);
 				console.log("Error message: " + error.message);
         			return;
       			}
 	});
 };
+
 console.log('Body Values being sent in: ' + JSON.parse(JSON.stringify(body)));
-request(options, function (error, response, body) {
+/*request(options, function (error, response, body) {
     if (!error) {
        	// Print out the response body
        	console.log('***Response Status Code --->', response.statusCode);
@@ -739,7 +740,7 @@ request(options, function (error, response, body) {
         	return;
         }    	
 }
-});
+});*/
   
 /*console.log('About to store IoTP Credentials');
 var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
