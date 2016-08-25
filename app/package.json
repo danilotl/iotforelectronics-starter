@@ -15,7 +15,7 @@
          "socket.io": "~1.4.6",
          "mqtt": "^0.3.11",
          "debug": "~2.2.0",
-         "bms-mca-token-validation-strategy": "^2.0.3",
+         "bms-mca-token-validation-strategy": "^2.0.4",
          "cloudant": "^1.4.1",
          "helmet": "^2.1.2",
          "http": "0.0.0",
