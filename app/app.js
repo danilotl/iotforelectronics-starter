@@ -812,10 +812,10 @@ app.get('/validation', function(req, res)
 
 // //var iotePass = ioteCredentials["password"];
 
-// //IoT Platform Device Types
-// //var	iotpDevId = "washingMachine";
-// //var	iotpDescription = "IoT4E Washing Machine";
-// //var	iotpClassId = "Device"
+//IoT Platform Device Types
+var	iotpDevId = "washingMachine";
+var	iotpDescription = "IoT4E Washing Machine";
+var	iotpClassId = "Device"
 
 // //RTI Message Schema Info
 // //var	rtiSchemaName = "Electronics";
@@ -881,11 +881,11 @@ app.get('/validation', function(req, res)
    };
 
 //IoT Platform device type creation call
- //var iotpDeviceType = iotpPost('/device/types',{
- //	"id": "washingMachine",
- //	"description": "IoT4E Washing Machine",
-//	"classId": "Device"
-//});
+var iotpDeviceType = iotpPost('/device/types',{
+ 	"id": "washingMachine",
+ 	"description": "IoT4E Washing Machine",
+	"classId": "Device"
+});
 
 // //IoT Platform device creation call
 // //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
