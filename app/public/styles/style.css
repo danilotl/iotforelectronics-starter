@@ -414,7 +414,7 @@ footer.main-section{
   bottom: 0;
   margin: 0;
   position: fixed;
-  right: 64px;
+  right: 1.5rem;
   z-index: 10;
   min-height: 20px;
   box-sizing: border-box;
@@ -885,7 +885,7 @@ body .main-container a:hover, body .main-container a:focus {
 }
 #register-form button{
   padding: 5px 15px;
-  background: #0089BD;
+  background: #6bbaff;
   border: 0 none;
   cursor: pointer;
   -webkit-border-radius: 5px;
@@ -902,7 +902,7 @@ body .main-container a:hover, body .main-container a:focus {
   margin-top: 5px;
 }
 #register-form button:hover {
-    background-color: #005372;
+    background-color: #448fd0;
 }
 #arrow-box{
   width: 26px;
