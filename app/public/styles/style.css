@@ -407,6 +407,30 @@ footer.main-section{
 	margin-bottom: 20px;
 }
 
+/* Form */
+#formButton{
+
+  text-decoration: none;
+  bottom: 0;
+  margin: 0;
+  position: fixed;
+  right: 64px;
+  z-index: 10;
+  min-height: 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 20px;
+  max-width: 100%;
+  min-width: 120px;
+  padding: 11px 18px;
+  background-color: #6bbaff;
+  border-color: #6bbaff;
+  color: #FFF;
+  border: 2px solid #6bbaff;
+  cursor: pointer;
+
+}
+
 /* Washer Single Page*/
 .washer-content{
 	padding: 10px 0px;
@@ -484,8 +508,8 @@ footer.main-section{
 /*For Safari 9+*/
 @supports (overflow:-webkit-marquee)
    and (justify-content:inherit) {
-     .washer-app-info > div {padding-left: 90px;} 
-     .washer-app-info > div > img { margin-left: -10px;}  
+     .washer-app-info > div {padding-left: 90px;}
+     .washer-app-info > div > img { margin-left: -10px;}
 }
 
 .problem-machine{
@@ -565,7 +589,7 @@ footer.main-section{
     width: 66px;
     height: 30px;
     border: 1px solid #000;
-    outline: 0 !important;    
+    outline: 0 !important;
 }
 
 .problem-machine .problem-machine-buttons button:hover{
