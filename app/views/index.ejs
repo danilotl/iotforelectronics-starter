@@ -12,7 +12,7 @@
   <script src="/jquery/jquery.min.js"></script>
   <script src="/bootstrap/js/bootstrap.min.js"></script>
   <script src="/analytics/bluemix-analytics.js"></script>
-  <script type="text/javascript"> digitalData = {page: {pageInfo: {pageID: "IOTELECTRONICS"}}} </script>  
+  <script type="text/javascript"> digitalData = {page: {pageInfo: {pageID: "IOTELECTRONICS"}}} </script>
 </head>
 <body>
   <h4 class="bluemix-bar"><%= __('main_page.top_title') %></h4>
@@ -84,7 +84,7 @@
                 <%= __('main_page.download_app') %>
                 <p><%= __('main_page.download_app_p1') %></p>
               </h3>
-              <h3> <img src="/images/Install_Step2.svg"/> <%= __('main_page.connect_app') %> 
+              <h3> <img src="/images/Install_Step2.svg"/> <%= __('main_page.connect_app') %>
                 <p><%= __('main_page.connect_app_p1') %></p>
                 <p><%= __('main_page.connect_app_p2') %></p>
               </h3>
@@ -101,7 +101,7 @@
         <h2><%= __('main_page.scan_heading') %></h2>
            <section class="col-xs-12 col-md-8 content">
               <img class="platform-qr-code" src="/qr/getPlatformCredentials"/>
-              <h4> <strong><%= __('main_page.connection_code') %></strong> </h4>     
+              <h4> <strong><%= __('main_page.connection_code') %></strong> </h4>
               <p><%= __('main_page.scan_p1') %></p>
            </section>
         </section>
@@ -147,6 +147,9 @@
       <p></p>
     </div>
   </div>
+
+  <a id="formButton" href="contact">Contact IoT for Electronics</a>
+
   <script>
     var DEVICE_DELETED_MSG = "<%= __('main_page.device_deleted') %>";
     var TIMEOUT_LIST = "<%= __('main_page.timeout_list') %>";
