@@ -854,7 +854,7 @@ body .main-container a:hover, body .main-container a:focus {
 #register-form .form-fields .country-selection{
   position: relative;
 }
-#ibm-com #register-form .form-fields .full-width .select-arrow:after{
+#starter-app #register-form .form-fields .full-width .select-arrow:after{
   content: "\f116";
   display: inline-block;
   font-family: "icons-ibm-v3";
@@ -910,7 +910,7 @@ body .main-container a:hover, body .main-container a:focus {
 #arrow-box img{
   padding: 0px 0px 0px 20px;
 }
-.ibm-important{
+.form-important{
   color: #B8471B !important;
 }
 @media (min-width: 768px){
