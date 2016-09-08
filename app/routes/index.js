@@ -21,4 +21,9 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.get('/contact', function(req, res) {
+  res.render('formContact');
+});
+
+
 module.exports = router;
