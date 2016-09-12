@@ -380,7 +380,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
 	delete bodyIn.version;
 	request({
-		url: 'https://iotforelectronicstilex.mybluemix.net/v001/appliances',
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
 		json: bodyIn,
 		method: 'POST', 
 		headers: {
