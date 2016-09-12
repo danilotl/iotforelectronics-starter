@@ -17,6 +17,7 @@ var cfenv = require('cfenv');
 var log4js = require('log4js');
 var async = require ('async');
 var app = express();
+var basicAuth = require('basic-auth');
 
 //set the app object to export so it can be required
 module.exports = app;
@@ -165,7 +166,26 @@ passport.use(new MCABackendStrategy());
 app.use(passport.initialize());
 
 const https = require('https');
-
+var authenticate = function(req,res,next)
+{
+		function unauthorized(res)
+		{
+			console.log('inside unauthorized function');
+			res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+			return res.status(401).end();
+		};
+		var user = basicAuth(req);
+		if (!user || !user.name || !user.pass || user.name != iotEApiKey || user.pass != iotEAuthToken) 
+		{
+			console.log('inside !user if block - unauthorized')
+    		return unauthorized(res);
+  		}
+  		else 
+  		{
+  			console.log("API validated.");
+  	  		return next(); 
+  		}
+}
 
 
 /***************************************************************/
@@ -352,26 +372,15 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 });
 
 
-/***************************************************************/
-/* Route to add 1 appliance document to registration Cloudant.(3) */
-/*                                                             */
-/* Input: JSON structure that contains the userID, applianceID,*/
-/*             serial number, manufacturer, and model          */
-/***************************************************************/
-app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+/*******************************************/
+/* Version 1 POST /appliances              */
+/*******************************************/
+app.post('/v001/appliances', authenticate, function (req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
-   	bodyIn.userID = req.user.id;
-   	bodyIn.orgID = currentOrgID;
-	
-	//verify that userID coming in MCA matches doc userID
-	if (bodyIn.userID != req.user.id)
-	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}
+	delete bodyIn.version;
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
+		url: 'https://iotforelectronicstilex.mybluemix.net/v001/appliances',
 		json: bodyIn,
 		method: 'POST', 
 		headers: {
@@ -391,6 +400,52 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 			}
 		});
 });
+/***************************************************************/
+/* Route to add 1 appliance document to registration Cloudant.(3) */
+/*                                                             */
+/* Input: JSON structure that contains the userID, applianceID,*/
+/*             serial number, manufacturer, and model          */
+/***************************************************************/
+app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+{
+	//grab the body to pass on
+	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+	//verify that userID coming in MCA matches doc userID
+	if (bodyIn.userID != req.user.id)
+	{
+		res.status(500).send("User ID in request does not match MCA authenticated user.");
+	}
+   	bodyIn.userID = req.user.id;
+   	bodyIn.orgID = currentOrgID;   	
+   	
+   	//redirect
+   	var version;
+   	if (!bodyIn.hasOwnProperty('version'))
+   	{
+   		version = "v001";
+   	}
+   	else
+   	{
+   		version = bodyIn.version;
+   	}
+   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
+	request({
+		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
+		json: bodyIn,
+		method: 'POST', 
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+		}, function(error, response, body){
+			if(error) {
+				console.log('ERROR: ' + error);
+				console.log('BODY: ' + error);
+				res.status(response.statusCode).send(response);
+			} else {
+				console.log(response.statusCode, body);
+				res.status(response.statusCode).send(response);
+			}
+		});
+});
+
 
 
 /***************************************************************/
