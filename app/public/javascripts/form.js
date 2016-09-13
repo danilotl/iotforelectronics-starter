@@ -37,8 +37,8 @@ $("#submit-btn").click(function(e){
  });
 
 $('#phone-field').keypress(function (event) {
-  var keycode = event.which;
-  if (!(event.shiftKey == false && (keycode == 32 || keycode == 45 || keycode == 8 ||  (keycode >= 48 && keycode <= 57)))) {
+  var keycode = event.keyCode || event.which;
+  if (!(event.shiftKey == false && (keycode == 8 || keycode == 9 || keycode == 32 || keycode == 37 || keycode == 39 || keycode == 45 || keycode == 46 || (keycode >= 48 && keycode <= 57)))) {
     event.preventDefault();
   }
 });
@@ -92,7 +92,7 @@ function validateEmail(value, error){
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   var isValid = re.test(value);
   if (value === null || value === ""){
-    error.text("This question is required");
+    error.text("This field is required");
   }
   else{
     if(!isValid){
@@ -113,7 +113,7 @@ function validatePhone(value, error){
     }
   }
   if (value === null || value === ""){
-    error.text("This question is required");
+    error.text("This field is required");
   }
   else{
     if(!isValid){
@@ -163,21 +163,24 @@ function sendFormData(arrInputValue){
    "interest":  arrInputValue[6]
  }
 
- /*$.ajax({
-   url: '/blockchain/signup',
+ $.ajax({
+   url: '/contact',
    type: 'post',
    dataType: 'json',
-   success: function (data) {
-     if (data.code === '200'){
-       window.location = "http://www.ibm.com/internet-of-things/iot-platform.html"
-     }
-     if (data.code === '500'){
-       alert("Erro to sent the form" + JSON.stringify(data));
-     }
-   },
-   data: formObject
- });*/
+   data: formObject,
+   statusCode: {
+    200: function(){
+      window.opener.showMessage('success', 'Your message was successfully sent!');
+      window.close();
+    },
+    500: function(data){
+      window.opener.showMessage('error', 'An error occurred trying to send your message.');
+      window.close();
+    }
+   }
+ });
 }
+
 /*--------------------------------
     End Form Validation
  --------------------------------*/
