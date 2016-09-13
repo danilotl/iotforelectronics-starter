@@ -26,7 +26,6 @@
          "seq-queue": "0.0.5",
          "ibmiotf": "0.2.16",
          "simple-encryptor": "^1.1.0",
-         "sendgrid": "",
          "ejs": "",
          "node-uuid": "",
          "cors": "",

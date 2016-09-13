@@ -164,7 +164,7 @@ function sendFormData(arrInputValue){
  }
 
  $.ajax({
-   url: '/contact',
+   url: 'https://iot4esimulationengine.stage1.mybluemix.net/contact',
    type: 'post',
    dataType: 'json',
    data: formObject,
