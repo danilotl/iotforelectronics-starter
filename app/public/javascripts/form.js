@@ -183,16 +183,3 @@ function sendFormData(arrInputValue){
 /*--------------------------------
     End Form Validation
  --------------------------------*/
-// var contentHeight;
-// function pageHeight(){
-//
-//   contentHeight = $(window).height() - 51 - 108;
-//   if(contentHeight < 660){
-//     contentHeight = 660;
-//   }
-//   $(".main-container").height(contentHeight);
-// }
-// $( window ).resize(function() {
-//   pageHeight();
-// });
-// pageHeight();
