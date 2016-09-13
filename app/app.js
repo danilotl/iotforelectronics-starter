@@ -287,47 +287,34 @@ createUser = function (username)
         });
 }
 
-
-/***************************************************************/
-/* Route to get 1 user document from Cloudant (1)              */
-/*					  		   	*/
-/* Input: url params that contains the userID 			 */
-/* Returns: 200 for found user, 404 for user not found         */
-/***************************************************************/
-app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+/*******************************************/
+/* Version 1 POST /users                   */
+/*******************************************/
+app.post('/v001/users', authenticate, function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-	}
-	var options =
-	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.user.id), 
-		method: 'GET',
+	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+	delete bodyIn.version;
+		request({
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+		json: bodyIn,
+		method: 'POST', 
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
     				'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body);
-        	res.status(response.statusCode).send(response);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-        	
-        	});
+		}, function(error, response, body){
+			if(error) {
+				console.log('ERROR: ' + error);
+				console.log('BODY: ' + error);
+				res.status(response.statusCode).send(response);
+			} else {
+				console.log(response.statusCode, body);
+				res.status(response.statusCode).send(response);
+			}
+		});
 });
-
-
 /***************************************************************/
 /* Route to add 1 user document to Cloudant.   (2)             */
 /*                                                             */
@@ -349,15 +336,21 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
 	}
+	//redirect
+   	var version;
+   	if (!formData.hasOwnProperty('version') || formData.version == null || formData.version == undefined)
+   	{
+   		version = "v001";
+   	}
+   	else
+   	{
+   		version = formData.version;
+   	}
+   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users');
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+   		url: 'https://'+ application.application_uris[0] + '/' + version + '/users',
 		json: formData,
-		method: 'POST', 
-		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
-  		},
+		method: 'POST',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 
     	}, function(error, response, body){
@@ -370,7 +363,6 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
         		res.status(response.statusCode).send(response);
 		}});
 });
-
 
 /*******************************************/
 /* Version 1 POST /appliances              */
@@ -446,21 +438,86 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 		});
 });
 
-
+/*******************************************/
+/* Version 1 GET /users/:userID            */
+/*******************************************/
+app.get('/v001/users/:userID', authenticate, function (req, res)
+{
+	var options =
+	{
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.user.id), 
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':currentOrgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body);
+        	res.status(response.statusCode).send(response);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	
+        	});
+});
 
 /***************************************************************/
-/* Route to show one user doc using Cloudant Query             */
-/* Takes a userID in the url params                            */
+/* Route to get 1 user document from Cloudant (1)              */
+/*					  		   	*/
+/* Input: url params that contains the userID 			 */
+/* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
 	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id);
 	
+	var options =
+	{
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id), 
+		method: 'GET',
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error && response.statusCode == 200) {
+        	// Print out the response body
+        	console.log(body);
+        	res.status(response.statusCode).send(response);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}	
+        });
+});
+
+/*******************************************/
+/* Version 1 GET /user/:userID       */
+/*******************************************/
+app.get('/v001/user/:userID', authenticate, function (req, res)
+{
 	var options =
 	{
 		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
@@ -487,13 +544,11 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
         	});
 });
 
-
 /***************************************************************/
-/* Route to list all appliance documents for given user   (4)  */
-/*       													   */
-/* Input: Query string with userID and optional applianceID    */
+/* Route to show one user doc using Cloudant Query             */
+/* Takes a userID in the url params                            */
 /***************************************************************/
-app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -501,6 +556,43 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id);
+	
+	var options =
+	{
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id),
+		method: 'GET',
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log(body);
+        	res.status(response.statusCode).json(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	
+        	});
+});
+
+/*******************************************/
+/* Version 1 GET /appliances/:userID       */
+/*******************************************/
+app.get('/v001/appliances/:userID', authenticate, function (req, res)
+{
 	var options =
 	{
 		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id),
@@ -528,23 +620,63 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	});
 });
 
-
-/****************************************************************************/
-/* Route to list 1 appliance document for given userID and applianceID (4)  */
-/*       													   				*/
-/* Input: Query string with userID and optional applianceID    				*/
-/****************************************************************************/
-app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+/***************************************************************/
+/* Route to list all appliance documents for given user   (4)  */
+/*       													   */
+/* Input: Query string with userID and optional applianceID    */
+/***************************************************************/
+app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
 	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
+		res.status(500).send("User ID on request does not match MCA authenticated user.");
 		//might need a return here, needs test
 	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id);
+	
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id + '/' + req.body.applianceID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id),
+		method: 'GET',
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log("body: " + body);
+        	console.log("response: " + response);
+        	res.status(response.statusCode).send(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	
+        	});
+});
+
+
+/**************************************************/
+/* Version 1 GET /appliances/:userID/:applianceID */
+/* Takes "version" as a header, ex:               */
+/*   "version":"v001"                             */
+/**************************************************/
+app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, res)
+{
+	var options =
+	{
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id + '/' + req.params.applianceID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -568,22 +700,57 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
         	});
 });
 
-/***************************************************************/
-/* Route to delete appliance records                           */
-/*    Internal API											   */
-/***************************************************************/
-app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+/****************************************************************************/
+/* Route to list 1 appliance document for given userID and applianceID (4)  */
+/*       													   				*/
+/* Input: Query string with userID and optional applianceID    				*/
+/****************************************************************************/
+app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	//DOING THIS DELETE HOW WE DO POSTS ABOVE
-	//will need to test to see which works (or which works better)
-	
-	//verify that userID coming in MCA matches doc userID
+	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
 	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.")
+		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	request({
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID);
+	var options =
+	{
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID),
+		method: 'GET',
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log(body);
+        	res.status(response.statusCode).json(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}  	
+    });
+});
+
+/*****************************************************/
+/* Version 1 DELETE /appliances/:userID/:applianceID */
+/* Takes "version" as a header, ex:                  */
+/*   "version":"v001"                                */
+/*****************************************************/
+app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, res)
+{
+		request({
 		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE', 
 		headers: {
@@ -604,22 +771,52 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		});
 });
 
-
-
-/**************************************************************************************** **/
-/* Route to delete user documents.                              						   */
-/* Need to delete the appliance documents as well from our db  							   */
-/* If we created them on the platform, delete from platform (NOT for experimental)         */
-/*******************************************************************************************/
-app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+/***************************************************************/
+/* Route to delete appliance records                           */
+/*    Internal API					       */
+/***************************************************************/
+app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	//DOING THIS DELETE HOW WE DO GETS ABOVE
-	//make sure userID on params matches userID coming in thru MCA
+	
+	//verify that userID coming in MCA matches doc userID
 	if (req.params.userID != req.user.id)
 	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
+		res.status(500).send("User ID in request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID);
+	request({
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID),
+		method: 'DELETE', 
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+		}, function(error, response, body){
+			if(error) {
+				console.log('ERROR: ' + error);
+				console.log('BODY: ' + error);
+				res.status(response.statusCode).send(response);
+			} else {
+				console.log(response.statusCode, body);
+				res.status(response.statusCode).send(response);
+			}
+		});
+});
+
+/*****************************************************/
+/* Version 1 DELETE /appliances/:userID/:applianceID */
+/* Takes "version" as a header, ex:                  */
+/*   "version":"v001"                                */
+/*****************************************************/
+app.delete("/v001/user/:userID", authenticate, function (req, res)
+{
 	var options =
 	{
 		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.user.id),
@@ -629,6 +826,50 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
     				'tenantID':iotETenant,
     				'orgID':currentOrgID
   		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log(body);
+        	res.status(response.statusCode).send(response);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	
+        	});
+});
+
+/**************************************************************************************** **/
+/* Route to delete user documents.                              						   */
+/* Need to delete the appliance documents as well from our db  							   */
+/* If we created them on the platform, delete from platform (NOT for experimental)         */
+/*******************************************************************************************/
+app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+{
+	//make sure userID on params matches userID coming in thru MCA
+	if (req.params.userID != req.user.id)
+	{
+		res.status(500).send("User ID on request does not match MCA authenticated user.")
+		//might need a return here, needs test
+	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id);
+	var options =
+	{
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id),
+		method: 'DELETE',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
