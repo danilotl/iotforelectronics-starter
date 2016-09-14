@@ -9,6 +9,8 @@ $("#submit-btn").click(function(e){
     var valid = true;
     var arrInputValue = new Array(10);
     var index = 0;
+    var validateMessage;
+
     $("form#register-form :input").each(function(){
       var input = $(this);
       var inputName = input.attr('name');
@@ -25,7 +27,10 @@ $("#submit-btn").click(function(e){
           if (value === null || value === "" || value === false) {
             valid = false;
           }
-          validateErrorMessage(value, error, inputName);
+          validateMessage = validateErrorMessage(value, error, inputName);
+          if (validateMessage == false){
+            valid = validateMessage
+          }
         }
         arrInputValue[index] = value;
         index += 1;
@@ -79,6 +84,7 @@ function validateErrorMessage(value, error, inputName){
   if (value === null || value === "" || value === false || !validate) {
     error.removeClass("error-inactive");
     error.addClass("error-active");
+    return validate;
   }
   else{
     error.removeClass("error-active");
