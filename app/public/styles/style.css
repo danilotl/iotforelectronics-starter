@@ -738,6 +738,8 @@ body .main-container a:hover, body .main-container a:focus {
   font-size: 16px;
   color: #ffffff;
   text-shadow: none;
+  line-height: 1.625rem;
+  padding: 0 0 5px;
 }
 .description-box p{
   font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
