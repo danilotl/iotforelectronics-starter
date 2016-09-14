@@ -24,12 +24,12 @@ $("#submit-btn").click(function(e){
           if(inputName === "country"){
             error = input.parent().parent().find(".error-message");
           }
-          if (value === null || value === "" || value === false) {
+          if (value === null || value === "" || value === false || isEmpty(value)) {
             valid = false;
           }
           validateMessage = validateErrorMessage(value, error, inputName);
           if (validateMessage == false){
-            valid = validateMessage
+            valid = validateMessage;
           }
         }
         arrInputValue[index] = value;
@@ -81,7 +81,7 @@ function validateErrorMessage(value, error, inputName){
     validate = validatePhone(value, error);
   }
 
-  if (value === null || value === "" || value === false || !validate) {
+  if (value === null || value === "" || value === false || !validate || isEmpty(value) ) {
     error.removeClass("error-inactive");
     error.addClass("error-active");
     return validate;
@@ -92,6 +92,12 @@ function validateErrorMessage(value, error, inputName){
   }
 
   validateName(inputName, error)
+}
+
+function isEmpty(str){
+  var string =  str.replace(/^\s+/, '').replace(/\s+$/, '');
+  if (string === '') {return true;}
+  else {return false;}
 }
 
 function validateEmail(value, error){
