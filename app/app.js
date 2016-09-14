@@ -411,15 +411,15 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
    	bodyIn.orgID = currentOrgID;   	
    	
    	//redirect
-   	var version;
-   	if (!bodyIn.hasOwnProperty('version'))
-   	{
-   		version = "v001";
-   	}
-   	else
-   	{
-   		version = bodyIn.version;
-   	}
+	var version; 
+	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	{
+		version = 'v001'
+	}
+	else
+	{
+		version = req.get('version');
+	}
    	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
 	request({
 		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
