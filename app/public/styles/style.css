@@ -744,7 +744,8 @@ body .main-container a:hover, body .main-container a:focus {
 .description-box p{
   font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
   "HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 18px;
+  font-size: 17px;
+  margin-bottom: 5px;
 }
 .description-box section{
   box-shadow: 2px 3px 2px #888888;
@@ -758,10 +759,10 @@ body .main-container a:hover, body .main-container a:focus {
   list-style-image: url('https://www-01.ibm.com/software/info/direct/imgs/check_transparent.gif');
   padding: 0px 0px 0px 20px;
   margin: 0px;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
 }
 .description-box section .check-list li{
-  padding: 5px 0;
+  padding: 2px 0;
 }
 .page-form{
   background-color: #f0f0f0;
@@ -769,7 +770,7 @@ body .main-container a:hover, body .main-container a:focus {
 #register-form{
   padding: 10px;
   width: 100%;
-  margin-top: 50px;
+  margin-top: 40px;
 }
 #register-form h2{
   border-top: 2px solid #666;
@@ -903,25 +904,25 @@ body .main-container a:hover, body .main-container a:focus {
     display: flex;
   }
   .page-description, .page-form{
-    flex: 1;
+    /*flex: 1;*/
     box-sizing: border-box;
   }
   .page-description{
-    width: 55%;]
+    width: 60%;]
   }
   .page-form{
-    width: 45%;
+    width: 40%;
   }
   .page-description header h2{
     float: right;
     margin: 7px;
-    width: 516px;
+    width: 586px;
     line-height: 22px;
     padding-bottom: 2px;
   }
   .description-box section{
     float: right;
-    width: 520px;
+    width: 590px;
     margin-left: 0px;
     overflow: hidden;
     display: block;
