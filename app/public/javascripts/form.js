@@ -62,6 +62,7 @@ $('#register-form .form-fields .country-selection .select-arrow').click(function
      elem[0].fireEvent("onmousedown");
   }
 });
+
 function triggerValidation(input){
   if(validatedForm){
     var inputName = input.attr('name');
@@ -84,7 +85,6 @@ function validateErrorMessage(value, error, inputName){
   if (value === null || value === "" || value === false || !validate || isEmpty(value) ) {
     error.removeClass("error-inactive");
     error.addClass("error-active");
-    return validate;
   }
   else{
     error.removeClass("error-active");
@@ -92,6 +92,11 @@ function validateErrorMessage(value, error, inputName){
   }
 
   validateName(inputName, error)
+
+  if(!validate){
+    return validate;
+  }
+
 }
 
 function isEmpty(str){
@@ -181,7 +186,7 @@ function sendFormData(arrInputValue){
    data: formObject,
    statusCode: {
     200: function(){
-      window.opener.showMessage('success', 'Your message was successfully sent!');
+      window.opener.showMessage('success', 'Thank you. Your contact request has been submitted, and the Lab Services team will be in touch soon.');
       window.close();
     },
     500: function(data){
