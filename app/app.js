@@ -445,7 +445,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.user.id), 
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.params.userID), 
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -595,7 +595,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -676,7 +676,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.user.id + '/' + req.params.applianceID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -819,7 +819,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.user.id),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
