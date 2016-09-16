@@ -724,7 +724,7 @@ body .main-container a:hover, body .main-container a:focus {
   margin-bottom: -10px;
 }
 .page-description{
-  background-image: url("https://www-01.ibm.com/software/info/direct/imgs/bgimg_776.jpg"); /*form background image*/
+  background-image: url("../images/background_image.png"); /*form background image*/
   background-size: cover;
 }
 .page-description header{
