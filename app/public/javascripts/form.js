@@ -67,7 +67,7 @@ function triggerValidation(input){
   if(validatedForm){
     var inputName = input.attr('name');
     var value = input.val();
-    var error = input.parent().find(".error-message")
+    var error = inputName == "country" ? input.parent().parent().find(".error-message") : input.parent().find(".error-message");
     validateErrorMessage(value, error, inputName);
   }
 }
@@ -109,11 +109,11 @@ function validateEmail(value, error){
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   var isValid = re.test(value);
   if (value === null || value === ""){
-    error.text("This field is required");
+    error.text(REQUIRED_FIELD);
   }
   else{
     if(!isValid){
-      error.text("Please enter a valid email");
+      error.text(VALID_EMAIL);
     }
   }
   return isValid;
@@ -130,11 +130,11 @@ function validatePhone(value, error){
     }
   }
   if (value === null || value === ""){
-    error.text("This field is required");
+    error.text(REQUIRED_FIELD);
   }
   else{
     if(!isValid){
-      error.text("Please enter a valid phone");
+      error.text(VALID_PHONE);
     }
   }
   return isValid;
@@ -186,11 +186,11 @@ function sendFormData(arrInputValue){
    data: formObject,
    statusCode: {
     200: function(){
-      window.opener.showMessage('success', 'Thank you. Your contact request has been submitted, and the Lab Services team will be in touch soon.');
+      window.opener.showMessage('success', SUCCESS);
       window.close();
     },
     500: function(data){
-      window.opener.showMessage('error', 'An error occurred trying to send your message.');
+      window.opener.showMessage('error', ERROR);
       window.close();
     }
    }
