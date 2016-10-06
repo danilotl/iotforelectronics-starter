@@ -175,15 +175,15 @@ var authenticate = function(req,res,next)
 			return res.status(401).end();
 		};
 		var user = basicAuth(req);
-		if (!user || !user.name || !user.pass || user.name != iotEApiKey || user.pass != iotEAuthToken) 
+		if (!user || !user.name || !user.pass || user.name != iotEApiKey || user.pass != iotEAuthToken)
 		{
 			console.log('inside !user if block - unauthorized')
     		return unauthorized(res);
   		}
-  		else 
+  		else
   		{
   			console.log("API validated.");
-  	  		return next(); 
+  	  		return next();
   		}
 }
 
@@ -197,9 +197,9 @@ var authenticate = function(req,res,next)
 app.put('/users', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
 {
 	//var formData = req.body;
-	var userDocIn = JSON.parse(JSON.stringify(req.body)); 
+	var userDocIn = JSON.parse(JSON.stringify(req.body));
 	userDocIn.orgID = currentOrgID;
-	
+
 	//verify that userID coming in MCA matches doc userID
 	if (userDocIn.userID != req.user.id)
 	{
@@ -207,9 +207,9 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+   		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
 		json: userDocIn,
-		method: 'PUT', 
+		method: 'PUT',
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
@@ -239,7 +239,7 @@ createUser = function (username)
 	//first see if the user exists
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ username),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users/'+ username),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -263,9 +263,9 @@ createUser = function (username)
         		userDoc.userID = username;
         		userDoc.userDetail = {};
 			request({
-   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+   				url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
 				json: userDoc,
-				method: 'POST', 
+				method: 'POST',
 				headers: {
     						'Content-Type': 'application/json',
     						'tenantID':iotETenant,
@@ -292,12 +292,12 @@ createUser = function (username)
 /*******************************************/
 app.post('/v001/users', authenticate, function(req, res)
 {
-	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
 		request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
 		json: bodyIn,
-		method: 'POST', 
+		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
@@ -325,9 +325,9 @@ app.post('/v001/users', authenticate, function(req, res)
 app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
 {
 	//var formData = req.body;
-	var formData = JSON.parse(JSON.stringify(req.body)); 
+	var formData = JSON.parse(JSON.stringify(req.body));
 	formData.orgID = currentOrgID;
-	
+
 	//verify that userID coming in MCA matches doc userID
 	if (formData.userID != req.user.id)
 	{
@@ -369,12 +369,12 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
 /*******************************************/
 app.post('/v001/appliances', authenticate, function (req, res)
 {
-	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
+		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances',
 		json: bodyIn,
-		method: 'POST', 
+		method: 'POST',
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
@@ -401,17 +401,17 @@ app.post('/v001/appliances', authenticate, function (req, res)
 app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
 	//grab the body to pass on
-	var bodyIn = JSON.parse(JSON.stringify(req.body)); 
+	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	//verify that userID coming in MCA matches doc userID
 	if (bodyIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.");
 	}
    	bodyIn.userID = req.user.id;
-   	bodyIn.orgID = currentOrgID;   	
-   	
+   	bodyIn.orgID = currentOrgID;
+
    	//redirect
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -424,7 +424,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 	request({
 		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
 		json: bodyIn,
-		method: 'POST', 
+		method: 'POST',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
 			if(error) {
@@ -445,7 +445,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.params.userID), 
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -465,7 +465,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -482,7 +482,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -492,10 +492,10 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
 		version = req.get('version');
 	}
 	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id);
-	
+
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id), 
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -509,7 +509,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
         	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(response);
         	return;
-        	}	
+        	}
         });
 });
 
@@ -520,7 +520,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/user/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -540,7 +540,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -556,7 +556,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -566,7 +566,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 		version = req.get('version');
 	}
 	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id);
-	
+
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id),
@@ -584,7 +584,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -595,7 +595,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -616,7 +616,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -633,7 +633,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 		res.status(500).send("User ID on request does not match MCA authenticated user.");
 		//might need a return here, needs test
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -643,7 +643,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 		version = req.get('version');
 	}
 	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id);
-	
+
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id),
@@ -662,7 +662,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -676,7 +676,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -696,7 +696,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -713,7 +713,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -739,7 +739,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
         	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(response);
         	return;
-        	}  	
+        	}
     });
 });
 
@@ -751,8 +751,8 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, res)
 {
 		request({
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
-		method: 'DELETE', 
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
     				'tenantID':iotETenant,
@@ -777,14 +777,14 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 /***************************************************************/
 app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
 {
-	
+
 	//verify that userID coming in MCA matches doc userID
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -796,7 +796,7 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID);
 	request({
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID),
-		method: 'DELETE', 
+		method: 'DELETE',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
 			if(error) {
@@ -819,7 +819,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/user/'+ req.params.userID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -839,7 +839,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -856,7 +856,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version; 
+	var version;
 	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
 	{
 		version = 'v001'
@@ -883,7 +883,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
         	res.status(response.statusCode).send(response);
         	return;
         	}
-        	
+
         	});
 });
 
@@ -956,11 +956,11 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
                 dob: userObject.dob
             }
         };
-        
+
     	} else {
 	        logger.debug("Login failure for userId ::", username);
     	}
-	
+
     	res.status(200).json(responseJson);
 });
 
@@ -993,7 +993,7 @@ var body = {
 	   };
 var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs'),
+		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/deletedDocs'),
 		json: body,
 		method: 'POST',
 		headers: {
@@ -1034,12 +1034,12 @@ request(options, function (error, response, body) {
 			console.log("Error code: " + error.statusCode);
 			console.log("Error message: " + error.message);
         	return;
-        }    	
+        }
 	}
 });
-  
+
 /*console.log('About to store IoTP Credentials');
-var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
+var url = 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
@@ -1053,7 +1053,7 @@ request
       console.log('Request timed out.');
     else
       console.log(error);
-  }); 
+  });
 */
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
@@ -1063,7 +1063,7 @@ app.get('/validation', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
+		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
@@ -1079,7 +1079,7 @@ app.get('/validation', function(req, res)
         	console.log(error);
         	//response.status(error.statusCode).send("ERROR on test GET")
         	}
-        	
+
         	});
 });
 
@@ -1090,7 +1090,7 @@ app.get('/validation', function(req, res)
 // app.get('*', function(req, res)
 // {
 // 	console.log('About to store IoTP Credentials');
-//     var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+//     var url = ['https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 // 	console.log('Credentials API URL:', url);
 // 	request
 //   	.get(url, {timeout: 3000})
@@ -1199,7 +1199,7 @@ var iotpDeviceType = iotpPost('/device/types',{
 	"disabled": disabled})
 		.then(function(json) {
 			console.log('RTI Source Return: ' + JSON.stringify(json));
-			var sourceValues = JSON.parse(JSON.stringify(json)); 
+			var sourceValues = JSON.parse(JSON.stringify(json));
 			console.log('RTI Source ID: ' + sourceValues.id);
 			//RTI schema creation call
 			  var rtiSchema = rtiPost('/message/schema',{
@@ -1208,7 +1208,7 @@ var iotpDeviceType = iotpPost('/device/types',{
 			  	"items": []})
 			  .then(function(json){
 			  	console.log('RTI Schema Return: ' + JSON.stringify(json));
-			  	var schemaValues = JSON.parse(JSON.stringify(json)); 
+			  	var schemaValues = JSON.parse(JSON.stringify(json));
 				//RTI route creation call
 				  var rtiRoute = rtiPost('/message/route',{
 				  	"sourceId": sourceValues.id,
@@ -1219,7 +1219,7 @@ var iotpDeviceType = iotpPost('/device/types',{
 });*/
 
 
-console.log('IoT4E Credentials: ' + iotETenant);  
+console.log('IoT4E Credentials: ' + iotETenant);
 /********************************************************************** **/
 /*End of Solution Integrator Code                                        */
 /********************************************************************** **/

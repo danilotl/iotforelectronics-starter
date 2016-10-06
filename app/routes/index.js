@@ -28,9 +28,9 @@ router.get('/contact', function(req, res) {
 
 router.post('/contact', function(req, res){
 	request({
-   		url: 'https://iot4esimulationengine.stage1.mybluemix.net/contact',
+   		url: 'https://simulationengine-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/contact',
 		json: req.body,
-		method: 'POST', 
+		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
   		},
