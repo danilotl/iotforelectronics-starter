@@ -212,25 +212,35 @@ device.reset = function(req, res){
 }
 
 device.create = function(req, res){
+	const MAX_LIMIT = 100;
 	queue.push(function(task){
 		var numberOfDevices = parseInt(req.params.numberOfDevices);
+		var existingDevices = simulationClient.simulationConfig.devices.length;
 		if(!isNaN(numberOfDevices)){
-			var configs = [];
-			var devices;
-			for(var i = 0; i < numberOfDevices; i++){
-				configs.push({connected: true});
-			}
-			simulationClient.createDevices("washingMachine", numberOfDevices, configs).then(function(data){
-				for(var key in data){
-					var deviceID = data[key]['deviceID'];
-					simulationClient.getDeviceStatus(deviceID).then(function(data){
-						simulationClient.updateSerialNumber(deviceID, data.attributes.serialNumber);
-					});
-				}
-				simulationClient.saveSimulationConfig();
+			if((numberOfDevices + existingDevices) > MAX_LIMIT){
 				task.done();
-				res.json(data);
-			});
+				res.status(400).json({
+					error: "Limit exceeded.",
+					message: "You already have " + existingDevices + " devices created. Adding " + numberOfDevices + " more would exceed the limit of " + MAX_LIMIT + " devices."
+				});
+			} else {
+				var configs = [];
+				var devices;
+				for(var i = 0; i < numberOfDevices; i++){
+					configs.push({connected: true});
+				}
+				simulationClient.createDevices("washingMachine", numberOfDevices, configs).then(function(data){
+					for(var key in data){
+						var deviceID = data[key]['deviceID'];
+						simulationClient.getDeviceStatus(deviceID).then(function(data){
+							simulationClient.updateSerialNumber(deviceID, data.attributes.serialNumber);
+						});
+					}
+					simulationClient.saveSimulationConfig();
+					task.done();
+					res.json(data);
+				});
+			}
 		} else {
 			task.done();
 			res.status(400).json({
