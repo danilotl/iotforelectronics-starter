@@ -113,6 +113,7 @@
             var text = '';
             obj['status'] = 'Failure';
             obj['failureType'] = failureType;
+            obj['currentCycle'] = 'Stopped';
             switch(failureType){
               case 'Strong vibration':
               index = 1;
@@ -154,7 +155,7 @@
             type: 'PUT',
             data: {
               status: "Ready",
-              currentCycle: "Empty",
+              currentCycle: "Stopped",
               failureType: "",
               vibration: "80",
               waterPressure: "70"
