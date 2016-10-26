@@ -18,7 +18,7 @@ $(document).ready(function(){
             getSimulationStatus();
           }, 3000);
         } else {
-
+          restartSimulator();
         }
       },
       error: function(e){
