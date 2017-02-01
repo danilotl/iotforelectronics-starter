@@ -1,6 +1,8 @@
 var qr = require('qr-image');
 var cfenv = require('cfenv');
 var queue = require('seq-queue').createQueue(30000);
+var request = require('request');
+
 
 var device = module.exports;
 
@@ -256,14 +258,38 @@ device.renderUI = function(req, res){
 
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
 		var status = 'appliance_page.' + data.attributes.status.toLowerCase();
-		return res.render('deviceAcoustic', {
-			deviceId:          data.deviceID,
-			deviceStatus:      res.__(status),
-			vibration:         data.attributes.vibration,
-			waterPressure:     data.attributes.waterPressure,
-			serialNumber:      data.attributes.serialNumber,
-			make:              data.attributes.make,
-			model:             data.attributes.model
-		});
+		checkStatusAcoustic(function(response) {
+			return res.render(response, {
+				deviceId:          data.deviceID,
+				deviceStatus:      res.__(status),
+				vibration:         data.attributes.vibration,
+				waterPressure:     data.attributes.waterPressure,
+				serialNumber:      data.attributes.serialNumber,
+				make:              data.attributes.make,
+				model:             data.attributes.model
+			});
+	  });
 	});
+
+}
+
+const checkStatusAcoustic = (callback) => {
+
+	request({
+   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/getStatus',
+		method: 'GET',
+		}, function(error, response, body){
+			if(error){
+				return callback('device');
+		} else {
+				if(response.statusCode == 200){
+					 var responseBody = JSON.parse(body)
+
+					if(responseBody.running){return callback('deviceAcoustic')}
+					else{return callback('device')}
+				}else{
+					return callback('device');
+				}
+			}
+		});
 }
