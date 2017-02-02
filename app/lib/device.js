@@ -258,6 +258,8 @@ device.renderUI = function(req, res){
 
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
 		var status = 'appliance_page.' + data.attributes.status.toLowerCase();
+		var acousticError = req.query.acousticError;
+
 		checkStatusAcoustic(function(response) {
 			return res.render(response, {
 				deviceId:          data.deviceID,
@@ -268,28 +270,35 @@ device.renderUI = function(req, res){
 				make:              data.attributes.make,
 				model:             data.attributes.model
 			});
-	  });
+	  },acousticError);
 	});
 
 }
 
-const checkStatusAcoustic = (callback) => {
-
-	request({
-   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/getStatus',
-		method: 'GET',
-		}, function(error, response, body){
-			if(error){
-				return callback('device');
-		} else {
-				if(response.statusCode == 200){
-					 var responseBody = JSON.parse(body)
-
-					if(responseBody.running){return callback('deviceAcoustic')}
-					else{return callback('device')}
-				}else{
+const checkStatusAcoustic = (callback, acousticErrorParam) => {
+	if (acousticErrorParam == undefined){
+		request({
+	   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/getStatus',
+			method: 'GET',
+			}, function(error, response, body){
+				if(error){
 					return callback('device');
+			} else {
+					if(response.statusCode == 200){
+						 var responseBody = JSON.parse(body)
+
+						if(responseBody.running){return callback('deviceAcoustic')}
+						else{return callback('device')}
+					}else{
+						return callback('device');
+					}
 				}
-			}
-		});
+			});
+		}else if (acousticErrorParam == 'true'){
+        console.log("error true");
+        return callback('device');
+    }else{
+        console.log("error false");
+        return callback('deviceAcoustic');
+    }
 }
