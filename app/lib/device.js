@@ -1,3 +1,15 @@
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise  
+* divested of its trade secrets, irrespective of what has been 
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+
 var qr = require('qr-image');
 var cfenv = require('cfenv');
 var queue = require('seq-queue').createQueue(30000);
@@ -277,27 +289,17 @@ device.renderUI = function(req, res){
 
 const checkStatusAcoustic = (callback, acousticErrorParam) => {
 	if (acousticErrorParam == undefined){
-		request({
-	   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/getStatus',
-			method: 'GET',
-			}, function(error, response, body){
-				if(error){
-					return callback('device');
-			} else {
-					if(response.statusCode == 200){
-						 var responseBody = JSON.parse(body)
-
-						if(responseBody.running){return callback('deviceAcoustic')}
-						else{return callback('device')}
-					}else{
-						return callback('device');
-					}
-				}
-			});
-		}else if (acousticErrorParam == 'true'){
+		simulationClient.getAcousticStatus().then(function (response){
+			if(response.running){
+				return callback('deviceAcoustic');
+			}
+		}, function (err){
+			return callback('device');
+		});
+	} else if (acousticErrorParam == 'true'){
         console.log("error true");
         return callback('device');
-    }else{
+    } else {
         console.log("error false");
         return callback('deviceAcoustic');
     }

@@ -1,3 +1,15 @@
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise  
+* divested of its trade secrets, irrespective of what has been 
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+
 module.exports = simulationClient;
 var _ = require("underscore");
 var util = require('util');
@@ -260,6 +272,35 @@ simulationClient.prototype.getAllDevicesStatus= function(){
 	return deferred.promise;
 };
 
+/*
+ * ******************************************* Acoustic Service *****************************
+ * ******************************************************************************************
+ * get acoustic service status
+*/
+
+simulationClient.prototype.getAcousticStatus = function(){
+	var deferred = Q.defer();
+	callSimulationEngineAPI("GET", ["acoustic", "getStatus"]).then(function (resp){
+		deferred.resolve(resp);
+	}).fail(function(err){
+		consloe.error(err.message);
+		throw new Error("Cannot get acoustic service status " + err.message);
+		deferred.reject(err);
+	});
+	return deferred.promise;
+}
+
+simulationClient.prototype.analyzeAudio = function(filename){
+	var deferred = Q.defer();
+	callSimulationEngineAPI("POST", ["acoustic", "analyzeAudio"], {filename: filename}).then(function (resp){
+		deferred.resolve(resp);
+	}).fail(function(err){
+		consloe.error(err.message);
+		throw new Error("Cannot analyze audio " + err.message);
+		deferred.reject(err);
+	});
+	return deferred.promise;
+}
 
 /*
  * *****************************    Commands **************************
