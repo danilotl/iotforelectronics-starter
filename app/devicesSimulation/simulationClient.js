@@ -5,8 +5,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 
@@ -292,7 +292,8 @@ simulationClient.prototype.getAcousticStatus = function(){
 
 simulationClient.prototype.analyzeAudio = function(filename){
 	var deferred = Q.defer();
-	callSimulationEngineAPI("POST", ["acoustic", "analyzeAudio"], {filename: filename}).then(function (resp){
+	var body = {filename: filename}
+	callSimulationEngineAPI("POST", ["acoustic", "analyzeAudio"], body).then(function (resp){
 		deferred.resolve(resp);
 	}).fail(function(err){
 		consloe.error(err.message);
