@@ -81,16 +81,37 @@
     </div>
     <script type="text/javascript">
     $(document).ready(function(){
+      var queue = new createjs.LoadQueue();
+      queue.installPlugin(createjs.Sound);
+      queue.on("complete", handleComplete, this);
+      queue.loadManifest([
+          {id: "ZOOM0015_MONO_rinsing.wav", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
+          {id: "ZOOM0017_MONO_drainage.wav", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
+          {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
+      ]);
+      function handleComplete() {
+        console.log('loaded the files');
+        $('#actionWasher').prop('disabled', false);
+        $('#actionWasher').css('opacity', 1.0);
+        // createjs.Sound.play("rinsing");
+        // console.log(queue.getResult('drain',true));
+      };
+
       // Send Start / Stop Washing command
       $('#actionWasher').click(function(e){
         e.preventDefault();
+        createjs.Sound.play("ZOOM0015_MONO_rinsing.wav");
+
         var label = $(this).text();
         switch(label){
           case "<%= __('appliance_page.start') %>":
             $.ajax({
-              url: '/washingMachine/<%= deviceId %>/startWashing',
+              url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
               type: 'PUT',
-              success: function() {
+              data:{"audio":"ZOOM0015_MONO_rinsing.wav"},
+              success: function(data) {
+                console.log("response success");
+                console.log("DATA --> " + JSON.stringify(data))
                 $('#actionWasher').text("<%= __('appliance_page.stop') %>");
               }
             });
@@ -197,22 +218,22 @@
       });
       <!-- begin acoustic service code -->
       <!-- preload the audio files -->
-      var queue = new createjs.LoadQueue();
-      queue.installPlugin(createjs.Sound);
-      queue.on("complete", handleComplete, this);
-      queue.loadManifest([
-          {id: "rinsing", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
-          {id: "drain", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
-          {id: "spin", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
-      ]);
-      function handleComplete() {
-        console.log('loaded the files');
-        $('#actionWasher').prop('disabled', false);
-        $('#actionWasher').css('opacity', 1.0);
-      //            createjs.Sound.play("spin");
-      //            console.log(queue.getResult('drain',true));
-        loginToAcousticService();
-      };
+      // var queue = new createjs.LoadQueue();
+      // queue.installPlugin(createjs.Sound);
+      // queue.on("complete", handleComplete, this);
+      // queue.loadManifest([
+      //     {id: "rinsing", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
+      //     {id: "drain", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
+      //     {id: "spin", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
+      // ]);
+      // function handleComplete() {
+      //   console.log('loaded the files');
+      //   $('#actionWasher').prop('disabled', false);
+      //   $('#actionWasher').css('opacity', 1.0);
+      // //            createjs.Sound.play("spin");
+      // //            console.log(queue.getResult('drain',true));
+      //   loginToAcousticService();
+      // };
       function postToAcousticService(audioname) {
           var audiosample = queue.getResult(audioname, true);
           if (audiosample) {
