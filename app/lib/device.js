@@ -299,23 +299,14 @@ device.renderUI = function(req, res){
 
 const checkStatusAcoustic = (callback, acousticErrorParam) => {
 	if (acousticErrorParam == undefined){
-		request({
-	   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/getStatus',
-			method: 'GET',
-			}, function(error, response, body){
-				if(error){
-					return callback('device');
-			} else {
-					if(response.statusCode == 200){
-						 var responseBody = JSON.parse(body)
+		
+		simulationClient.getAcousticStatus().then(function (res){
+			if(res.running) return callback('deviceAcoustic');
+			else return callback('device');
+		}, function (err){
+			return callback('device');
+		});
 
-						if(responseBody.running){return callback('deviceAcoustic')}
-						else{return callback('device')}
-					}else{
-						return callback('device');
-					}
-				}
-			});
 		}else if (acousticErrorParam == 'true'){
         console.log("error true");
         return callback('device');
@@ -323,21 +314,4 @@ const checkStatusAcoustic = (callback, acousticErrorParam) => {
         console.log("error false");
         return callback('deviceAcoustic');
     }
-}
-
-const startWithAudio = (callback, audio) => {
-
-	console.log("audio -> " + audio)
-	request({
-   	url: 'https://iot4esimulationengine.stage1.mybluemix.net/acoustic/analyzeAudio',
-		method: 'POST',
-		json:{"filename":audio}
-		}, function(error, response, body){
-			if(error){
-				return callback('device');
-		} else {
-
-				return callback(body);
-			}
-		});
 }
