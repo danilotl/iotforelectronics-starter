@@ -80,6 +80,8 @@
       </div>
     </div>
     <script type="text/javascript">
+    var playing = false;
+
     $(document).ready(function(){
       var queue = new createjs.LoadQueue();
       queue.installPlugin(createjs.Sound);
@@ -90,45 +92,32 @@
           {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
       ]);
       function handleComplete() {
-        console.log('loaded the files');
         $('#actionWasher').prop('disabled', false);
         $('#actionWasher').css('opacity', 1.0);
-        // createjs.Sound.play("rinsing");
-        // console.log(queue.getResult('drain',true));
       };
 
       // Send Start / Stop Washing command
       $('#actionWasher').click(function(e){
         e.preventDefault();
-        createjs.Sound.play("ZOOM0015_MONO_rinsing.wav");
-
         var label = $(this).text();
+        
         switch(label){
           case "<%= __('appliance_page.start') %>":
-            $.ajax({
-              url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
-              type: 'PUT',
-              data:{"audio":"ZOOM0015_MONO_rinsing.wav"},
-              success: function(data) {
-                console.log("response success");
-                console.log("DATA --> " + JSON.stringify(data))
-                $('#actionWasher').text("<%= __('appliance_page.stop') %>");
-              }
-            });
+          $('#actionWasher').text("<%= __('appliance_page.stop') %>");
+            playAudio(0);
             break;
           case "<%= __('appliance_page.stop') %>":
-            $.ajax({
-              url: '/washingMachine/<%= deviceId %>/stopWashing',
-              type: 'PUT',
-              success: function() {
-                $('#actionWasher').text("<%= __('appliance_page.start') %>");
-              }
-            });
+            createjs.Sound.stop();
+            playing = false;
+            updateStatus('stopped');
+            $('#actionWasher').text("<%= __('appliance_page.start') %>");
             break;
         }
       });
       // Send Failure Event
       $('.problem-machine-icons p').click(function(e) {
+        createjs.Sound.stop();
+        playing = false;
         e.preventDefault();
         if($('#resetMachines').prop('disabled')) {
           $('#resetMachines').prop('disabled', false);
@@ -216,68 +205,76 @@
         $("#btnConfirm").off("click");
         $("#btnCancel").off("click");
       });
-      <!-- begin acoustic service code -->
-      <!-- preload the audio files -->
-      // var queue = new createjs.LoadQueue();
-      // queue.installPlugin(createjs.Sound);
-      // queue.on("complete", handleComplete, this);
-      // queue.loadManifest([
-      //     {id: "rinsing", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
-      //     {id: "drain", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
-      //     {id: "spin", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
-      // ]);
-      // function handleComplete() {
-      //   console.log('loaded the files');
-      //   $('#actionWasher').prop('disabled', false);
-      //   $('#actionWasher').css('opacity', 1.0);
-      // //            createjs.Sound.play("spin");
-      // //            console.log(queue.getResult('drain',true));
-      //   loginToAcousticService();
-      // };
-      function postToAcousticService(audioname) {
-          var audiosample = queue.getResult(audioname, true);
-          if (audiosample) {
-              $.ajax({
-                url: 'https://crl.ptopenlab.com:8800/iote_acoustic/v1/classification?classifier=MonitorWash',
-                type: 'POST',
-                crossDomain: true,
-                sounds_files: audiosample,
-                complete: function(msg) {
-                  console.log('completed post call');
-                },
-                success: function(msg) {
-                  console.log('successfully posted audio file ' + audioname + ', ' + msg);
-                },
-                error: function(msg) {
-                  console.log('audio file post ' + audioname + ' call failed ' + msg);
-                }
-              });
-          }
-      };
-      function loginToAcousticService() {
-        var loginData = {email: 'jcook1@us.ibm.com'};
+    });
+
+    function updateStatus(status){
+      if($('#actionWasher').text() == "<%= __('appliance_page.stop') %>"){
+        switch(status){
+          case "rinsing":
+            var data = {status: "Working", currentCycle: "Washing"};
+            updatePlatformStatus(data);
+            break;
+          case "drain":
+            var data = {status: "Working", currentCycle: "Draining"};
+            updatePlatformStatus(data);
+            break;
+          case "spin":
+            var data = {status: "Working", currentCycle: "Spinning"};
+            updatePlatformStatus(data);
+            break;
+          case "ready":
+            var data = {status: "Ready", currentCycle: "Empty"};
+            updatePlatformStatus(data);
+            break;
+          case "stopped":
+            var data = {status: "Stopped", currentCycle: "Stopped"};
+            updatePlatformStatus(data);
+            break;
+        }
+      }
+    }
+
+    function updatePlatformStatus(data){
+      var data = JSON.stringify(data);
+      $.ajax({
+        url: '/washingMachine/<%= deviceId %>/setAttributes',
+        type: 'PUT',
+        contentType: 'application/json',
+        data: data
+      });
+    }
+
+    function playAudio(index){
+      var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
+      if(index < audios.length){
+        var filename = audios[index];
+        var audioInstance = createjs.Sound.createInstance(filename);
+        audioInstance.play();
+        playing = true;
+        audioInstance.on('complete', function(){
+          playAudio(index+1);
+        });
         $.ajax({
-          url: 'https://crl.ptopenlab.com:8800/iote_acoustic/v1/auth/login',
-          type: 'POST',
-          crossDomain: true,
-          data: loginData,
-          complete: function(msg) {
-            console.log('completed log in call' + msg);
-          },
-          success: function(msg) {
-            console.log('successfully logged in, success call' + msg);
-          },
-          error: function(msg) {
-            console.log('login call failed' + msg);
+          url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
+          type: 'PUT',
+          data:{"audio": filename},
+          success: function(data) {
+            updateStatus(data.message[0].class);
           }
         });
-      };
-      });
-      // Status Report
-      iotAppMonitorClient.mqtt = function(id, message) {
+      } else {
+        playing = false;
+        updateStatus('ready');
+        $('#actionWasher').text("<%= __('appliance_page.start') %>");
+      }
+    }
+
+    // Status Report
+    iotAppMonitorClient.mqtt = function(id, message) {
       var length = 0;
       var device = JSON.parse(message).d;
       for(var k in device) if(device.hasOwnProperty(k)) length++;
+
       if (id === "<%= deviceId %>" && length > 1) {
         if(device.status && device.status == 'Failure'){
           if(!($('#actionWasher').prop('disabled'))) $('#actionWasher').prop('disabled', true);
@@ -308,18 +305,20 @@
               case 'End':          $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.end') %>"); break;
             }
           } else {
-            $('#actionWasher').text("<%= __('appliance_page.start') %>");
-            switch(device.status){
-              case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
-              case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
+            if(!playing){
+              $('#actionWasher').text("<%= __('appliance_page.start') %>");
+              switch(device.status){
+                case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
+                case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
+              }
             }
           }
           $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
           $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + " <%= __('appliance_page.water_pressure_unit') %>");
           $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
-        }
+        }          
       }
-      };
+    };
     </script>
 
     <div id="confirmDelete" class="modal fade">
