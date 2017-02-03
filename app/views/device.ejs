@@ -225,6 +225,7 @@
         if (id === "<%= deviceId %>" && length > 1) {
           if(device.status && device.status == 'Failure'){
             if(!($('#actionWasher').prop('disabled'))) $('#actionWasher').prop('disabled', true);
+            if($('#resetMachines').prop('disabled')) $('#resetMachines').prop('disabled', false);
             $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.failure') %>");
             $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/advise-icon.svg');
             if(device.failureType && device.failureType == 'Board failure'){
