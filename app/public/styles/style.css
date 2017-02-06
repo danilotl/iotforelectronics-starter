@@ -5,8 +5,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 
@@ -457,6 +457,10 @@ footer.main-section{
 	display: flex;
   	width: 100%;
   	margin: 10px 0px 40px;
+}
+
+#currentOperation{
+  color:#ff0000;
 }
 .washer-details .washer-content{
 	position: relative;

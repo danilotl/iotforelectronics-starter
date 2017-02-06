@@ -34,6 +34,7 @@
               This is a test to see if we are getting the different page
               <div id="service_provider_monitoring_obj" data-dojo-type="analytics.WMParts"></div>
           </div>
+          <p id="currentOperation"></p>
           <div class="col-xs-12 col-sm-4 problem-machine">
             <h3><%= __('appliance_page.problem_heading') %></h3>
             <p><%= __('appliance_page.problem_text') %></p>
@@ -83,6 +84,7 @@
     var playing = false;
 
     $(document).ready(function(){
+      currentOperation("LoadingAudio");
       var queue = new createjs.LoadQueue();
       queue.installPlugin(createjs.Sound);
       queue.on("complete", handleComplete, this);
@@ -92,6 +94,7 @@
           {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
       ]);
       function handleComplete() {
+        currentOperation("CompleteLoadingAudio");
         $('#actionWasher').prop('disabled', false);
         $('#actionWasher').css('opacity', 1.0);
       };
@@ -100,7 +103,7 @@
       $('#actionWasher').click(function(e){
         e.preventDefault();
         var label = $(this).text();
-        
+
         switch(label){
           case "<%= __('appliance_page.start') %>":
           $('#actionWasher').text("<%= __('appliance_page.stop') %>");
@@ -254,11 +257,13 @@
         audioInstance.on('complete', function(){
           playAudio(index+1);
         });
+        currentOperation("UploadingFile");
         $.ajax({
           url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
           type: 'PUT',
           data:{"audio": filename},
           success: function(data) {
+            currentOperation("completedUploading");
             updateStatus(data.message[0].class);
           }
         });
@@ -267,6 +272,23 @@
         updateStatus('ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
       }
+    }
+
+    function currentOperation(operation){
+      switch(operation){
+        case "LoadingAudio":
+          $("#currentOperation").text("Loading audio files");
+          break;
+        case "CompleteLoadingAudio":
+          $("#currentOperation").text("Completed loading audio files").delay(3000).hide(0);
+          break;
+        case "UploadingFile":
+          $('#currentOperation').text("Uploading audio file to acoustic server").show(0).delay(4000).hide(0);
+          break;
+        case "completedUploading":
+          $('#currentOperation').hide(0);
+          break;
+        }
     }
 
     // Status Report
@@ -317,7 +339,7 @@
           $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
           $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + " <%= __('appliance_page.water_pressure_unit') %>");
           $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
-        }          
+        }
       }
     };
     </script>
