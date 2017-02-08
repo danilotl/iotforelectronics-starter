@@ -11,6 +11,8 @@
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/soundjs/preloadjs-0.6.2.min.js"></script>
     <script type="text/javascript" src="/soundjs/soundjs-0.6.2.min.js"></script>
+    <script type="text/javascript"src="/mediaelement/mediaelement-and-player.min.js"></script>
+    <link rel="stylesheet" href="/mediaelement/mediaelementplayer.min.css"/>
     <!--
       commmented out for now, this is the dojo code for acoustic diagnosis panel startup
     <script type="text/javascript">
@@ -79,25 +81,62 @@
           </div>
         </section>
       </div>
+      <div class="audio-player">
+        <audio id="audio-player" src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" controls="controls"></audio>
+      </div>
     </div>
     <script type="text/javascript">
     var playing = false;
+    var checked = false;
+    var player;
+    var index = 0;
+    var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
 
     $(document).ready(function(){
-      currentOperation("LoadingAudio");
-      var queue = new createjs.LoadQueue();
-      queue.installPlugin(createjs.Sound);
-      queue.on("complete", handleComplete, this);
-      queue.loadManifest([
-          {id: "ZOOM0015_MONO_rinsing.wav", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
-          {id: "ZOOM0017_MONO_drainage.wav", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
-          {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
-      ]);
-      function handleComplete() {
-        currentOperation("CompleteLoadingAudio");
-        $('#actionWasher').prop('disabled', false);
-        $('#actionWasher').css('opacity', 1.0);
-      };
+      player = new MediaElementPlayer( $('#audio-player'), {
+            alwaysShowControls: true,
+            features: ['playpause','volume','progress'],
+            audioVolume: 'horizontal',
+            audioWidth: 400,
+            audioHeight: 40,
+            success: function (mediaElement, domObject) {
+                mediaElement.addEventListener('ended', function (e) {
+                    if(checked){
+                        var audioPlayed = /[^/]*$/.exec(mediaElement.src)[0];
+                        console.log(index+1);
+                        changeSong();
+                        playAudio2(index+1);
+                        console.log("end of player");
+                    }
+
+                }, false);
+                mediaElement.addEventListener('playing', function() {
+                    console.log('did start playing an song');
+                    console.log(mediaElement.src);
+                    if(!checked){
+                        checked = true;
+                        console.log(index);
+                        playAudio2(index);
+                    }
+
+                }, false);
+            }
+        });
+
+      // currentOperation("LoadingAudio");
+      // var queue = new createjs.LoadQueue();
+      // queue.installPlugin(createjs.Sound);
+      // queue.on("complete", handleComplete, this);
+      // queue.loadManifest([
+      //     {id: "ZOOM0015_MONO_rinsing.wav", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
+      //     {id: "ZOOM0017_MONO_drainage.wav", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
+      //     {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
+      // ]);
+      // function handleComplete() {
+      //   currentOperation("CompleteLoadingAudio");
+      //   $('#actionWasher').prop('disabled', false);
+      //   $('#actionWasher').css('opacity', 1.0);
+      // };
 
       // Send Start / Stop Washing command
       $('#actionWasher').click(function(e){
@@ -272,6 +311,35 @@
         updateStatus('ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
       }
+    }
+
+    function playAudio2(index){
+      var filename = audios[index];
+      if(index < audios.length){
+        playing = true;
+        changeCurrentOperation("UploadingFile");
+        console.log("will call function");
+        $.ajax({
+          url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
+          type: 'PUT',
+          data:{"audio": filename},
+          success: function(data) {
+            console.log("success on function")
+            changeCurrentOperation("completedUploading");
+            updateStatus(data.message[0].class);
+          }
+        });
+      } else {
+        playing = false;
+        updateStatus('ready');
+        $('#actionWasher').text("<%= __('appliance_page.start') %>");
+      }
+    }
+
+    function changeSong(){
+        player.setSrc('/sounds/' + audios[index]);
+        console.log("SRC AFTER->" + $('#audio-player').attr('src'));
+        player.load();
     }
 
     function currentOperation(operation){
