@@ -1,3 +1,17 @@
+<!--
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise  
+* divested of its trade secrets, irrespective of what has been 
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+-->
+
 <html>
   <head>
     <title><%= __('appliance_page.page_title') %></title>
@@ -82,12 +96,11 @@
         </section>
       </div>
       <div class="audio-player">
-        <audio id="audio-player" src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" controls="controls"></audio>
+        <audio id="audio-player" src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" preload="auto" controls="controls"></audio>
       </div>
     </div>
     <script type="text/javascript">
-    var playing = false;
-    var checked = false;
+    var xhr;
     var player;
     var index = 0;
     var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
@@ -95,30 +108,25 @@
     $(document).ready(function(){
       player = new MediaElementPlayer( $('#audio-player'), {
             alwaysShowControls: true,
-            features: ['playpause','volume','progress'],
+            features: ['playpause','volume'],
             audioVolume: 'horizontal',
-            audioWidth: 400,
+            audioWidth: 150,
             audioHeight: 40,
             success: function (mediaElement, domObject) {
                 mediaElement.addEventListener('ended', function (e) {
-                    if(checked){
-                        var audioPlayed = /[^/]*$/.exec(mediaElement.src)[0];
-                        console.log(index+1);
-                        changeSong();
-                        playAudio2(index+1);
-                        console.log("end of player");
-                    }
+                  index += 1;
+                  changeSong();
+                }, false);
+
+                mediaElement.addEventListener('playing', function() {
+                    playAudio2(index);
 
                 }, false);
-                mediaElement.addEventListener('playing', function() {
-                    console.log('did start playing an song');
-                    console.log(mediaElement.src);
-                    if(!checked){
-                        checked = true;
-                        console.log(index);
-                        playAudio2(index);
-                    }
-
+                mediaElement.addEventListener('pause', function() {
+                  if(!(mediaElement.getCurrentTime() == mediaElement.getDuration())){
+                    xhr.abort();
+                    updateStatus('stopped');
+                  }
                 }, false);
             }
         });
@@ -150,8 +158,7 @@
             break;
           case "<%= __('appliance_page.stop') %>":
             createjs.Sound.stop();
-            playing = false;
-            updateStatus('stopped');
+             updateStatus('stopped');
             $('#actionWasher').text("<%= __('appliance_page.start') %>");
             break;
         }
@@ -159,7 +166,6 @@
       // Send Failure Event
       $('.problem-machine-icons p').click(function(e) {
         createjs.Sound.stop();
-        playing = false;
         e.preventDefault();
         if($('#resetMachines').prop('disabled')) {
           $('#resetMachines').prop('disabled', false);
@@ -250,7 +256,6 @@
     });
 
     function updateStatus(status){
-      if($('#actionWasher').text() == "<%= __('appliance_page.stop') %>"){
         switch(status){
           case "rinsing":
             var data = {status: "Working", currentCycle: "Washing"};
@@ -273,7 +278,6 @@
             updatePlatformStatus(data);
             break;
         }
-      }
     }
 
     function updatePlatformStatus(data){
@@ -292,12 +296,11 @@
         var filename = audios[index];
         var audioInstance = createjs.Sound.createInstance(filename);
         audioInstance.play();
-        playing = true;
         audioInstance.on('complete', function(){
           playAudio(index+1);
         });
         currentOperation("UploadingFile");
-        $.ajax({
+        xhr = $.ajax({
           url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
           type: 'PUT',
           data:{"audio": filename},
@@ -307,7 +310,6 @@
           }
         });
       } else {
-        playing = false;
         updateStatus('ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
       }
@@ -316,30 +318,32 @@
     function playAudio2(index){
       var filename = audios[index];
       if(index < audios.length){
-        playing = true;
-        changeCurrentOperation("UploadingFile");
+        currentOperation("UploadingFile");
         console.log("will call function");
-        $.ajax({
+        xhr = $.ajax({
           url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
           type: 'PUT',
           data:{"audio": filename},
           success: function(data) {
             console.log("success on function")
-            changeCurrentOperation("completedUploading");
+            currentOperation("completedUploading");
             updateStatus(data.message[0].class);
           }
         });
-      } else {
-        playing = false;
-        updateStatus('ready');
-        $('#actionWasher').text("<%= __('appliance_page.start') %>");
       }
     }
 
     function changeSong(){
+      if(index < audios.length){
         player.setSrc('/sounds/' + audios[index]);
         console.log("SRC AFTER->" + $('#audio-player').attr('src'));
         player.load();
+        player.play();
+      } else {
+        updateStatus('ready');
+        $('#actionWasher').text("<%= __('appliance_page.start') %>");
+        index = 0;
+      }
     }
 
     function currentOperation(operation){
@@ -396,12 +400,10 @@
               case 'End':          $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.end') %>"); break;
             }
           } else {
-            if(!playing){
-              $('#actionWasher').text("<%= __('appliance_page.start') %>");
-              switch(device.status){
-                case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
-                case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
-              }
+            $('#actionWasher').text("<%= __('appliance_page.start') %>");
+            switch(device.status){
+              case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
+              case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
             }
           }
           $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
