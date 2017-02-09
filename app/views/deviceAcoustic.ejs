@@ -166,6 +166,7 @@
         switch(label){
           case "<%= __('appliance_page.start') %>":
             $('#actionWasher').text("<%= __('appliance_page.stop') %>");
+            $("#audio").attr('src','/sounds/' + audios[index]);
             $('#audio')[0].play();
             playing = true;
 
@@ -178,6 +179,7 @@
              $('#progress').attr("step", 1);
              xhr.abort();
              index = 0;
+             $("#audio").attr('src','/sounds/' + audios[index]);
              updateStatus('stopped');
              break;
         }
