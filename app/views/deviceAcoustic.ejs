@@ -81,11 +81,13 @@
                   <ul class="text-list"><li><%= __('appliance_page.vibration') %> </li><li><strong><%= vibration %> <%= __('appliance_page.vibration_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.water_pressure') %> </li><li><strong><%= waterPressure %> <%= __('appliance_page.water_pressure_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li>Sound</li><li>
-                    <div id="container">
-                      <progress id='progress' value="0" max="1"></progress>
-                      <input id="volume" type="range" min="0" max="100" value="100" step="1"></input>
-                      <div id="time"><span id='currentTime'>00:00</span> / <span id='duration'>00:00</span></div>
-                    </div>
+                    <div id="audioplayer">
+                  		<!-- <button id="pButton" class="play"></button> -->
+                  		<progress id='progress' value="0" max="1"></progress>
+                  		<div id="audioTime"><span id="currentTime">00:00</span> / <span id="totalDuration">00:00</span></div>
+                  		<button id="aButton" class="audio-on"></button>
+                  		<input id="volume" type="range" min="0" max="1" value="1" step="0.01"></input>
+                  	</div>
                 </li></ul>
 
                 </div>
@@ -111,15 +113,22 @@
     var playing;
     var index = 0;
     var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
+    var oldVolume;
+
 
     $(document).ready(function(){
       /**new audios*/
   		var currentTime = document.getElementById('currentTime');
-  		var duration = document.getElementById('duration');
+  		var totalDuration = document.getElementById('totalDuration');
 
-      $('#volume').on('change', function(){
-        $('#audio')[0].volume = $(this).val() /100;
-        console.log($('#audio')[0].volume);
+      $('#volume').on('input', function(){
+        if($(this).val() > 0){
+    			$('#audio')[0].muted = false;
+          $('#aButton').attr('class',"");
+          $('#aButton').attr('class',"audio-on");
+    		}
+    		$('#audio')[0].volume = $(this).val();
+
       })
 
   		$('#audio').on('timeupdate', function(){
@@ -129,18 +138,18 @@
         $('#progress').attr("value", this.currentTime / this.duration);
       });
 
+      $('#audio').on('loadeddata', function(){
+        var date = new Date(null);
+    		date.setSeconds(Math.floor(this.duration));
+    		totalDuration.innerHTML = date.toISOString().substr(14, 5);
+        $('#actionWasher').prop('disabled', false);
+        $('#actionWasher').css('opacity', 1.0);
+      });
+
       $('#audio').on('playing', function(){
       	console.log('PLAYING');
         playAudio2(index);
       });
-
-      // audio.addEventListener('pause', function(){
-      // 	if(!(audio.currentTime == audio.duration)){
-      // 		console.log('PAUSE');
-      //     xhr.abort();
-      //     updateStatus('stopped');
-      // 	}
-      // });
 
       $('#audio').on('ended', function(){
       	console.log('ENDED');
@@ -148,15 +157,41 @@
         changeSong();
       });
 
-      $('#audio').on('loadedmetadata', function(){
-      	var date = new Date(null);
-      	date.setSeconds(Math.floor(this.duration));
-      	duration.innerHTML = date.toISOString().substr(14, 5);
-        $('#actionWasher').prop('disabled', false);
-        $('#actionWasher').css('opacity', 1.0);
+
+      $('#pButton').on("click", function(){
+        if ($('#audio')[0].paused){
+  	        $('#audio')[0].play();
+  	        $('#pButton').attr('class', "");
+  	        $('#pButton').attr('class' ,"pause");
+  	    } else {
+  	        $('#audio')[0].pause();
+            $("#td_id").attr('class', 'newClass');
+            $('#pButton').attr('class', "");
+            $('#pButton').attr('class', "play");
+  	    }
       });
 
+      $('#aButton').on("click", function(){
+          if ($('#audio')[0].muted){
+    	        $('#audio')[0].muted = false;
+    	        $('#aButton').attr('class',"");
+              $('#aButton').attr('class',"audio-on");
+    	        volume.value = oldVolume;
+    	    } else {
+    	    	console.log($('#audio')[0].volume);
+    	    	oldVolume = $('#audio')[0].volume;
+    	      $('#audio')[0].muted = true;
+            $('#aButton').attr('class',"");
+            $('#aButton').attr('class',"audio-off");
+    	      volume.value = 0;
+    	    }
+      });
 
+      if ($('#audio')[0].readyState >= 2) {
+        var date = new Date(null);
+    		date.setSeconds(Math.floor($('#audio')[0].duration));
+    		totalDuration.innerHTML = date.toISOString().substr(14, 5);
+    	}
 
       // Send Start / Stop Washing command
       $('#actionWasher').click(function(e){
