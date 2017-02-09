@@ -108,6 +108,7 @@
     <script type="text/javascript">
     var xhr;
     var player;
+    var playing;
     var index = 0;
     var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
 
@@ -117,21 +118,20 @@
   		var duration = document.getElementById('duration');
 
       $('#volume').on('change', function(){
-           $('#audio')[0].volume = $(this).val() /100;
-           console.log($('#audio')[0].volume);
-       })
+        $('#audio')[0].volume = $(this).val() /100;
+        console.log($('#audio')[0].volume);
+      })
 
   		$('#audio').on('timeupdate', function(){
   			var date = new Date(null);
-          	date.setSeconds(Math.floor(this.currentTime));
-          	currentTime.innerHTML = date.toISOString().substr(14, 5);
-            $('#progress').attr("value", this.currentTime / this.duration);
-          });
+      	date.setSeconds(Math.floor(this.currentTime));
+      	currentTime.innerHTML = date.toISOString().substr(14, 5);
+        $('#progress').attr("value", this.currentTime / this.duration);
+      });
 
       $('#audio').on('playing', function(){
       	console.log('PLAYING');
         playAudio2(index);
-
       });
 
       // audio.addEventListener('pause', function(){
@@ -167,11 +167,13 @@
           case "<%= __('appliance_page.start') %>":
             $('#actionWasher').text("<%= __('appliance_page.stop') %>");
             $('#audio')[0].play();
+            playing = true;
 
             break;
           case "<%= __('appliance_page.stop') %>":
              $('#actionWasher').text("<%= __('appliance_page.start') %>");
              $('#audio')[0].pause();
+             playing = false;
              $('#audio')[0].currentTime = 0;
              $('#progress').attr("step", 1);
              xhr.abort();
@@ -356,10 +358,12 @@
         console.log("SRC AFTER->" + $('#audio-player').attr('src'));
         $("#audio")[0].load();
         $("#audio")[0].play();
+        playing = true;
       } else {
         updateStatus('ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
         index = 0;
+        playing = false;
       }
     }
 
@@ -417,12 +421,14 @@
               case 'End':          $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.end') %>"); break;
             }
           } else {
-            $('#actionWasher').text("<%= __('appliance_page.start') %>");
-            switch(device.status){
-              case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
-              case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
+            if(!playing){
+              $('#actionWasher').text("<%= __('appliance_page.start') %>");
+                switch(device.status){
+                  case 'Ready':        $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.ready') %>"); break;
+                  case 'Stopped':      $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.stopped') %>"); break;
+                }
+              }
             }
-          }
           $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
           $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + " <%= __('appliance_page.water_pressure_unit') %>");
           $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
