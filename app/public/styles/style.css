@@ -48,7 +48,7 @@ button, a{
 .content div.explain p, .content div.explain a, .washer-list,
 .install-info h3, .footer-links .link, .problem-machine p,
 .washer-details .washer-content .washer-text p, .washer-app-info p,
-.washer-details .washer-content .text-list li{
+.washer-details .washer-content .text-list li, #time span{
 	font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
 	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
 }
@@ -453,14 +453,13 @@ footer.main-section{
 .washer-title span {
 	position: relative;
 }
+#currentOperation{
+    color:red;
+}
 .washer-details{
 	display: flex;
   	width: 100%;
   	margin: 10px 0px 40px;
-}
-
-#currentOperation{
-  color:#ff0000;
 }
 .washer-details .washer-content{
 	position: relative;
@@ -958,4 +957,161 @@ body .main-container a:hover, body .main-container a:focus {
   .description-box section{
     margin-top: 50px;
   }
+}
+
+/***acoustic server page **/
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 0px 0;
+  width: 25%;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 0px 0px 0px #000000;
+  background: #EDEDED;
+  border-radius: 0px;
+  border: 0px solid #000000;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 0px 0px 0px #000000;
+  border: 1px solid #D6D6D6;
+  height: 13px;
+  width: 13px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5.5px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #EDEDED;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 0px 0px 0px #000000;
+  background: #EDEDED;
+  border-radius: 0px;
+  border: 0px solid #000000;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 0px 0px 0px #000000;
+  border: 1px solid #D6D6D6;
+  height: 13px;
+  width: 13px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #EDEDED;
+  border: 0px solid #000000;
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px #000000;
+}
+input[type=range]::-ms-fill-upper {
+  background: #EDEDED;
+  border: 0px solid #000000;
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px #000000;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 0px 0px 0px #000000;
+  border: 1px solid #D6D6D6;
+  height: 13px;
+  width: 13px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #EDEDED;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #EDEDED;
+}
+
+
+/** basic align **/
+#container{
+  position: relative;
+  width: 160%;
+  background-color: black;
+  height:45px;
+  padding-top:5px;
+
+}
+#time{
+  position: absolute;
+  right: 26%;
+  font-size: 11px;
+  top: 50%;
+}
+#time span, #time{
+  color: #fff
+}
+#volume{
+  display: inline;
+}
+
+/* Moving on to the styling, we'll start with the main progress bar first and then the value part of it. After that, we'll do some experiments  */
+
+progress {
+  margin-left: 5px;
+  width: 150px;
+  height: 14px;
+  display: inline-block;
+  /* Important Thing */
+  -webkit-appearance: none;
+  border: none;
+  margin-right: 10px;
+  /**background for mozilla */
+  background: #383737;
+  border-radius: 50px;
+  padding: 2px;
+  box-shadow: 0 1px 0px 0 rgba(255, 255, 255, 0.2);
+
+
+}
+
+/* All good till now. Now we'll style the background */
+progress::-webkit-progress-bar {
+  background: #383737;
+  border-radius: 50px;
+}
+/* Now the value part */
+progress::-webkit-progress-value {
+  border-radius: 50px;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  background:
+    -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
+    -webkit-linear-gradient(left, #6bbaff, #5795cc);
+
+}
+
+progress::-moz-progress-bar{
+  background: #6bbaff;
+  border-radius: 50px;
+  padding: 2px;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  background:
+    -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
+    -moz-linear-gradient(left, #6bbaff, #5795cc);
 }

@@ -6,8 +6,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 -->
@@ -80,6 +80,14 @@
                   <ul class="text-list"><li><%= __('appliance_page.overall_status') %>  </li><li><strong><%= deviceStatus %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.vibration') %> </li><li><strong><%= vibration %> <%= __('appliance_page.vibration_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.water_pressure') %> </li><li><strong><%= waterPressure %> <%= __('appliance_page.water_pressure_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
+                  <ul class="text-list"><li>Sound</li><li>
+                    <div id="container">
+                      <progress id='progress' value="0" max="1"></progress>
+                      <input id="volume" type="range" min="0" max="100" value="100" step="1"></input>
+                      <div id="time"><span id='currentTime'>00:00</span> / <span id='duration'>00:00</span></div>
+                    </div>
+                </li></ul>
+
                 </div>
               </div>
             </div>
@@ -95,9 +103,7 @@
           </div>
         </section>
       </div>
-      <div class="audio-player">
-        <audio id="audio-player" src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" preload="auto" controls="controls"></audio>
-      </div>
+      <audio id='audio' src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" preload="auto" ></audio>
     </div>
     <script type="text/javascript">
     var xhr;
@@ -106,45 +112,51 @@
     var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
 
     $(document).ready(function(){
-      player = new MediaElementPlayer( $('#audio-player'), {
-            alwaysShowControls: true,
-            features: ['playpause','volume'],
-            audioVolume: 'horizontal',
-            audioWidth: 150,
-            audioHeight: 40,
-            success: function (mediaElement, domObject) {
-                mediaElement.addEventListener('ended', function (e) {
-                  index += 1;
-                  changeSong();
-                }, false);
+      /**new audios*/
+  		var currentTime = document.getElementById('currentTime');
+  		var duration = document.getElementById('duration');
 
-                mediaElement.addEventListener('playing', function() {
-                    playAudio2(index);
+      $('#volume').on('change', function(){
+           $('#audio')[0].volume = $(this).val() /100;
+           console.log($('#audio')[0].volume);
+       })
 
-                }, false);
-                mediaElement.addEventListener('pause', function() {
-                  if(!(mediaElement.getCurrentTime() == mediaElement.getDuration())){
-                    xhr.abort();
-                    updateStatus('stopped');
-                  }
-                }, false);
-            }
-        });
+  		$('#audio').on('timeupdate', function(){
+  			var date = new Date(null);
+          	date.setSeconds(Math.floor(this.currentTime));
+          	currentTime.innerHTML = date.toISOString().substr(14, 5);
+            $('#progress').attr("value", this.currentTime / this.duration);
+          });
 
-      // currentOperation("LoadingAudio");
-      // var queue = new createjs.LoadQueue();
-      // queue.installPlugin(createjs.Sound);
-      // queue.on("complete", handleComplete, this);
-      // queue.loadManifest([
-      //     {id: "ZOOM0015_MONO_rinsing.wav", src:"/sounds/ZOOM0015_MONO_rinsing.wav"},
-      //     {id: "ZOOM0017_MONO_drainage.wav", src:"/sounds/ZOOM0017_MONO_drainage.wav"},
-      //     {id: "ZOOM0018_MONO_spin_1.wav", src:"/sounds/ZOOM0018_MONO_spin_1.wav"}
-      // ]);
-      // function handleComplete() {
-      //   currentOperation("CompleteLoadingAudio");
-      //   $('#actionWasher').prop('disabled', false);
-      //   $('#actionWasher').css('opacity', 1.0);
-      // };
+      $('#audio').on('playing', function(){
+      	console.log('PLAYING');
+        playAudio2(index);
+
+      });
+
+      // audio.addEventListener('pause', function(){
+      // 	if(!(audio.currentTime == audio.duration)){
+      // 		console.log('PAUSE');
+      //     xhr.abort();
+      //     updateStatus('stopped');
+      // 	}
+      // });
+
+      $('#audio').on('ended', function(){
+      	console.log('ENDED');
+        index += 1;
+        changeSong();
+      });
+
+      $('#audio').on('loadedmetadata', function(){
+      	var date = new Date(null);
+      	date.setSeconds(Math.floor(this.duration));
+      	duration.innerHTML = date.toISOString().substr(14, 5);
+        $('#actionWasher').prop('disabled', false);
+        $('#actionWasher').css('opacity', 1.0);
+      });
+
+
 
       // Send Start / Stop Washing command
       $('#actionWasher').click(function(e){
@@ -153,14 +165,19 @@
 
         switch(label){
           case "<%= __('appliance_page.start') %>":
-          $('#actionWasher').text("<%= __('appliance_page.stop') %>");
-            playAudio(0);
+            $('#actionWasher').text("<%= __('appliance_page.stop') %>");
+            $('#audio')[0].play();
+
             break;
           case "<%= __('appliance_page.stop') %>":
-            createjs.Sound.stop();
+             $('#actionWasher').text("<%= __('appliance_page.start') %>");
+             $('#audio')[0].pause();
+             $('#audio')[0].currentTime = 0;
+             $('#progress').attr("step", 1);
+             xhr.abort();
+             index = 0;
              updateStatus('stopped');
-            $('#actionWasher').text("<%= __('appliance_page.start') %>");
-            break;
+             break;
         }
       });
       // Send Failure Event
@@ -335,10 +352,10 @@
 
     function changeSong(){
       if(index < audios.length){
-        player.setSrc('/sounds/' + audios[index]);
+        $("#audio").attr('src','/sounds/' + audios[index]);
         console.log("SRC AFTER->" + $('#audio-player').attr('src'));
-        player.load();
-        player.play();
+        $("#audio")[0].load();
+        $("#audio")[0].play();
       } else {
         updateStatus('ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
