@@ -963,8 +963,8 @@ body .main-container a:hover, body .main-container a:focus {
 
 /** basic align **/
 #audioplayer {
-    width: 270px;
-    height: 25px;
+    width: 267px;
+    height: 23px;
     margin: auto auto auto auto;
     border: 1px solid;
     padding-left: 10px;
@@ -1009,7 +1009,7 @@ body .main-container a:hover, body .main-container a:focus {
 }
 
 progress::-webkit-progress-value { background: #6bbaff; }
-
+progress::-moz-progress-bar { background-color: #6bbaff; }
 
 #progress {
     border: none;
@@ -1030,6 +1030,18 @@ progress::-webkit-progress-value { background: #6bbaff; }
 
 #volume {
     display: inline;
+}
+
+#soundwave {
+	position: absolute;
+	margin-left: 20px;
+	margin-top: -1px;
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	filter: FlipH;
+	-ms-filter: "FlipH";
 }
 
 input[type=range]{

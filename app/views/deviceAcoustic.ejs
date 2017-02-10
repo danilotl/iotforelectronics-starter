@@ -87,6 +87,7 @@
                   		<div id="audioTime"><span id="currentTime">00:00</span> / <span id="totalDuration">00:00</span></div>
                   		<button id="aButton" class="audio-on"></button>
                   		<input id="volume" type="range" min="0" max="1" value="1" step="0.01"></input>
+                      <img id="soundwave" src="../images/soundwave1.gif">
                   	</div>
                 </li></ul>
 
@@ -126,7 +127,11 @@
     			$('#audio')[0].muted = false;
           $('#aButton').attr('class',"");
           $('#aButton').attr('class',"audio-on");
-    		}
+    		} else {
+          $('#audio')[0].muted = true;
+          $('#aButton').attr('class',"");
+          $('#aButton').attr('class',"audio-off");
+        }
     		$('#audio')[0].volume = $(this).val();
 
       })
@@ -147,6 +152,7 @@
       });
 
       $('#audio').on('playing', function(){
+        $('#soundwave').attr('src', '../images/soundwave2.gif');
       	console.log('PLAYING');
         playAudio2(index);
       });
@@ -158,6 +164,7 @@
       });
 
 
+      $('<img />').attr('src', '../images/audio-off.png').appendTo('body').css('display','none');
       $('#pButton').on("click", function(){
         if ($('#audio')[0].paused){
   	        $('#audio')[0].play();
@@ -165,7 +172,6 @@
   	        $('#pButton').attr('class' ,"pause");
   	    } else {
   	        $('#audio')[0].pause();
-            $("#td_id").attr('class', 'newClass');
             $('#pButton').attr('class', "");
             $('#pButton').attr('class', "play");
   	    }
@@ -209,6 +215,7 @@
           case "<%= __('appliance_page.stop') %>":
              $('#actionWasher').text("<%= __('appliance_page.start') %>");
              $('#audio')[0].pause();
+             $('#soundwave').attr('src', '../images/soundwave1.gif');
              playing = false;
              $('#audio')[0].currentTime = 0;
              $('#progress').attr("step", 1);
@@ -401,6 +408,7 @@
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
         index = 0;
         playing = false;
+        $('#soundwave').attr('src', '../images/soundwave1.gif');
       }
     }
 
@@ -468,7 +476,9 @@
             }
           $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
           $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + " <%= __('appliance_page.water_pressure_unit') %>");
-          $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
+          $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/Checkmark.svg');
+          $('.washer-content .washer-text ul li img').eq(1).attr('src', '/images/Checkmark.svg');
+          $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/Checkmark.svg');
         }
       }
     };
