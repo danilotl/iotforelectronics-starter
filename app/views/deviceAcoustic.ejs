@@ -106,14 +106,14 @@
           </div>
         </section>
       </div>
-      <audio id='audio' src="/sounds/ZOOM0015_MONO_rinsing.wav" type="audio/wav" preload="auto" ></audio>
+      <audio id='audio' src="/sounds/ZOOM0015_MONO_inlet.wav" type="audio/wav" preload="auto" ></audio>
     </div>
     <script type="text/javascript">
     var xhr;
     var player;
     var playing;
     var index = 0;
-    var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
+    var audios = ['ZOOM0015_MONO_inlet.wav', 'ZOOM0015_MONO_rinsing.wav', 'ZOOM0016_MONO_rinsing.wav', "ZOOM0018_MONO_spin_2.wav", "ZOOM0017_MONO_drainage.wav"];
     var oldVolume;
 
 
@@ -320,16 +320,24 @@
 
     function updateStatus(status){
         switch(status){
-          case "rinsing":
+          case "Filling":
+            var data = {status: "Working", currentCycle: "Filling"};
+            updatePlatformStatus(data);
+            break;
+          case "Washing":
             var data = {status: "Working", currentCycle: "Washing"};
             updatePlatformStatus(data);
             break;
-          case "drain":
-            var data = {status: "Working", currentCycle: "Draining"};
+          case "Soaking":
+            var data = {status: "Working", currentCycle: "Soaking"};
             updatePlatformStatus(data);
             break;
-          case "spin":
+          case "Spinning":
             var data = {status: "Working", currentCycle: "Spinning"};
+            updatePlatformStatus(data);
+            break;
+          case "Draining":
+            var data = {status: "Working", currentCycle: "Draining"};
             updatePlatformStatus(data);
             break;
           case "ready":
