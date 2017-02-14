@@ -23,8 +23,6 @@
     <script src="/javascripts/iotAppMonitorClient.js"></script>
     <script src="/jquery/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/soundjs/preloadjs-0.6.2.min.js"></script>
-    <script type="text/javascript" src="/soundjs/soundjs-0.6.2.min.js"></script>
     <script type="text/javascript"src="/mediaelement/mediaelement-and-player.min.js"></script>
     <link rel="stylesheet" href="/mediaelement/mediaelementplayer.min.css"/>
     <!--
@@ -55,13 +53,21 @@
             <h3><%= __('appliance_page.problem_heading') %></h3>
             <p><%= __('appliance_page.problem_text') %></p>
             <div class="problem-machine-icons">
-              <p class="enabled" data-text="Board failure"><img src="/images/Board_failure_en.svg"><button><%= __('appliance_page.board_failure') %></button></p>
+              <p class="enabled" data-text="Board failure"><img src="/images/Board_failure_en.svg"/><button><%= __('appliance_page.board_failure') %></button></p>
               <p class="enabled" data-text="Strong vibration"><img src="/images/Vibration_en.svg"/><button><%= __('appliance_page.strong_vibration') %></button></p>
-              <p class="enabled" data-text="Water leak"><img src="/images/waterdrop.svg"/><button><%= __('appliance_page.water_leak') %></button></p>
+              <p class="enabled" data-text="Water leak"><img src="/images/waterdrop.svg"/><button/><%= __('appliance_page.water_leak') %></button></p>
+            </div>
+            <div class="problem-machine-buttons">
+              <button id="toggleNoise">Noise</button>
+            </div>
+            <div id="noiseOptions" class="problem-machine-icons">
+              <p class="enabled" data-text="Washing Anomaly"><button>Washing Anomaly</button></p>
+              <p class="enabled" data-text="Soaking Anomaly"><button>Soaking Anomaly</button></p>
+              <p class="enabled" data-text="Low Speed Spin"><button>Low Speed Spin</button></p>
             </div>
             <div class="problem-machine-buttons">
               <button id="resetMachines" disabled><%= __('appliance_page.fix_machine') %></button>
-              <button><%= __('appliance_page.delete_washer') %></button>
+              <button id="deleteWasher"><%= __('appliance_page.delete_washer') %></button>
             </div>
           </div>
           <div class="col-xs-12 col-sm-8 machine-info">
@@ -114,6 +120,9 @@
     var playing;
     var index = 0;
     var audios = ['ZOOM0015_MONO_inlet.wav', 'ZOOM0015_MONO_rinsing.wav', 'ZOOM0016_MONO_rinsing.wav', "ZOOM0018_MONO_spin_2.wav", "ZOOM0017_MONO_drainage.wav"];
+    var failureAudio = false;
+    var failureIndex = 0;
+    var failureAudios = ['ZOOM0019_MONO_rinsing_anomaly_1.wav', 'ZOOM0019_MONO_rinsing_anomaly_2.wav', 'ZOOM0018_MONO_spin_lowspeed.wav'];
     var oldVolume;
 
 
@@ -154,27 +163,27 @@
       $('#audio').on('playing', function(){
         $('#soundwave').attr('src', '../images/soundwave2.gif');
       	console.log('PLAYING');
-        playAudio2(index);
+
+        if(failureAudio) playAudio(failureIndex, true);
+        else playAudio(index, false);
+
       });
 
       $('#audio').on('ended', function(){
       	console.log('ENDED');
-        index += 1;
-        changeSong();
+        
+        if(!failureAudio){
+          index += 1;
+          changeSong();
+        }
+
       });
 
 
       $('<img />').attr('src', '../images/audio-off.png').appendTo('body').css('display','none');
-      $('#pButton').on("click", function(){
-        if ($('#audio')[0].paused){
-  	        $('#audio')[0].play();
-  	        $('#pButton').attr('class', "");
-  	        $('#pButton').attr('class' ,"pause");
-  	    } else {
-  	        $('#audio')[0].pause();
-            $('#pButton').attr('class', "");
-            $('#pButton').attr('class', "play");
-  	    }
+      
+      $('#toggleNoise').on('click', function(){
+        $('#noiseOptions').toggle('fast');
       });
 
       $('#aButton').on("click", function(){
@@ -214,22 +223,15 @@
             break;
           case "<%= __('appliance_page.stop') %>":
              $('#actionWasher').text("<%= __('appliance_page.start') %>");
-             $('#audio')[0].pause();
-             $('#soundwave').attr('src', '../images/soundwave1.gif');
-             playing = false;
-             $('#audio')[0].currentTime = 0;
-             $('#progress').attr("step", 1);
-             xhr.abort();
-             index = 0;
-             $("#audio").attr('src','/sounds/' + audios[index]);
-             updateStatus('stopped');
+             stopAudio();
+             updateStatus('Stopped');
              break;
         }
       });
       // Send Failure Event
       $('.problem-machine-icons p').click(function(e) {
-        createjs.Sound.stop();
         e.preventDefault();
+        stopAudio();
         if($('#resetMachines').prop('disabled')) {
           $('#resetMachines').prop('disabled', false);
           $('#actionWasher').prop('disabled', true);
@@ -247,15 +249,24 @@
           obj['currentCycle'] = 'Stopped';
           switch(failureType){
             case 'Strong vibration':
-            index = 1;
-            text = "150";
-            obj['vibration'] = text;
-            break;
+              index = 1;
+              text = "150";
+              obj['vibration'] = text;
+              break;
             case 'Water leak':
-            index = 2;
-            text = "30";
-            obj['waterPressure'] = text;
-            break;
+              index = 2;
+              text = "30";
+              obj['waterPressure'] = text;
+              break;
+              case 'Washing Anomaly':
+                playFailureAudio(0);
+                break;
+              case 'Soaking Anomaly':
+                playFailureAudio(1);
+                break;
+              case 'Low Speed Spin':
+                playFailureAudio(2);
+                break;
           }
           var data = JSON.parse(JSON.stringify(obj));
           $.ajax({
@@ -274,6 +285,7 @@
       // Reset Machine
       $('.problem-machine-buttons #resetMachines').click(function(e) {
         e.preventDefault();
+        stopAudio();
         $('#resetMachines').prop('disabled', true);
         $('#actionWasher').prop('disabled', false);
         $('.problem-machine-icons button').removeClass('active');
@@ -291,7 +303,7 @@
         });
       });
       // Delete Washer
-      $('.problem-machine-buttons button').eq(1).on('click', function(e){
+      $('.problem-machine-buttons #deleteWasher').on('click', function(e){
         e.preventDefault();
         $('#confirmDelete').modal('show');
       });
@@ -340,11 +352,11 @@
             var data = {status: "Working", currentCycle: "Draining"};
             updatePlatformStatus(data);
             break;
-          case "ready":
+          case "Ready":
             var data = {status: "Ready", currentCycle: "Empty"};
             updatePlatformStatus(data);
             break;
-          case "stopped":
+          case "Stopped":
             var data = {status: "Stopped", currentCycle: "Stopped"};
             updatePlatformStatus(data);
             break;
@@ -361,47 +373,39 @@
       });
     }
 
-    function playAudio(index){
-      var audios = ['ZOOM0015_MONO_rinsing.wav', 'ZOOM0017_MONO_drainage.wav', 'ZOOM0018_MONO_spin_1.wav'];
-      if(index < audios.length){
+    function playAudio(index, failure){
+
+      if(!failure){
         var filename = audios[index];
-        var audioInstance = createjs.Sound.createInstance(filename);
-        audioInstance.play();
-        audioInstance.on('complete', function(){
-          playAudio(index+1);
-        });
-        currentOperation("UploadingFile");
-        xhr = $.ajax({
-          url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
-          type: 'PUT',
-          data:{"audio": filename},
-          success: function(data) {
-            currentOperation("completedUploading");
-            updateStatus(data.message[0].class);
-          }
-        });
       } else {
-        updateStatus('ready');
-        $('#actionWasher').text("<%= __('appliance_page.start') %>");
+        var filename = failureAudios[index];
       }
+
+      currentOperation("UploadingFile");
+      console.log("will call function");
+      xhr = $.ajax({
+        url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
+        type: 'PUT',
+        data:{"audio": filename},
+        success: function(data) {
+          console.log("success on function")
+          currentOperation("completedUploading");
+          updateStatus(data.message[0].class);
+        }
+      });
     }
 
-    function playAudio2(index){
-      var filename = audios[index];
-      if(index < audios.length){
-        currentOperation("UploadingFile");
-        console.log("will call function");
-        xhr = $.ajax({
-          url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
-          type: 'PUT',
-          data:{"audio": filename},
-          success: function(data) {
-            console.log("success on function")
-            currentOperation("completedUploading");
-            updateStatus(data.message[0].class);
-          }
-        });
-      }
+    function stopAudio(){
+      $('#audio')[0].pause();
+      $('#soundwave').attr('src', '../images/soundwave1.gif');
+      playing = false;
+      $('#audio')[0].currentTime = 0;
+      $('#progress').attr("step", 1);
+      if(xhr) xhr.abort();
+      index = 0;
+      failureIndex = 0;
+      failureAudio = false;
+      $("#audio").attr('src','/sounds/' + audios[index]);
     }
 
     function changeSong(){
@@ -412,11 +416,22 @@
         $("#audio")[0].play();
         playing = true;
       } else {
-        updateStatus('ready');
+        updateStatus('Ready');
         $('#actionWasher').text("<%= __('appliance_page.start') %>");
         index = 0;
         playing = false;
         $('#soundwave').attr('src', '../images/soundwave1.gif');
+      }
+    }
+
+    function playFailureAudio(index){
+      if(index < failureAudios.length){
+        $("#audio").attr('src','/sounds/' + failureAudios[index]);
+        $("#audio")[0].load();
+        $("#audio")[0].play();
+        playing = true;
+        failureAudio = true;
+        failureIndex = index;
       }
     }
 

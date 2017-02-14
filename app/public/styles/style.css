@@ -527,6 +527,10 @@ footer.main-section{
      .washer-app-info > div > img { margin-left: -10px;}
 }
 
+#noiseOptions{
+	display: none;
+}
+
 .problem-machine{
 	text-align: left;
 	padding: 0px 25px;
@@ -538,7 +542,7 @@ footer.main-section{
 }
 
 .problem-machine-icons{
-  width: 300px;
+  width: 120%;
 }
 
 .problem-machine .problem-machine-icons button{
