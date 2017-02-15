@@ -47,7 +47,6 @@
           <div>
               <div id="service_provider_monitoring_obj" data-dojo-type="analytics.WMParts"></div>
           </div>
-          <p id="currentOperation"></p>
           <div class="col-xs-12 col-sm-4 problem-machine">
             <h3><%= __('appliance_page.problem_heading') %></h3>
             <p><%= __('appliance_page.problem_text') %></p>
@@ -418,7 +417,6 @@
 
       $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %>");
 
-      currentOperation("UploadingFile");
       console.log("will call function");
       xhr = $.ajax({
         url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
@@ -426,7 +424,6 @@
         data:{"audio": filename},
         success: function(data){
           console.log("success on function")
-          currentOperation("completedUploading");
           $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.completed') %>");
           updateStatus(data.message[0].class);
         },
@@ -480,23 +477,6 @@
         failureAudio = true;
         failureIndex = index;
       }
-    }
-
-    function currentOperation(operation){
-      switch(operation){
-        case "LoadingAudio":
-          $("#currentOperation").text("<%= __('appliance_page.loading_audio') %>");
-          break;
-        case "CompleteLoadingAudio":
-          $("#currentOperation").text("<%= __('appliance_page.loading_audio_completed') %>").delay(3000).hide(0);
-          break;
-        case "UploadingFile":
-          $('#currentOperation').text("<%= __('appliance_page.uploading_audio') %>").show(0).delay(4000).hide(0);
-          break;
-        case "completedUploading":
-          $('#currentOperation').hide(0);
-          break;
-        }
     }
 
     // Status Report
