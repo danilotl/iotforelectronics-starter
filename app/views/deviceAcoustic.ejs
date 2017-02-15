@@ -45,7 +45,6 @@
         <h2><%= __('appliance_page.heading') %></h2>
         <section class="col-xs-12 col-md-10 content washer-content">
           <div>
-              This is a test to see if we are getting the different page
               <div id="service_provider_monitoring_obj" data-dojo-type="analytics.WMParts"></div>
           </div>
           <p id="currentOperation"></p>
@@ -58,12 +57,12 @@
               <p class="enabled" data-text="Water leak"><img src="/images/waterdrop.svg"/><button/><%= __('appliance_page.water_leak') %></button></p>
             </div>
             <div class="problem-machine-buttons">
-              <button id="toggleNoise">Noise</button>
+              <button id="toggleNoise"><%= __('appliance_page.noise') %></button>
             </div>
             <div id="noiseOptions" class="problem-machine-icons">
-              <p class="enabled" data-text="Washing Anomaly"><button>Washing Anomaly</button></p>
-              <p class="enabled" data-text="Soaking Anomaly"><button>Soaking Anomaly</button></p>
-              <p class="enabled" data-text="Low Speed Spin"><button>Low Speed Spin</button></p>
+              <p class="enabled" data-text="Washing Anomaly"><button><%= __('appliance_page.washing_anomaly') %></button></p>
+              <p class="enabled" data-text="Soaking Anomaly"><button><%= __('appliance_page.soaking_anomaly') %></button></p>
+              <p class="enabled" data-text="Low Speed Spin"><button><%= __('appliance_page.low_speed_spin') %></button></p>
             </div>
             <div class="problem-machine-buttons">
               <button id="resetMachines" disabled><%= __('appliance_page.fix_machine') %></button>
@@ -86,7 +85,7 @@
                   <ul class="text-list"><li><%= __('appliance_page.overall_status') %>  </li><li><strong><%= deviceStatus %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.vibration') %> </li><li><strong><%= vibration %> <%= __('appliance_page.vibration_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.water_pressure') %> </li><li><strong><%= waterPressure %> <%= __('appliance_page.water_pressure_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
-                  <ul class="text-list"><li>Sound</li><li>
+                  <ul class="text-list"><li><%= __('appliance_page.sound') %></li><li>
                     <div id="audioplayer">
                   		<!-- <button id="pButton" class="play"></button> -->
                   		<progress id='progress' value="0" max="1"></progress>
@@ -96,7 +95,8 @@
                       <img id="soundwave" src="../images/soundwave1.gif">
                   	</div>
                 </li></ul>
-
+                <ul class="text-list"><li><%= __('appliance_page.sound_analysis') %></li><li><strong><%= __('appliance_page.normal') %></strong></li></ul>
+                <ul class="text-list audio-failure"><li></li><li><strong></strong></li></ul>
                 </div>
               </div>
             </div>
@@ -115,6 +115,7 @@
       <audio id='audio' src="/sounds/ZOOM0015_MONO_inlet.wav" type="audio/wav" preload="auto" ></audio>
     </div>
     <script type="text/javascript">
+    var firstLoad = true;
     var xhr;
     var player;
     var playing;
@@ -156,8 +157,11 @@
         var date = new Date(null);
     		date.setSeconds(Math.floor(this.duration));
     		totalDuration.innerHTML = date.toISOString().substr(14, 5);
-        $('#actionWasher').prop('disabled', false);
-        $('#actionWasher').css('opacity', 1.0);
+        if(firstLoad){
+          $('#actionWasher').prop('disabled', false);
+          $('#actionWasher').css('opacity', 1.0);
+        }
+        firstLoad = false;
       });
 
       $('#audio').on('playing', function(){
@@ -231,10 +235,14 @@
       // Send Failure Event
       $('.problem-machine-icons p').click(function(e) {
         e.preventDefault();
+
+        if(failureAudio) return;
+
         stopAudio();
         if($('#resetMachines').prop('disabled')) {
           $('#resetMachines').prop('disabled', false);
           $('#actionWasher').prop('disabled', true);
+          $('#actionWasher').css('opacity', 0.2);
           $('.problem-machine-icons button').removeClass('active');
           $('.problem-machine-icons p').removeClass('enabled');
           $('.problem-machine-icons p').removeClass('active');
@@ -268,18 +276,21 @@
                 playFailureAudio(2);
                 break;
           }
-          var data = JSON.parse(JSON.stringify(obj));
-          $.ajax({
-            url: '/washingMachine/<%= deviceId %>/setAttributes',
-            type: 'PUT',
-            data: data,
-            success: function() {
-              $('.washer-content .washer-text p strong').eq(0).text("<%= __('appliance_page.failure') %>");
-              if(index > 0){
-                $('.washer-content .washer-text p strong').eq(index).text(text);
+
+          if(['Washing Anomaly', 'Soaking Anomaly', 'Low Speed Spin'].indexOf(failureType) == -1){
+            var data = JSON.parse(JSON.stringify(obj));
+            $.ajax({
+              url: '/washingMachine/<%= deviceId %>/setAttributes',
+              type: 'PUT',
+              data: data,
+              success: function() {
+                $('.washer-content .washer-text p strong').eq(0).text("<%= __('appliance_page.failure') %>");
+                if(index > 0){
+                  $('.washer-content .washer-text p strong').eq(index).text(text);
+                }
               }
-            }
-          });
+            });
+          }
         }
       });
       // Reset Machine
@@ -288,8 +299,14 @@
         stopAudio();
         $('#resetMachines').prop('disabled', true);
         $('#actionWasher').prop('disabled', false);
+        $('#actionWasher').css('opacity', 1.0);
         $('.problem-machine-icons button').removeClass('active');
         $('.problem-machine-icons p').addClass('enabled');
+        $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
+        $('.washer-content .washer-text ul li strong').eq(4).text("");
+        $('#audio')[0].currentTime = 0;
+        $('#progress').attr("step", 1);
+        if(xhr) xhr.abort();
         $.ajax({
           url: '/washingMachine/<%= deviceId %>/setAttributes',
           type: 'PUT',
@@ -340,12 +357,30 @@
             var data = {status: "Working", currentCycle: "Washing"};
             updatePlatformStatus(data);
             break;
+          case "Washing_Anomaly":
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.washing_anomaly') %>");
+            var data = {status: "Failure", failureType: "Washing Anomaly", currentCycle: "Stopped"};
+            updatePlatformStatus(data);
+            break;
           case "Soaking":
             var data = {status: "Working", currentCycle: "Soaking"};
             updatePlatformStatus(data);
             break;
+          case "Soaking_Anomaly":
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.soaking_anomaly') %>");
+            var data = {status: "Failure", failureType: "Soaking Anomaly", currentCycle: "Stopped"};
+            updatePlatformStatus(data);
+            break;
           case "Spinning":
             var data = {status: "Working", currentCycle: "Spinning"};
+            updatePlatformStatus(data);
+            break;
+          case "Low_Speed_Spin":
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.low_speed_spin') %>");
+            var data = {status: "Failure", failureType: "Low Speed Spin", currentCycle: "Stopped"};
             updatePlatformStatus(data);
             break;
           case "Draining":
@@ -381,22 +416,34 @@
         var filename = failureAudios[index];
       }
 
+      $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %>");
+
       currentOperation("UploadingFile");
       console.log("will call function");
       xhr = $.ajax({
         url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
         type: 'PUT',
         data:{"audio": filename},
-        success: function(data) {
+        success: function(data){
           console.log("success on function")
           currentOperation("completedUploading");
+          $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.completed') %>");
           updateStatus(data.message[0].class);
+        },
+        error: function(xhr, status, error){
+          if(status == 'abort'){
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
+          } else {
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.error') %>");
+          }
         }
       });
     }
 
     function stopAudio(){
       $('#audio')[0].pause();
+      $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
+      $('.washer-content .washer-text ul li strong').eq(4).text("");
       $('#soundwave').attr('src', '../images/soundwave1.gif');
       playing = false;
       $('#audio')[0].currentTime = 0;
@@ -438,13 +485,13 @@
     function currentOperation(operation){
       switch(operation){
         case "LoadingAudio":
-          $("#currentOperation").text("Loading audio files");
+          $("#currentOperation").text("<%= __('appliance_page.loading_audio') %>");
           break;
         case "CompleteLoadingAudio":
-          $("#currentOperation").text("Completed loading audio files").delay(3000).hide(0);
+          $("#currentOperation").text("<%= __('appliance_page.loading_audio_completed') %>").delay(3000).hide(0);
           break;
         case "UploadingFile":
-          $('#currentOperation').text("Uploading audio file to acoustic server").show(0).delay(4000).hide(0);
+          $('#currentOperation').text("<%= __('appliance_page.uploading_audio') %>").show(0).delay(4000).hide(0);
           break;
         case "completedUploading":
           $('#currentOperation').hide(0);
@@ -460,7 +507,10 @@
 
       if (id === "<%= deviceId %>" && length > 1) {
         if(device.status && device.status == 'Failure'){
-          if(!($('#actionWasher').prop('disabled'))) $('#actionWasher').prop('disabled', true);
+          if(!($('#actionWasher').prop('disabled'))){
+            $('#actionWasher').prop('disabled', true);
+            $('#actionWasher').css('opacity', 0.2);
+          }
           if($('#resetMachines').prop('disabled')) $('#resetMachines').prop('disabled', false);
           $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.failure') %>");
           $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/advise-icon.svg');
@@ -477,7 +527,6 @@
             $('.washer-content .washer-text ul li img').eq(2).attr('src', '/images/advise-icon.svg');
           }
         } else {
-          if($('#actionWasher').prop('disabled')) $('#actionWasher').prop('disabled', false);
           if(device.status === 'Working'){
             $('#actionWasher').text("<%= __('appliance_page.stop') %>");
             switch(device.currentCycle){

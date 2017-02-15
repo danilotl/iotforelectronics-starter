@@ -1012,6 +1012,11 @@ body .main-container a:hover, body .main-container a:focus {
     background: url('../images/audio-off.png');
 }
 
+.audio-failure {
+	white-space: nowrap;
+	color: red;
+}
+
 progress::-webkit-progress-value { background: #6bbaff; }
 progress::-moz-progress-bar { background-color: #6bbaff; }
 

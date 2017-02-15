@@ -91,7 +91,20 @@
 		"spinning" : "Spinning",
 		"draining": "Draining",
 		"end": "End",
-		"no_data": "No data"
+		"no_data": "No data",
+		"loading_audio": "Loading audio files",
+		"loading_audio_completed": "Completed loading audio files",
+		"uploading_audio": "Uploading audio file to acoustic server",
+		"sound": "Sound",
+		"sound_analysis": "Sound Analysis",
+		"normal": "Normal",
+		"diagnosing": "Diagnosing",
+		"completed": "Completed",
+		"error": "Error",
+		"noise": "Noise",
+		"washing_anomaly": "Washing Anomaly",
+		"soaking_anomaly": "Soaking Anomaly",
+		"low_speed_spin": "Low Speed Spin"
 	},
 	"contact_form" :{
 		"page_title": "IoT for Electronics",
