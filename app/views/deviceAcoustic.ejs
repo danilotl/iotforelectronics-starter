@@ -24,6 +24,7 @@
     <script src="/jquery/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript"src="/mediaelement/mediaelement-and-player.min.js"></script>
+    <script type="text/javascript" src="/javascripts/waveform.js"></script>
     <link rel="stylesheet" href="/mediaelement/mediaelementplayer.min.css"/>
     <!--
       commmented out for now, this is the dojo code for acoustic diagnosis panel startup
@@ -66,6 +67,17 @@
               <div class="washer-content">
                 <button id="actionWasher" style="opacity:0.2" disabled><%= __('appliance_page.start') %></button>
                 <img src="/images/Washer.svg" class="washer-machine"/>
+                <div class="waveform-container">
+              		<div class="waveform-overlay"></div>
+              	</div>
+                <div id="audioplayer">
+                  <!-- <button id="pButton" class="play"></button> -->
+                  <!-- <progress id='progress' value="0" max="1"></progress> -->
+                  <div id="audioTime"><span id="currentTime">00:00</span> / <span id="totalDuration">00:00</span></div>
+                  <button id="aButton" class="audio-on"></button>
+                  <input id="volume" type="range" min="0" max="1" value="1" step="0.01"></input>
+                  <!-- <img id="soundwave" src="../images/soundwave1.gif"> -->
+                </div>
               </div>
               <div class="washer-content">
                 <div class="washer-text">
@@ -77,15 +89,6 @@
                   <ul class="text-list"><li><%= __('appliance_page.overall_status') %>  </li><li><strong><%= deviceStatus %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.vibration') %> </li><li><strong><%= vibration %> <%= __('appliance_page.vibration_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.water_pressure') %> </li><li><strong><%= waterPressure %> <%= __('appliance_page.water_pressure_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
-                  <ul class="text-list"><li><%= __('appliance_page.sound') %></li><li>
-                    <div id="audioplayer">
-                  		<!-- <button id="pButton" class="play"></button> -->
-                  		<progress id='progress' value="0" max="1"></progress>
-                  		<div id="audioTime"><span id="currentTime">00:00</span> / <span id="totalDuration">00:00</span></div>
-                  		<button id="aButton" class="audio-on"></button>
-                  		<input id="volume" type="range" min="0" max="1" value="1" step="0.01"></input>
-                      <img id="soundwave" src="../images/soundwave1.gif">
-                  	</div>
                 </li></ul>
                 <ul class="text-list"><li><%= __('appliance_page.sound_analysis') %></li><li><strong><%= __('appliance_page.normal') %></strong></li></ul>
                 <ul class="text-list audio-failure"><li></li><li><strong></strong></li></ul>
@@ -157,9 +160,9 @@
       });
 
       $('#audio').on('playing', function(){
+        $('.waveform-overlay').css("transition-duration", this.duration + "s").width("0%");
         $('#soundwave').attr('src', '../images/soundwave2.gif');
       	console.log('PLAYING');
-
         if(failureAudio) playAudio(index, true);
         else playAudio(index, false);
 
@@ -167,14 +170,13 @@
 
       $('#audio').on('ended', function(){
       	console.log('ENDED');
-        
+
         if(!failureAudio){
           index += 1;
           changeSong();
         }
 
       });
-
 
       $('<img />').attr('src', '../images/audio-off.png').appendTo('body').css('display','none');
 
@@ -430,7 +432,8 @@
       $('#soundwave').attr('src', '../images/soundwave1.gif');
       playing = false;
       $('#audio')[0].currentTime = 0;
-      $('#progress').attr("step", 1);
+      // $('#progress').attr("step", 1); // we will be able to take this out
+      resetProgress();
       if(xhr) xhr.abort();
       index = 0;
       failureAudio = false;
@@ -441,6 +444,8 @@
       if(index < audios.length){
         $("#audio").attr('src','/sounds/' + audios[index]);
         console.log("SRC AFTER->" + $('#audio-player').attr('src'));
+        loadMusic('/sounds/' + audios[index]);
+        resetProgress();
         $("#audio")[0].load();
         $("#audio")[0].play();
         playing = true;
@@ -464,6 +469,9 @@
       }
     }
 
+    function resetProgress(){
+    	$('.waveform-overlay').css("transition-duration", "0s").width("100%");
+    }
     // Status Report
     iotAppMonitorClient.mqtt = function(id, message) {
       var length = 0;
