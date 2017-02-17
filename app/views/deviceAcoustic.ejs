@@ -284,6 +284,7 @@
       $('.problem-machine-buttons #resetMachines').click(function(e) {
         e.preventDefault();
         stopAudio();
+        loadMusic('/sounds/' + audios[index]);
         $('#resetMachines').prop('disabled', true);
         $('#actionWasher').prop('disabled', false);
         $('#actionWasher').css('opacity', 1.0);
@@ -462,6 +463,8 @@
     function playFailureAudio(){
       if(oldIndex < failureAudios.length){
         $("#audio").attr('src','/sounds/' + failureAudios[oldIndex]);
+        loadMusic('/sounds/' + failureAudios[oldIndex]);
+        resetProgress();
         $("#audio")[0].load();
         $("#audio")[0].play();
         playing = true;
