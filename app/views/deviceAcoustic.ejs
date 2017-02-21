@@ -289,6 +289,7 @@
         $('#actionWasher').prop('disabled', false);
         $('#actionWasher').css('opacity', 1.0);
         $('.problem-machine-icons button').removeClass('active');
+        $('.problem-machine-icons p').removeClass('active');
         $('.problem-machine-icons p').addClass('enabled');
         $('.problem-machine-icons p').eq(1).removeClass('enabled');
         $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
