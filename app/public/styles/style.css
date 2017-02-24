@@ -468,7 +468,7 @@ footer.main-section{
 }
 .washer-details .washer-content .washer-text{
   display: inline-block;
-  margin-top: -25px;
+  margin-top: 5px;
 	text-align: left;
 	width: 100%;
 }
