@@ -292,6 +292,8 @@
         $('.problem-machine-icons p').removeClass('active');
         $('.problem-machine-icons p').addClass('enabled');
         $('.problem-machine-icons p').eq(1).removeClass('enabled');
+        $('.washer-content .washer-text ul li img').eq(3).attr('src', '');
+        $('.washer-content .washer-text ul li img').eq(3).css("height", "");
         $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
         $('.washer-content .washer-text ul li strong').eq(4).text("");
         $('#audio')[0].currentTime = 0;
@@ -451,6 +453,8 @@
 
     function stopAudio(){
       $('#audio')[0].pause();
+      $('.washer-content .washer-text ul li img').eq(3).attr('src', '');
+      $('.washer-content .washer-text ul li img').eq(3).css("height", "");
       $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.normal') %>");
       $('.washer-content .washer-text ul li strong').eq(4).text("");
       $('#soundwave').attr('src', '../images/soundwave1.gif');
