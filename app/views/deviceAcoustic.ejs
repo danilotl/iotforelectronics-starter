@@ -90,7 +90,7 @@
                   <ul class="text-list"><li><%= __('appliance_page.vibration') %> </li><li><strong><%= vibration %> <%= __('appliance_page.vibration_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.water_pressure') %> </li><li><strong><%= waterPressure %> <%= __('appliance_page.water_pressure_unit') %></strong><img src="../images/Checkmark.svg"></li></ul>
                 </li></ul>
-                <ul class="text-list"><li><%= __('appliance_page.sound_analysis') %></li><li><strong><%= __('appliance_page.normal') %></strong></li></ul>
+                <ul class="text-list" id="sound"><li><%= __('appliance_page.sound_analysis') %></li><li><strong><%= __('appliance_page.normal') %></strong><img src=""></li></ul>
                 <ul class="text-list audio-failure"><li></li><li><strong></strong></li></ul>
                 </div>
               </div>
@@ -338,6 +338,7 @@
     });
 
     function updateStatus(status){
+        console.log("on the updates status ->" + status);
         switch(status){
           case "Filling":
             var data = {status: "Working", currentCycle: "Filling"};
@@ -348,8 +349,6 @@
             updatePlatformStatus(data);
             break;
           case "Washing_Anomaly":
-            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
-            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.washing_anomaly') %>");
             var data = {status: "Failure", failureType: "Washing Anomaly", currentCycle: "Stopped"};
             updatePlatformStatus(data);
             break;
@@ -358,8 +357,6 @@
             updatePlatformStatus(data);
             break;
           case "Soaking_Anomaly":
-            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
-            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.soaking_anomaly') %>");
             var data = {status: "Failure", failureType: "Soaking Anomaly", currentCycle: "Stopped"};
             updatePlatformStatus(data);
             break;
@@ -368,8 +365,6 @@
             updatePlatformStatus(data);
             break;
           case "Low_Speed_Spin":
-            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
-            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.low_speed_spin') %>");
             var data = {status: "Failure", failureType: "Low Speed Spin", currentCycle: "Stopped"};
             updatePlatformStatus(data);
             break;
@@ -388,7 +383,32 @@
         }
     }
 
+    function updateStatusAnomaly(status){
+      switch(status){
+        case "Washing_Anomaly":
+          // $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.washing_anomaly') %>");
+          var data = {status: "Failure", failureType: "Washing Anomaly", currentCycle: "Stopped"};
+          updatePlatformStatus(data);
+          break;
+        case "Soaking_Anomaly":
+          // $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.soaking_anomaly') %>");
+          var data = {status: "Failure", failureType: "Soaking Anomaly", currentCycle: "Stopped"};
+          updatePlatformStatus(data);
+          break;
+        case "Low_Speed_Spin":
+          // $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.failure') %>");
+          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.low_speed_spin') %>");
+          var data = {status: "Failure", failureType: "Low Speed Spin", currentCycle: "Stopped"};
+          updatePlatformStatus(data);
+          break;
+
+      }
+    }
+
     function updatePlatformStatus(data){
+      console.log("updates on platform side");
       var data = JSON.stringify(data);
       $.ajax({
         url: '/washingMachine/<%= deviceId %>/setAttributes',
@@ -405,8 +425,10 @@
         var filename = failureAudios[oldIndex];
       }
 
-      $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %>");
-
+      console.log("FILENAME --> "+ filename);
+      console.log("index --> " + index);
+      console.log("oldIndex --> "+ oldIndex);
+      diagnosingText();
       console.log("will call function");
       xhr = $.ajax({
         url: '/washingMachine/<%= deviceId %>/startWashingWithAudio',
@@ -414,8 +436,8 @@
         data:{"audio": filename},
         success: function(data){
           console.log("success on function")
-          $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.completed') %>");
-          updateStatus(data.message[0].class);
+          // $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %>");
+          diagnosedText();
         },
         error: function(xhr, status, error){
           if(status == 'abort'){
@@ -475,6 +497,99 @@
 
     function resetProgress(){
     	$('.waveform-overlay').css("transition-duration", "0s").width("100%");
+    }
+
+    function diagnosedText(){
+      $('.washer-content .washer-text ul li img').eq(3).attr('src', '');
+      $('.washer-content .washer-text ul li img').eq(3).css("height", "");
+      if(!failureAudio){
+        $('.washer-content .washer-text ul li img').eq(3).attr('src', '/images/Checkmark.svg');
+        switch (index) {
+          case 0:
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.filling') %> <%= __('appliance_page.normal') %>"); break;
+          case 1:
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.washing') %> <%= __('appliance_page.normal') %>"); break;
+          case 2:
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.soaking') %> <%= __('appliance_page.normal') %>"); break;
+          case 3:
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.spinning') %> <%= __('appliance_page.normal') %>"); break;
+          case 4:
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.draining') %> <%= __('appliance_page.normal') %>"); break;
+        }
+      } else{
+        $('.washer-content .washer-text ul li img').eq(3).attr('src', '/images/advise-icon.svg');
+        switch (oldIndex) {
+          case 0:
+            updateStatusAnomaly("Low_Speed_Spin");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.filling') %> <%= __('appliance_page.failure') %>"); break;
+          case 1:
+            updateStatusAnomaly("Washing_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.washing') %> <%= __('appliance_page.failure') %>"); break;
+          case 2:
+            updateStatusAnomaly("Soaking_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.soaking') %> <%= __('appliance_page.failure') %>"); break;
+          case 3:
+            updateStatusAnomaly("Washing_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.spinning') %> <%= __('appliance_page.failure') %>"); break;
+          case 4:
+            updateStatusAnomaly("Soaking_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosed') %> <%= __('appliance_page.draining') %> <%= __('appliance_page.failure') %>"); break;
+        }
+      }
+    }
+
+    function diagnosingText(){
+      $('.washer-content .washer-text ul li img').eq(3).attr('src', '');
+      $('.washer-content .washer-text ul li img').eq(3).attr('src', '/images/Avatar-Black.svg');
+      $('.washer-content .washer-text ul li img').eq(3).css("height", "25px");
+      console.log("FAILURE AUDIO? ->> " + failureAudio)
+      if(!failureAudio){
+        switch (index) {
+          case 0:
+            updateStatus("Filling");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.filling') %>");
+            break;
+          case 1:
+            updateStatus("Washing");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.washing') %>");
+            break;
+          case 2:
+            updateStatus("Soaking");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.soaking') %>");
+            break;
+          case 3:
+            updateStatus("Spinning");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.spinning') %>");
+            break;
+          case 4:
+            updateStatus("Draining");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.draining') %>");
+            break;
+        }
+      }else{
+        switch (oldIndex) {
+          case 0:
+            updateStatus("Low_Speed_Spin");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.filling') %>");
+            break;
+          case 1:
+            updateStatus("Washing_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.washing') %>");
+            break;
+          case 2:
+            updateStatus("Soaking_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.soaking') %>");
+            break;
+          case 3:
+            updateStatus("Washing_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.spinning') %>");
+            break;
+          case 4:
+            updateStatus("Soaking_Anomaly");
+            $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.diagnosing') %> <%= __('appliance_page.draining') %>");
+            break;
+        }
+      }
     }
     // Status Report
     iotAppMonitorClient.mqtt = function(id, message) {
