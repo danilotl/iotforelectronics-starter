@@ -542,7 +542,7 @@ footer.main-section{
 }
 
 .problem-machine-icons{
-  width: 120%;
+  width: 97%;
 }
 
 .problem-machine .problem-machine-icons button{
@@ -1037,6 +1037,13 @@ body .main-container a:hover, body .main-container a:focus {
 	-webkit-transition-property: width;
     transition-timing-function: linear;
     -webkit-transition-timing-function: linear;
+}
+
+#sound{
+  width: 150%;
+}
+#sound li:first-child{
+  width: 33%;
 }
 
 progress::-webkit-progress-value { background: #6bbaff; }
