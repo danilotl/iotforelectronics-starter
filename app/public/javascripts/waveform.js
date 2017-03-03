@@ -13,11 +13,10 @@ var currentBuffer  = null;
 // CANVAS
 var canvasWidth = 250,  canvasHeight = 100 ;
 var newCanvas   = createCanvas (canvasWidth, canvasHeight);
-var context     = null;
+var context     = newCanvas.getContext('2d');
 
 window.onload = appendCanvas;
-function appendCanvas() { document.getElementsByClassName('waveform-container')[0].appendChild(newCanvas);
-                          context = newCanvas.getContext('2d'); }
+function appendCanvas() { document.getElementsByClassName('waveform-container')[0].appendChild(newCanvas); }
 
 // MUSIC LOADER + DECODE
 function loadMusic(url) {
