@@ -1,3 +1,15 @@
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise  
+* divested of its trade secrets, irrespective of what has been 
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+
 var device = require('../lib/device.js');
 var express = require('express');
 var deviceRouter = express.Router();
@@ -79,6 +91,11 @@ deviceRouter.put('/washingMachine/:deviceID/startWashing', device.startWashing);
  * Stop the washing cycle for the given device
  */
 deviceRouter.put('/washingMachine/:deviceID/stopWashing', device.stopWashing);
+
+/**
+* Start the washing cycle with audio for the given device
+*/
+deviceRouter.put('/washingMachine/:deviceID/startWashingWithAudio', device.startWashingWithAudio);
 
 /**
  * Change the value of a specific attribute for a specific device

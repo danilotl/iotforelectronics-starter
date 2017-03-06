@@ -1,3 +1,17 @@
+<!--
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+-->
+
 <html>
   <head>
     <title><%= __('appliance_page.page_title') %></title>
@@ -10,7 +24,7 @@
     <script src="/jquery/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
 	<script src="/analytics/bluemix-analytics.js"></script>
-	<script type="text/javascript"> digitalData = {page: {pageInfo: {pageID: "IOTELECTRONICS"}}} </script>    		
+	<script type="text/javascript"> digitalData = {page: {pageInfo: {pageID: "IOTELECTRONICS"}}} </script>
   </head>
   <body>
     <h4 class="bluemix-bar"><%= __('appliance_page.top_title') %></h4>
@@ -39,7 +53,7 @@
               </div>
               <div class="washer-content">
                 <div class="washer-text">
-                  <h3 class="washer-title"><span><%= deviceId %></span></h3>
+                  <!-- <h3 class="washer-title"><span><%= deviceId %></span></h3> -->
                   <ul class="text-list"><li><%= __('appliance_page.device_id') %> </li><li><%= deviceId %></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.serial_number') %> </li><li><%= serialNumber %></li></ul>
                   <ul class="text-list"><li><%= __('appliance_page.make_model') %> </li><li><%= make %> <%= model %></li></ul>
@@ -117,19 +131,20 @@
             switch(failureType){
               case 'Strong vibration':
               index = 1;
-              text = "150";
+              text = 150;
               obj['vibration'] = text;
               break;
               case 'Water leak':
               index = 2;
-              text = "30";
+              text = 30;
               obj['waterPressure'] = text;
               break;
             }
-            var data = JSON.parse(JSON.stringify(obj));
+            var data = JSON.stringify(obj);
             $.ajax({
               url: '/washingMachine/<%= deviceId %>/setAttributes',
               type: 'PUT',
+              contentType: 'application/json',
               data: data,
               success: function() {
                 $('.washer-content .washer-text p strong').eq(0).text("<%= __('appliance_page.failure') %>");
@@ -150,16 +165,21 @@
           $('.problem-machine-icons button').removeClass('active');
           $('.problem-machine-icons p').addClass('enabled');
 
-          $.ajax({
-            url: '/washingMachine/<%= deviceId %>/setAttributes',
-            type: 'PUT',
-            data: {
+          var obj = {
               status: "Ready",
               currentCycle: "Stopped",
               failureType: "",
-              vibration: "80",
-              waterPressure: "70"
-            }
+              vibration: 80,
+              waterPressure: 70
+            };
+
+          var data = JSON.stringify(obj);
+
+          $.ajax({
+            url: '/washingMachine/<%= deviceId %>/setAttributes',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: data
           });
         });
 
@@ -205,6 +225,7 @@
         if (id === "<%= deviceId %>" && length > 1) {
           if(device.status && device.status == 'Failure'){
             if(!($('#actionWasher').prop('disabled'))) $('#actionWasher').prop('disabled', true);
+            if($('#resetMachines').prop('disabled')) $('#resetMachines').prop('disabled', false);
             $('.washer-content .washer-text ul li strong').eq(0).text("<%= __('appliance_page.failure') %>");
             $('.washer-content .washer-text ul li img').eq(0).attr('src', '/images/advise-icon.svg');
             if(device.failureType && device.failureType == 'Board failure'){
@@ -241,7 +262,7 @@
             $('.washer-content .washer-text ul li strong').eq(1).text(device.vibration + " <%= __('appliance_page.vibration_unit') %>");
             $('.washer-content .washer-text ul li strong').eq(2).text(device.waterPressure + " <%= __('appliance_page.water_pressure_unit') %>");
             $('.washer-content .washer-text ul li img').attr('src', '/images/Checkmark.svg');
-          }          
+          }
         }
       };
     </script>

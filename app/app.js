@@ -1,3 +1,15 @@
+/********************************************************* {COPYRIGHT-TOP} ***
+* IBM Confidential
+* OCO Source Materials
+* IoT for Electronics - SVL720160500
+*
+* (C) Copyright IBM Corp. 2016  All Rights Reserved.
+*
+* The source code for this program is not published or otherwise  
+* divested of its trade secrets, irrespective of what has been 
+* deposited with the U.S. Copyright Office.
+********************************************************* {COPYRIGHT-END} **/
+
 VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
@@ -136,7 +148,6 @@ var name = iotfCredentials["org"];
 var orgId = iotfCredentials["org"];
 var apiKey = iotfCredentials["apiKey"];
 var authToken = iotfCredentials["apiToken"];
-var baseURI = iotfCredentials["base_uri"];
 var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 var iotpHttpHost = iotfCredentials["http_host"];
 
@@ -207,7 +218,7 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
 		console.log("doc userID and mca userID do not match")
 	}
 	request({
-   		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
+   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 		json: userDocIn,
 		method: 'PUT',
 		headers: {
@@ -239,7 +250,7 @@ createUser = function (username)
 	//first see if the user exists
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users/'+ username),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ username),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -263,7 +274,7 @@ createUser = function (username)
         		userDoc.userID = username;
         		userDoc.userDetail = {};
 			request({
-   				url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
+   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 				json: userDoc,
 				method: 'POST',
 				headers: {
@@ -295,7 +306,7 @@ app.post('/v001/users', authenticate, function(req, res)
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
 		request({
-		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users',
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -372,7 +383,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
 	request({
-		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances',
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -445,7 +456,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/users/'+ req.params.userID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -520,7 +531,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/user/'+ req.params.userID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -595,7 +606,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -676,7 +687,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 {
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -751,7 +762,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, res)
 {
 		request({
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -819,7 +830,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/v001/user/'+ req.params.userID),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -993,7 +1004,7 @@ var body = {
 	   };
 var options =
 	{
-		url: ('https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/deletedDocs'),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs'),
 		json: body,
 		method: 'POST',
 		headers: {
@@ -1006,7 +1017,6 @@ function retryRequest(body, options)
 		if (!error) {
    			// Print out the response body
    			console.log('***Response Status Code --->', response.statusCode);
-			console.log('***Response received: ' + response.message);
 			if (response.statusCode === 404)
 			{
 				retryRequest();
@@ -1025,21 +1035,15 @@ request(options, function (error, response, body) {
     if (!error) {
        	// Print out the response body
        	console.log('***Response Status Code --->', response.statusCode);
-		console.log('***Response received: ' + response.message);
 		if (response.statusCode === 404)
 		{
 			retryRequest();
-			}else{
-				console.log("The request came back with an error: " + error);
-			console.log("Error code: " + error.statusCode);
-			console.log("Error message: " + error.message);
-        	return;
-        }
+			}
 	}
 });
 
 /*console.log('About to store IoTP Credentials');
-var url = 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
+var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
 console.log('Credentials API URL:', url);
 request
   .get(url, {timeout: 3000})
@@ -1063,7 +1067,7 @@ app.get('/validation', function(req, res)
 {
 	var options =
 	{
-		url: 'https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
+		url: 'https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
@@ -1090,7 +1094,7 @@ app.get('/validation', function(req, res)
 // app.get('*', function(req, res)
 // {
 // 	console.log('About to store IoTP Credentials');
-//     var url = ['https://registration-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
+//     var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
 // 	console.log('Credentials API URL:', url);
 // 	request
 //   	.get(url, {timeout: 3000})
@@ -1118,7 +1122,6 @@ var	iotpClassId = "Device"
 
 // //IoT Platform Config Creation Method.
   var iotpPost = function iotpPost (path, json) {
-  console.log('calling api to POST: ' + baseURI);
   console.log('IoTP API URI: ' + apiURI);
   console.log('calling api on json: ' + JSON.stringify(json));
 
