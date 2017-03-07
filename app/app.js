@@ -540,15 +540,15 @@ app.post('/appliances', function (req, res)
    	bodyIn.orgID = currentOrgID;
 
    	//redirect
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
+	var version = "v001";	//always use backend v001 APIs
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+// 	{
+// 		version = 'v001'
+// 	}
+// 	else
+// 	{
+// 		version = req.get('version');
+// 	}
    	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
 	request({
 		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
