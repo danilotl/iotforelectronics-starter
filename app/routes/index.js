@@ -5,8 +5,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 
@@ -40,7 +40,8 @@ router.get('/contact', function(req, res) {
 
 router.post('/contact', function(req, res){
 	request({
-   		url: 'https://simulationengine-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/contact',
+   	// 	url: 'https://simulationengine-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/contact',
+		url: 'https://iot4esimulationengine.stage1.mybluemix.net/contact',
 		json: req.body,
 		method: 'POST',
 		headers: {
