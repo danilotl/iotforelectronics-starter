@@ -405,12 +405,12 @@
           updatePlatformStatus(data);
           break;
         case "Soaking_Anomaly":
-          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.soaking_anomaly') %>");
+          $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.soaking_anomaly') %>");
           var data = {status: "Failure", failureType: "Soaking Anomaly", currentCycle: "Stopped"};
           updatePlatformStatus(data);
           break;
         case "Low_Speed_Spin":
-          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.low_speed_spin') %>");
+          $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.low_speed_spin') %>");
           var data = {status: "Failure", failureType: "Low Speed Spin", currentCycle: "Stopped"};
           updatePlatformStatus(data);
           break;
