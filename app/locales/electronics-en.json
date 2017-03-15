@@ -102,7 +102,7 @@
 		"washing_anomaly": "Washing Anomaly",
 		"soaking_anomaly": "Soaking Anomaly",
 		"low_speed_spin": "Low Speed Spin",
-		"low_speed_spin_message":"Too much load in basket?",
+		"low_speed_spin_message":"Load too large?",
 		"rinsing_anamaly_message":"Foreign object in basket?",
 		"diagnosis_diagram":"Diagnosis Diagram"
 
