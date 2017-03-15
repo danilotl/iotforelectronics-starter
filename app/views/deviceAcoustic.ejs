@@ -400,7 +400,7 @@
     function updateStatusAnomaly(status){
       switch(status){
         case "Washing_Anomaly":
-          $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.washing_anomaly') %>");
+          $('.washer-content .washer-text ul li strong').eq(3).text("<%= __('appliance_page.washing_anomaly') %>");
           var data = {status: "Failure", failureType: "Washing Anomaly", currentCycle: "Stopped"};
           updatePlatformStatus(data);
           break;
