@@ -88,7 +88,7 @@
 
               <!-- Modal Content (The Image) -->
               <div>
-                <h1 class="diagramTitle">Diagnosis Diagram</h1>
+                <h1 class="diagramTitle"><%= __('appliance_page.diagnosis_diagram') %></h1>
                 <img class="modal-image" id="decisionTreeImage">
               </div>
             </div>
@@ -540,27 +540,27 @@
         switch (oldIndex) {
           case 0:
             updateStatusAnomaly("Low_Speed_Spin");
-            $('.washer-content .washer-text ul li strong').eq(4).text("Too much load in basket?");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.low_speed_spin_message') %>");
             $("#decisionTreeImage").attr('src', '/images/decisiontree_lowspeed.svg');
             break;
           case 1:
             updateStatusAnomaly("Washing_Anomaly");
-            $('.washer-content .washer-text ul li strong').eq(4).text("Foreign object in basket?");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.rinsing_anamaly_message') %>");
             $("#decisionTreeImage").attr('src', '/images/decisiontree_scratch.svg');
             break;
           case 2:
             updateStatusAnomaly("Soaking_Anomaly");
-            $('.washer-content .washer-text ul li strong').eq(4).text("Foreign object in basket?");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.rinsing_anamaly_message') %>");
             $("#decisionTreeImage").attr('src', '/images/decisiontree_scratch.svg');
             break;
           case 3:
             updateStatusAnomaly("Washing_Anomaly");
-            $('.washer-content .washer-text ul li strong').eq(4).text("Foreign object in basket?");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.rinsing_anamaly_message') %>");
             $("#decisionTreeImage").attr('src', '/images/decisiontree_scratch.svg');
             break;
           case 4:
             updateStatusAnomaly("Soaking_Anomaly");
-            $('.washer-content .washer-text ul li strong').eq(4).text("Foreign object in basket?");
+            $('.washer-content .washer-text ul li strong').eq(4).text("<%= __('appliance_page.rinsing_anamaly_message') %>");
             $("#decisionTreeImage").attr('src', '/images/decisiontree_scratch.svg');
             break;
         }
