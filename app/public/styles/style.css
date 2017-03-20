@@ -1187,7 +1187,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 /* The Modal (background)*/
-.modal {
+.modalDecisionTree {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 10; /* Sit on top */
