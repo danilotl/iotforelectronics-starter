@@ -164,17 +164,23 @@ var iotEApiKey = iotECredentials["apiKey"];
 // SETUP CLOUDANT
 //Key whichispermandencellansp
 //Password a8ba75e7534498a85a9f0c11adbe11e09ae03177 //
-/*CK:removeMCA var passport   = require('passport'); */
-/*CK:removeMCA var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy; */
 var services = JSON.parse(process.env.VCAP_SERVICES)
 var application = JSON.parse(process.env.VCAP_APPLICATION)
 var currentOrgID = iotfCredentials["org"];
 
 /***************************************************************/
-/* Set up express server & passport                            */
+/* Set up AppID & passport                            */
 /***************************************************************/
-/*CK:removeMCA passport.use(new MCABackendStrategy()); */
-/*CK:removeMCA app.use(passport.initialize()); */
+const passport   = require('passport');
+//MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
+const APIStrategy = require("bluemix-appid").APIStrategy;
+// The oauthServerUrl value can be obtained from Service Credentials
+// tab in the App ID Dashboard. You're not required to provide this argument if
+// your node.js application runs on Bluemix and is bound to the
+// App ID service instance. In this case App ID configuration will be obtained
+// using VCAP_SERVICES environment variable.
+passport.use(new APIStrategy());
+app.use(passport.initialize()); 
 
 const https = require('https');
 var authenticate = function(req,res,next)
@@ -205,14 +211,22 @@ var authenticate = function(req,res,next)
 /* Input: url params that contains the userID 		       */
 /* Returns:  404 for user not found, 200 for success           */
 /***************************************************************/
-/*CK:removeMCA 
-app.put('/users', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+
+app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
+	// Get full appIdAuthorizationContext from request object
+	//var appIdAuthContext = req.appIdAuthorizationContext;
+
+	//appIdAuthContext.accessToken; // Raw access_token
+	//appIdAuthContext.accessTokenPayload; // Decoded access_token JSON
+	//appIdAuthContext.identityToken; // Raw identity_token
+	//appIdAuthContext.identityTokenPayload; // Decoded identity_token JSON
+	
 	//var formData = req.body;
 	var userDocIn = JSON.parse(JSON.stringify(req.body));
 	userDocIn.orgID = currentOrgID;
 
-	//verify that userID coming in MCA matches doc userID
+	//verify that userID coming in AppID matches doc userID
 	if (userDocIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
@@ -239,40 +253,7 @@ app.put('/users', passport.authenticate('mca-backend-strategy', {session: false 
         		res.status(200).send(response);
 		}});
 });
-*/
-app.put('/users', function(req, res)
-{
-	//var formData = req.body;
-	var userDocIn = JSON.parse(JSON.stringify(req.body));
-	userDocIn.orgID = currentOrgID;
 
-	//verify that userID coming in MCA matches doc userID
-//	if (userDocIn.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID in request does not match MCA authenticated user.")
-//		console.log("doc userID and mca userID do not match")
-//	}
-	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
-		json: userDocIn,
-		method: 'PUT',
-		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
-  		},
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-
-    	}, function(error, response, body){
-    		if(error) {
-        		console.log('ERROR: ' + error);
-			console.log('BODY: ' + error);
-        		res.status(500).send(response);
-    		} else {
-        		console.log(response.statusCode, body);
-        		res.status(200).send(response);
-		}});
-});
 
 /********************************************************/
 /* Admin. function specifically for adding a user doc   */
@@ -368,8 +349,7 @@ app.post('/v001/users', authenticate, function(req, res)
 /*             address, and telephone			       */
 /***************************************************************/
 // passport.authenticate('mca-backend-strategy', {session: false }),
-/*CK:removeMCA 
-app.post("/users", passport.authenticate('mca-backend-strategy', {session: false }),  function (req, res)
+app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//var formData = req.body;
 	var formData = JSON.parse(JSON.stringify(req.body));
@@ -410,48 +390,7 @@ app.post("/users", passport.authenticate('mca-backend-strategy', {session: false
         		res.status(response.statusCode).send(response);
 		}});
 });
-*/
-app.post("/users", function (req, res)
-{
-	//var formData = req.body;
-	var formData = JSON.parse(JSON.stringify(req.body));
-	formData.orgID = currentOrgID;
 
-	//verify that userID coming in MCA matches doc userID
-//	if (formData.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID in request does not match MCA authenticated user.")
-//		//might need a return here, needs test
-//		//see if logic ^ works first before finishing this
-//		console.log("doc userID and mca userID do not match")
-//	}
-	//redirect
-   	var version = "v001";	//always use backend v001 APIs
-//   	if (!formData.hasOwnProperty('version') || formData.version == null || formData.version == undefined)
-//   	{
-//   		version = "v001";
-//   	}
-//   	else
-//   	{
-//   		version = formData.version;
-//   	}
-   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users');
-	request({
-   		url: 'https://'+ application.application_uris[0] + '/' + version + '/users',
-		json: formData,
-		method: 'POST',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-
-    	}, function(error, response, body){
-    		if(error) {
-        		console.log('ERROR: ' + error);
-			console.log('BODY: ' + error);
-        		res.status(response.statusCode).send(response);
-    		} else {
-        		console.log(response.statusCode, body);
-        		res.status(response.statusCode).send(response);
-		}});
-});
 /*******************************************/
 /* Version 1 POST /appliances              */
 /*******************************************/
@@ -486,8 +425,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 /* Input: JSON structure that contains the userID, applianceID,*/
 /*             serial number, manufacturer, and model          */
 /***************************************************************/
-/*CK:removeMCA 
-app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//grab the body to pass on
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
@@ -526,46 +464,7 @@ app.post('/appliances', passport.authenticate('mca-backend-strategy', {session: 
 			}
 		});
 });
-*/
-app.post('/appliances', function (req, res)
-{
-	//grab the body to pass on
-	var bodyIn = JSON.parse(JSON.stringify(req.body));
-	//verify that userID coming in MCA matches doc userID
-//	if (bodyIn.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID in request does not match MCA authenticated user.");
-//	}
-//   	bodyIn.userID = req.user.id;
-   	bodyIn.orgID = currentOrgID;
 
-   	//redirect
-	var version = "v001";	//always use backend v001 APIs
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-// 	{
-// 		version = 'v001'
-// 	}
-// 	else
-// 	{
-// 		version = req.get('version');
-// 	}
-   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
-	request({
-		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
-		json: bodyIn,
-		method: 'POST',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-		}, function(error, response, body){
-			if(error) {
-				console.log('ERROR: ' + error);
-				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
-			} else {
-				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
-			}
-		});
-});
 
 /*******************************************/
 /* Version 1 GET /users/:userID            */
@@ -604,8 +503,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 /* Input: url params that contains the userID 			 */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-/*CK:removeMCA 
-app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -642,44 +540,7 @@ app.get('/users/:userID', passport.authenticate('mca-backend-strategy', {session
         	}
         });
 });
-*/
-app.get('/users/:userID', function(req, res)
-{
-	//make sure userID on params matches userID coming in thru MCA
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID on request does not match MCA authenticated user.")
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + req.params.userID);
 
-	var options =
-	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + req.params.userID),
-		method: 'GET',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
-        	console.log(body);
-        	res.status(response.statusCode).send(response);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-        });
-});
 
 /*******************************************/
 /* Version 1 GET /user/:userID       */
@@ -715,9 +576,8 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
-/***************************************************************/
-/*CK:removeMCA 
-app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function(req, res)
+/***************************************************************/ 
+app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -756,57 +616,7 @@ app.get('/user/:userID', passport.authenticate('mca-backend-strategy', {session:
 
         	});
 });
-*/
 
-app.get('/user/:userID', function(req, res)
-{
-	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
-	{
-		console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
-		createUser(req.params.userID);
-		res.status(200).send("called the function to check the user ID");
-		return;
-	}
-	
-	
-	
-	//make sure userID on params matches userID coming in thru MCA
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID on request does not match MCA authenticated user.")
-//		//might need a return here, needs test
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.params.userID);
-
-	var options =
-	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.params.userID),
-		method: 'GET',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error) {
-        	// Print out the response body
-        	console.log(body);
-        	res.status(response.statusCode).json(body);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-
-        	});
-});
 
 /*******************************************/
 /* Version 1 GET /appliances/:userID       */
@@ -845,8 +655,8 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-/*CK:removeMCA 
-app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+ 
+app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -886,48 +696,7 @@ app.get('/appliances/:userID', passport.authenticate('mca-backend-strategy', {se
 
         	});
 });
-*/
 
-app.get('/appliances/:userID', function (req, res)
-{
-	//make sure userID on params matches userID coming in thru MCA
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID on request does not match MCA authenticated user.");
-//		//might need a return here, needs test
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID);
-
-	var options =
-	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID),
-		method: 'GET',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error) {
-        	// Print out the response body
-        	console.log("body: " + body);
-        	console.log("response: " + response);
-        	res.status(response.statusCode).send(body);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-
-        	});
-});
 
 /**************************************************/
 /* Version 1 GET /appliances/:userID/:applianceID */
@@ -967,8 +736,8 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 /*       													   				*/
 /* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
-/*CK:removeMCA 
-app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+ 
+app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -1005,45 +774,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
         	}
     });
 });
-*/
 
-app.get("/appliances/:userID/:applianceID", function (req, res)
-{
-	//make sure userID on params matches userID coming in thru MCA
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID on request does not match MCA authenticated user.")
-//		//might need a return here, needs test
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID);
-	var options =
-	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID),
-		method: 'GET',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error) {
-        	// Print out the response body
-        	console.log(body);
-        	res.status(response.statusCode).json(body);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-    });
-});
 
 /*****************************************************/
 /* Version 1 DELETE /appliances/:userID/:applianceID */
@@ -1077,8 +808,8 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 /* Route to delete appliance records                           */
 /*    Internal API					       */
 /***************************************************************/
-/*CK:removeMCA 
-app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+ 
+app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 
 	//verify that userID coming in MCA matches doc userID
@@ -1112,42 +843,7 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate('mca-backend-s
 			}
 		});
 });
-*/
 
-app.delete("/appliances/:userID/:applianceID", function (req, res)
-{
-
-	//verify that userID coming in MCA matches doc userID
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID in request does not match MCA authenticated user.")
-//		//might need a return here, needs test
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID);
-	request({
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID),
-		method: 'DELETE',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-		}, function(error, response, body){
-			if(error) {
-				console.log('ERROR: ' + error);
-				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
-			} else {
-				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
-			}
-		});
-});
 /*****************************************************/
 /* Version 1 DELETE /appliances/:userID/:applianceID */
 /* Takes "version" as a header, ex:                  */
@@ -1185,9 +881,8 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 /* Route to delete user documents.                              						   */
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
-/*******************************************************************************************/
-/*CK:removeMCA 
-app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {session: false }), function (req, res)
+/*******************************************************************************************/ 
+app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
@@ -1227,46 +922,7 @@ app.delete("/user/:userID", passport.authenticate('mca-backend-strategy', {sessi
 });
 
 //get IoT-Foundation credentials
-*/
 
-app.delete("/user/:userID", function (req, res)
-{
-	//make sure userID on params matches userID coming in thru MCA
-//	if (req.params.userID != req.user.id)
-//	{
-//		res.status(500).send("User ID on request does not match MCA authenticated user.")
-//		//might need a return here, needs test
-//	}
-	var version = 'v001';
-//	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-//	{
-//		version = 'v001'
-//	}
-//	else
-//	{
-//		version = req.get('version');
-//	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.params.userID);
-	var options =
-	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.params.userID),
-		method: 'DELETE',
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-	    if (!error) {
-        	// Print out the response body
-        	console.log(body);
-        	res.status(response.statusCode).send(response);
-	    }else{
-        	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
-        	return;
-        	}
-
-        	});
-});
 
 /********************************************************************** **/
 /*End of Registration Integrator Code                                               */
