@@ -579,6 +579,14 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 /***************************************************************/ 
 app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
+	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
+	{
+		console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
+		createUser(req.params.userID);
+		res.status(200).send("called the function to check the user ID");
+		return;
+	}
+	
 	//make sure userID on params matches userID coming in thru MCA
 	if (req.params.userID != req.user.id)
 	{
