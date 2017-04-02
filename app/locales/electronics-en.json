@@ -53,7 +53,8 @@
 		"manage_devices": "Now you can manage your appliances and other devices from the platform >",
 		"device_deleted": "Success! Device {0} was successfully deleted.",
 		"timeout_list": "The request to list the devices has timed out, the simulation will restart. Please, refresh the page and try again.",
-		"timeout_create": "The request to create a device has timed out, the simulation will restart. Please, refresh the page and try again."
+		"timeout_create": "The request to create a device has timed out, the simulation will restart. Please, refresh the page and try again.",
+		"contact_electronics":"Contact IoT for Electronics"
 	},
 	"appliance_page": {
 		"page_title": "IoT for Electronics",
