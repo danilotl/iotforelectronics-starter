@@ -79,14 +79,14 @@ device.QRcreds = function(req, res){
 	var appEnv = cfenv.getAppEnv();
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
-	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
+	var tenantId = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].tenantId;
 	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
 	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
 	var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
 	var registration_api_version = "v003";
 
-	var text = ['1', org, route, guid, key, token, name, mqtt_host, registration_api_version].join(',');
+	var text = ['1', org, route, tenantId, key, token, name, mqtt_host, registration_api_version].join(',');
 
 	var img = qr.image(text, { type: 'png', ec_level: 'H', size: 3, margin: 0 });
 	res.writeHead(200, {'Content-Type': 'image/png'})
@@ -101,14 +101,14 @@ device.getPlatformQRstring = function(req, res){
 	var appEnv = cfenv.getAppEnv();
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
-	var guid = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].clientId;
+	var tenantId = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'].tenantId;
 	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
 	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
 	var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
 	var registration_api_version = "v003";
 
-	var text = ['1', org, route, guid, key, token, name, mqtt_host, registration_api_version].join(',');
+	var text = ['1', org, route, tenantId, key, token, name, mqtt_host, registration_api_version].join(',');
 
 	res.send(text);
 }
