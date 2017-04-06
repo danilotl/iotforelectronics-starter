@@ -28,7 +28,7 @@
 		"consumer_app_p1": "The mobile app lets a consumer control and monitor a new washer using a mobile device. ",
 		"consumer_app_p2": "Download the mobile app to a mobile phone to experience how consumers can send commands to their own washers via the platform.  ",
 		"consumer_app_p3": "You can use the simulated washer view to mimic failure events on the washer and then see the results in the consumer's mobile app.",
-	    "consumer_app_p4": "Appliance companies can offer these types of apps and services to attract and retain customers. They can also use the collected data to improve features of their products and offer new services.",
+	  "consumer_app_p4": "Appliance companies can offer these types of apps and services to attract and retain customers. They can also use the collected data to improve features of their products and offer new services.",
 		"add_washer_heading": "Next, choose or add new simulated washer",
 		"add_washer_message1": "You can add up to five washers.",
 		"add_washer_message2": "You have reached the limit of 5 washers.",
