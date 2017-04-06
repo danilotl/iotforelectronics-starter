@@ -227,11 +227,14 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 	userDocIn.orgID = currentOrgID;
 
 	//verify that userID coming in AppID matches doc userID
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (userDocIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
 		console.log("doc userID and mca userID do not match")
 	}
+	*/
 	request({
    		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 		json: userDocIn,
@@ -356,6 +359,8 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
 	formData.orgID = currentOrgID;
 
 	//verify that userID coming in MCA matches doc userID
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (formData.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
@@ -363,16 +368,18 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
 		//see if logic ^ works first before finishing this
 		console.log("doc userID and mca userID do not match")
 	}
+	*/
+
 	//redirect
-   	var version;
-   	if (!formData.hasOwnProperty('version') || formData.version == null || formData.version == undefined)
-   	{
-   		version = "v001";
-   	}
-   	else
-   	{
-   		version = formData.version;
-   	}
+   	var version = "v001";
+   	// if (!formData.hasOwnProperty('version') || formData.version == null || formData.version == undefined)
+   	// {
+   	// 	version = "v001";
+   	// }
+   	// else
+   	// {
+   	// 	version = formData.version;
+   	// }
    	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users');
 	request({
    		url: 'https://'+ application.application_uris[0] + '/' + version + '/users',
@@ -429,24 +436,28 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 {
 	//grab the body to pass on
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
+	
 	//verify that userID coming in MCA matches doc userID
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (bodyIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.");
 	}
-   	bodyIn.userID = req.user.id;
+	*/
+   	var userID = bodyIn.userID;   
    	bodyIn.orgID = currentOrgID;
 
    	//redirect
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
    	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
 	request({
 		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
@@ -506,24 +517,28 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + userID);
 
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + req.user.id),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + userID),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -579,26 +594,38 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 /***************************************************************/ 
 app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
+	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
+	{
+		console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
+		createUser(req.params.userID);
+		res.status(200).send("called the function to check the user ID");
+		return;
+	}
+	
 	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
 
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + userID),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -659,25 +686,29 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.");
 		//might need a return here, needs test
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID);
 
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -740,24 +771,28 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID);
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -813,23 +848,27 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
 {
 
 	//verify that userID coming in MCA matches doc userID
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID);
 	request({
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + req.user.id + '/' + req.params.applianceID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID),
 		method: 'DELETE',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -885,24 +924,28 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
 		//might need a return here, needs test
 	}
-	var version;
-	if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	{
-		version = 'v001'
-	}
-	else
-	{
-		version = req.get('version');
-	}
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id);
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + req.user.id),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + userID),
 		method: 'DELETE',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
