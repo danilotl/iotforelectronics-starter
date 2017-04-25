@@ -48,7 +48,8 @@ var path            = require('path'),
     _               = require("underscore"),
     appEnv          = cfenv.getAppEnv(),
     q               = require('q'),
-    helmet			= require('helmet');
+    helmet			= require('helmet'),
+    RED 			= require("node-red");
 
 var jsonParser = bodyParser.json();
 var i18n = require("i18n");
@@ -1310,6 +1311,19 @@ app.enable('trust proxy');
 var server = require('http').Server(app);
 iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 
+var settings = {
+    httpAdminRoot:"/red",
+    httpNodeRoot: "/api",
+    functionGlobalContext: { }    // enables global context
+};
+
+// Init RED
+RED.init(server, settings);
+// Serve the editor UI from /red
+app.use(settings.httpAdminRoot, RED.httpAdmin);
+// Serve the http nodes UI from /api
+app.use(settings.httpNodeRoot, RED.httpNode);
+
 //view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -1365,6 +1379,9 @@ server.on('error', onError);
 
 //set the server in the app object
 app.server = server;
+
+// Start the runtime
+RED.start();
 
 /**
  * Normalize a port into a number, string, or false.
