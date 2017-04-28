@@ -292,7 +292,10 @@ createUser = function (username)
         		userDoc = {};
         		userDoc.orgID = currentOrgID;
         		userDoc.userID = username;
-        		userDoc.userDetail = {};
+        		
+				if (validateEmail(username)) { userDoc.userDetail = { "email":username}; }
+				else { userDoc.userDetail = {}; }
+				
 			request({
    				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 				json: userDoc,
@@ -316,6 +319,15 @@ createUser = function (username)
     		   	});
         	}
         });
+}
+
+
+function validateEmail(email) {
+    // First check if any value was actually set
+    if (email.length == 0) return false;
+    // Now validate the email format using Regex
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+    return re.test(email);
 }
 
 /*******************************************/
