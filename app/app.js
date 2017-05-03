@@ -1326,6 +1326,7 @@ iotAppMonitor = require('./lib/iotAppMonitorServer')(server);
 var settings = {
     httpAdminRoot:"/red",
     httpNodeRoot: "/api",
+    flowFile: path.join(__dirname, 'flows/notificationFlow.json'),
     functionGlobalContext: { }    // enables global context
 };
 
