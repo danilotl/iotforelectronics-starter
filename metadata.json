@@ -10,8 +10,8 @@
             "plan": "iotf-service-free"
         },
         {
-            "name": "AdvancedMobileAccess",
-            "plan": "Gold"
+            "name": "AppID",
+            "plan": "Graduated tier"
         }
     ],
     "defaultMemory": 512,
