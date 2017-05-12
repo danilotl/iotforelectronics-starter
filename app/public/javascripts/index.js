@@ -302,6 +302,12 @@ $(document).ajaxStart(function(){
   $('#ajaxBusy').show();
   $('#addNewDeviceButton').prop('disabled', true);
   $('#addNewDeviceButton img').attr("src","../images/PlusWasher_dis.svg");
+}).ajaxStop(function(){
+  $('#ajaxBusy').hide();
+    if(numberOfDevices !== MAX_DEVICES){
+      $('#addNewDeviceButton').prop('disabled', false);
+      $('#addNewDeviceButton img').attr("src","../images/PlusWasher_en.svg");
+    }
 });
 
 //Scroll page control
