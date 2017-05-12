@@ -173,7 +173,6 @@ var currentOrgID = iotfCredentials["org"];
 /* Set up AppID & passport                            */
 /***************************************************************/
 const passport   = require('passport');
-//MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
 const APIStrategy = require("bluemix-appid").APIStrategy;
 // The oauthServerUrl value can be obtained from Service Credentials
 // tab in the App ID Dashboard. You're not required to provide this argument if
@@ -208,8 +207,8 @@ var authenticate = function(req,res,next)
 
 /***************************************************************/
 /* Route to update 1 user document in Cloudant                 */
-/*					        	       */
-/* Input: url params that contains the userID 		       */
+/*					        	                               */
+/* Input: url params that contains the userID 		           */
 /* Returns:  404 for user not found, 200 for success           */
 /***************************************************************/
 
@@ -217,7 +216,6 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 {
 	// Get full appIdAuthorizationContext from request object
 	//var appIdAuthContext = req.appIdAuthorizationContext;
-
 	//appIdAuthContext.accessToken; // Raw access_token
 	//appIdAuthContext.accessTokenPayload; // Decoded access_token JSON
 	//appIdAuthContext.identityToken; // Raw identity_token
@@ -330,9 +328,13 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-/*******************************************/
-/* Version 1 POST /users                   */
-/*******************************************/
+
+
+
+
+/*******************************************************/
+/* Version 1 POST /users to Registration API           */
+/*******************************************************/
 app.post('/v001/users', authenticate, function(req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
@@ -362,9 +364,8 @@ app.post('/v001/users', authenticate, function(req, res)
 /* Route to add 1 user document to Cloudant.   (2)             */
 /*                                                             */
 /* Input: JSON structure that contains the userID, name,       */
-/*             address, and telephone			       */
+/*             address, and telephone			               */
 /***************************************************************/
-// passport.authenticate('mca-backend-strategy', {session: false }),
 app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//var formData = req.body;
@@ -411,9 +412,13 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
 		}});
 });
 
-/*******************************************/
-/* Version 1 POST /appliances              */
-/*******************************************/
+
+
+
+
+/******************************************************/
+/* Version 1 POST /appliances to Registration API     */
+/******************************************************/
 app.post('/v001/appliances', authenticate, function (req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
@@ -488,6 +493,10 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 			}
 		});
 });
+
+
+
+
 
 
 /*******************************************/
@@ -978,6 +987,96 @@ app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {se
 });
 
 //get IoT-Foundation credentials
+
+
+/*======================================================*/
+/* Version 1 GET ca/appliance/user/:userID/events       */
+/* to get all the device state for the given user       */
+/*======================================================*/
+app.get('/v001/ca/appliance/user/:userID/events', authenticate, function (req, res)
+{
+	var options =
+	{
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events'),
+		method: 'GET',
+		headers: {
+    				'Content-Type': 'application/json',
+    				'tenantID':iotETenant,
+    				'orgID':currentOrgID
+  		},
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log("body: " + body);
+        	console.log("response: " + response);
+        	res.status(response.statusCode).send(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+        	});
+});
+
+/***************************************************************/
+/* Route to list all appliance documents for given user   (4)  */
+/*       													   */
+/* Input: Query string with userID and optional applianceID    */
+/***************************************************************/
+ 
+app.get('/ca/appliance/user/:userID/events', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+{
+	//make sure userID on params matches userID coming in thru MCA
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	if (req.params.userID != req.user.id)
+	{
+		res.status(500).send("User ID on request does not match MCA authenticated user.");
+		//might need a return here, needs test
+	}
+	*/
+	var userID = req.params.userID;
+	var version = "v001";
+	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
+	// {
+	// 	version = 'v001'
+	// }
+	// else
+	// {
+	// 	version = req.get('version');
+	// }
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/events');
+
+	var options =
+	{
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/events'),
+		method: 'GET',
+  		auth: {user:iotEApiKey, pass:iotEAuthToken}
+	};
+	request(options, function (error, response, body) {
+	    if (!error) {
+        	// Print out the response body
+        	console.log("body: " + body);
+        	console.log("response: " + response);
+        	res.status(response.statusCode).send(body);
+	    }else{
+        	console.log("The request came back with an error: " + error);
+        	//for now I'm giving this a 500 so that postman won't be left hanging.
+        	res.status(response.statusCode).send(response);
+        	return;
+        	}
+
+        	});
+});
+
+
+
+
+
+
 
 
 /********************************************************************** **/
