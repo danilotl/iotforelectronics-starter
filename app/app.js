@@ -997,7 +997,7 @@ app.get('/v001/ca/appliance/user/:userID/events', authenticate, function (req, r
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events'),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events/statusReport'),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
