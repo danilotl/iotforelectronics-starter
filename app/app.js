@@ -993,11 +993,11 @@ app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {se
 /* Version 1 GET ca/appliance/user/:userID/events       */
 /* to get all the device state for the given user       */
 /*======================================================*/
-app.get('/v001/ca/appliance/user/:userID/events', authenticate, function (req, res)
+app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, res)
 {
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events/statusReport'),
+		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/sensors'),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -1027,7 +1027,7 @@ app.get('/v001/ca/appliance/user/:userID/events', authenticate, function (req, r
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
 
-app.get('/ca/appliance/user/:userID/events', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get('/ca/appliance/user/:userID/sensors', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
 	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
@@ -1048,11 +1048,11 @@ app.get('/ca/appliance/user/:userID/events', passport.authenticate(APIStrategy.S
 	// {
 	// 	version = req.get('version');
 	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/events');
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/sensors');
 
 	var options =
 	{
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/events'),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/sensors'),
 		method: 'GET',
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
