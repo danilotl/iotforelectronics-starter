@@ -1619,7 +1619,9 @@ var settings = {
     httpAdminRoot:"/red",
     httpNodeRoot: "/api",
     flowFile: path.join(__dirname, 'flows/notificationFlow.json'),
-    functionGlobalContext: { }    // enables global context
+    functionGlobalContext: {
+			process: process // get vcaps
+	 	}    // enables global context
 };
 
 // Init RED
