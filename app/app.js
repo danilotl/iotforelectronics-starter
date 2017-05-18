@@ -5,8 +5,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 
@@ -180,7 +180,7 @@ const APIStrategy = require("bluemix-appid").APIStrategy;
 // App ID service instance. In this case App ID configuration will be obtained
 // using VCAP_SERVICES environment variable.
 passport.use(new APIStrategy());
-app.use(passport.initialize()); 
+app.use(passport.initialize());
 
 const https = require('https');
 var authenticate = function(req,res,next)
@@ -220,14 +220,14 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 	//appIdAuthContext.accessTokenPayload; // Decoded access_token JSON
 	//appIdAuthContext.identityToken; // Raw identity_token
 	//appIdAuthContext.identityTokenPayload; // Decoded identity_token JSON
-	
+
 	//var formData = req.body;
 	var userDocIn = JSON.parse(JSON.stringify(req.body));
 	userDocIn.orgID = currentOrgID;
 
 	//verify that userID coming in AppID matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (userDocIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
@@ -290,10 +290,10 @@ createUser = function (username)
         		userDoc = {};
         		userDoc.orgID = currentOrgID;
         		userDoc.userID = username;
-        		
+
 				if (validateEmail(username)) { userDoc.userDetail = { "email":username}; }
 				else { userDoc.userDetail = {}; }
-				
+
 			request({
    				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
 				json: userDoc,
@@ -373,8 +373,8 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
 	formData.orgID = currentOrgID;
 
 	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (formData.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
@@ -454,16 +454,16 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 {
 	//grab the body to pass on
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
-	
+
 	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (bodyIn.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.");
 	}
 	*/
-   	var userID = bodyIn.userID;   
+   	var userID = bodyIn.userID;
    	bodyIn.orgID = currentOrgID;
 
    	//redirect
@@ -539,8 +539,8 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
@@ -613,7 +613,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
-/***************************************************************/ 
+/***************************************************************/
 app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
@@ -623,10 +623,10 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 		res.status(200).send("called the function to check the user ID");
 		return;
 	}
-	
+
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
@@ -704,12 +704,12 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
- 
+
 app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.");
@@ -789,12 +789,12 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 /*       													   				*/
 /* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
- 
+
 app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
@@ -865,13 +865,13 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 /* Route to delete appliance records                           */
 /*    Internal API					       */
 /***************************************************************/
- 
+
 app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 
 	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID in request does not match MCA authenticated user.")
@@ -942,12 +942,12 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 /* Route to delete user documents.                              						   */
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
-/*******************************************************************************************/ 
+/*******************************************************************************************/
 app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.")
@@ -1026,12 +1026,12 @@ app.get('/v001/ca/appliance/user/:userID/events', authenticate, function (req, r
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
- 
+
 app.get('/ca/appliance/user/:userID/events', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash. 
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue 
+	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
+	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
 	if (req.params.userID != req.user.id)
 	{
 		res.status(500).send("User ID on request does not match MCA authenticated user.");
@@ -1220,6 +1220,209 @@ request(options, function (error, response, body) {
 			}
 	}
 });
+
+
+/*********** CALLS TO CREATE SCHEMA/ACTION/RULE into RTI ******/
+
+const manageSchemaBody = {
+	"name":"washingMachine",
+	"deviceType":"washingMachine",
+	"format":"JSON",
+	"items":[
+		{
+			"id":1,"type":"struct",
+			"description":"d",
+			"name":"d",
+			"metaui":"{\"unit\":null,\"precision\":null}",
+			"composite":false,
+			"formula":null,
+			"edgeOnly":false,
+			"subItems":[
+				{
+					"id":2,"type":"string",
+					"description":"name",
+					"name":"name",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":3,"type":"string",
+					"description":"status",
+					"name":"status",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":4,"type":"string",
+					"description":"failureType",
+					"name":"failureType",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":5,"type":"string",
+					"description":"program",
+					"name":"program",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":6,"type":"string",
+					"description":"currentCycle",
+					"name":"currentCycle",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":7,"type":"string",
+					"description":"vibration",
+					"name":"vibration",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":8,"type":"string",
+					"description":"waterPressure",
+					"name":"waterPressure",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":9,"type":"string",
+					"description":"serialNumber",
+					"name":"serialNumber",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":10,"type":"string",
+					"description":"make",
+					"name":"make",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+
+				},{
+					"id":11,"type":"string",
+					"description":"model",
+					"name":"model",
+					"metaui":"{\"unit\":null,\"precision\":null}",
+					"composite":false,
+					"formula":null,
+					"edgeOnly":false
+				}]
+		}]
+ }
+
+
+request({
+	url: "https://" + iotpHttpHost+'/api/v0002/rti/message/schema',
+	auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+	method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+	json: manageSchemaBody
+}, function (error, response, body) {
+		if(error) {
+			console.log('ERROR: ' + error);
+			console.log("Error when try to call rti manage schema");
+		}else{ // request success
+			// console.log("RESPONSE VALUE FROM SCHEMA")
+			// console.log(response)
+			console.log("BODY VALUE FROM SCHEMA")
+			console.log(body)
+			const infoForAction = {
+				idSchema: body.id,
+				schemaName:body.name
+			}
+			const boilerName = VCAP_SERVICES["ibmiotforelectronics"][0].name.substring(0, VCAP_SERVICES["ibmiotforelectronics"][0].name.indexOf("-"));
+
+			const actionBody = {
+				"name":"Action trigger node-red",
+				"description":"this action will trigger the node-red created",
+				"type":"node-red",
+				"fields":{
+					"url": iotECredentials.registrationUrl.includes("stage1") ? "https://"+boilerName + ".stage1.mybluemix.net/api/rti-alert" : "https://"+boilerName + ".mybluemix.net/api/rti-alert",
+					"method":"POST",
+					"username":"",
+					"password":"",
+					"contentType":"application/json",
+					"body":"{\"timestamp\":\"{{timestamp}}\",\"orgId\":\"{{orgId}}\",\"deviceId\":\"{{deviceId}}\",\"ruleName\":\"{{ruleName}}\",\"ruleDescription\":\"{{ruleDescription}}\",\"ruleCondition\":\"{{ruleCondition}}\",\"message\":\"{{message}}\",\"ruleId\":\"{{ruleId}}\"}"
+				}
+			}
+
+			// console.log("ACTION BODY")
+			// console.log(actionBody)
+
+			request({
+				url: "https://" + iotpHttpHost+'/api/v0002/rti/action',
+				auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+				method: 'POST',
+			  headers: {
+			    'Content-Type': 'application/json'
+			  },
+				json: actionBody
+			}, function (error, response, body) {
+				if(error) {
+					console.log('ERROR: ' + error);
+					console.log("Error when try to call rti action");
+				}else{ // request success
+					console.log("BODY VALUE FROM ACTION")
+					console.log(body)
+					infoForAction.idAction = body.id
+
+					const ruleBody = {
+						"name":"deviceRule",
+						"disabled":false,
+						"transforms":[],
+						"condition":"washingMachine.d.status==\"Failure\"",
+						"actions":[infoForAction.idAction],
+						"description":"this rule will be triggered when device status met failure",
+						"severity":1,
+						"messageSchemas":[infoForAction.idSchema]
+
+					}
+					request({
+						url: "https://" + iotpHttpHost+'/api/v0002/rti/rule',
+						auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+						method: 'POST',
+					  headers: {
+					    'Content-Type': 'application/json'
+					  },
+						json: ruleBody
+					}, function (error, response, body) {
+							if(error) {
+								console.log('ERROR: ' + error);
+								console.log("Error when try to call rti manage schema");
+							}else{ // request success
+								console.log("BODY VALUE FROM RULE")
+								console.log(body)
+							}// else
+				}); // third request
+			}// else
+		}); // second request
+	}// else
+});// first request
+
+/********** END OF RTI CALLS ********/
 
 /*console.log('About to store IoTP Credentials');
 var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
