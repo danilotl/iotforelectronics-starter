@@ -1332,7 +1332,7 @@ const manageSchemaBody = {
  }
 
 
-request({
+request({ // could generate an error if the schema for the type already exist
 	url: "https://" + iotpHttpHost+'/api/v0002/rti/message/schema',
 	auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
 	method: 'POST',
@@ -1365,7 +1365,7 @@ request({
 				}
 			}
 
-			request({
+			request({ // this can generate an error if the action already exist
 				url: "https://" + iotpHttpHost+'/api/v0002/rti/action',
 				auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
 				method: 'POST',
@@ -1391,7 +1391,7 @@ request({
 						"messageSchemas":[infoForAction.idSchema]
 
 					}
-					request({
+					request({ // can generate an error if the rule dont recieve id from other requests
 						url: "https://" + iotpHttpHost+'/api/v0002/rti/rule',
 						auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
 						method: 'POST',
