@@ -1345,10 +1345,6 @@ request({
 			console.log('ERROR: ' + error);
 			console.log("Error when try to call rti manage schema");
 		}else{ // request success
-			// console.log("RESPONSE VALUE FROM SCHEMA")
-			// console.log(response)
-			console.log("BODY VALUE FROM SCHEMA")
-			console.log(body)
 			const infoForAction = {
 				idSchema: body.id,
 				schemaName:body.name
@@ -1369,9 +1365,6 @@ request({
 				}
 			}
 
-			// console.log("ACTION BODY")
-			// console.log(actionBody)
-
 			request({
 				url: "https://" + iotpHttpHost+'/api/v0002/rti/action',
 				auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
@@ -1385,8 +1378,6 @@ request({
 					console.log('ERROR: ' + error);
 					console.log("Error when try to call rti action");
 				}else{ // request success
-					console.log("BODY VALUE FROM ACTION")
-					console.log(body)
 					infoForAction.idAction = body.id
 
 					const ruleBody = {
@@ -1413,8 +1404,7 @@ request({
 								console.log('ERROR: ' + error);
 								console.log("Error when try to call rti manage schema");
 							}else{ // request success
-								console.log("BODY VALUE FROM RULE")
-								console.log(body)
+								console.log("success")
 							}// else
 				}); // third request
 			}// else
