@@ -1,1 +1,285 @@
-[{"id":"e474a801.d7c8a8","type":"http in","z":"43f06a3c.e79714","name":"RTI","url":"/rti-alert","method":"post","swaggerDoc":"","x":79,"y":142,"wires":[["f02968e1.8f4b28"]]},{"id":"81390474.6aeba","type":"http response","z":"43f06a3c.e79714","name":"RTI reponse node","x":542,"y":141,"wires":[]},{"id":"a1fc07e9.bf5868","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":502,"y":194,"wires":[]},{"id":"f02968e1.8f4b28","type":"function","z":"43f06a3c.e79714","name":"RTI Trigger Message","func":"// if iotp dont exist in the flow, create it\nvar iotpContext = flow.get('iotp')||{};\n// store the value back\nflow.set('iotp',msg.payload)\n\nmsg.payload = msg.payload.message\nreturn msg;","outputs":1,"noerr":0,"x":253,"y":142,"wires":[["81390474.6aeba","17d7022d.4b9d26"]]},{"id":"17d7022d.4b9d26","type":"json","z":"43f06a3c.e79714","name":"","x":126,"y":195,"wires":[["a1fc07e9.bf5868","45633492.73f5a4"]]},{"id":"b7c6b591.d7262","type":"http request","z":"43f06a3c.e79714","name":"RegistrationCall","method":"use","ret":"txt","url":"","tls":"","x":237,"y":320,"wires":[["6704339a.ae346c","62af98.676d3868"]]},{"id":"45633492.73f5a4","type":"function","z":"43f06a3c.e79714","name":"Registration Call Appliance","func":"// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequest= {\n    \"method\":\"GET\",\n    \"url\":\"https://iotforelectronicstile.stage1.bluemix.net/v001/appliance/\" + msg.payload.d.name,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequest;","outputs":"1","noerr":0,"x":262,"y":254,"wires":[["6b429253.7f607c","b7c6b591.d7262"]]},{"id":"6b429253.7f607c","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":493,"y":253,"wires":[]},{"id":"6704339a.ae346c","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":486,"y":319,"wires":[]},{"id":"db362844.7fd898","type":"function","z":"43f06a3c.e79714","name":"Registration Call User","func":"// if appliances dont exist in the flow, create it\nvar applianceContext = flow.get('appliance')||{};\n// store the value back\nflow.set('appliance',msg.payload)\n\n\n// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequestUser= {\n    \"method\":\"GET\",\n    \"url\":\"https://iotforelectronicstile.stage1.bluemix.net/v001/user/\" + msg.payload.docs[0].userID,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestUser;","outputs":1,"noerr":0,"x":228,"y":435,"wires":[["ccce6879.c3c608"]]},{"id":"62af98.676d3868","type":"json","z":"43f06a3c.e79714","name":"","x":213,"y":375,"wires":[["db362844.7fd898","f5de5e2e.f60578"]]},{"id":"f5de5e2e.f60578","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":485,"y":376,"wires":[]},{"id":"ccce6879.c3c608","type":"http request","z":"43f06a3c.e79714","name":"RegistrationCall","method":"use","ret":"txt","url":"","tls":"","x":223,"y":505,"wires":[["6a627d08.6e6654","78ef65a.6eef39c"]]},{"id":"6a627d08.6e6654","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":472,"y":505,"wires":[]},{"id":"4c4ddf49.82acc8","type":"function","z":"43f06a3c.e79714","name":"Group information to send email","func":"// if user dont exist in the flow, create it\nvar userContext = flow.get('user')||{};\n// store the value back\nflow.set('user',msg.payload)\n\n\n//get the iotp and appliance flow values\nvar iotpContext = flow.get('iotp')||{};\nvar applianceContext = flow.get('appliance')||{};\n\nvar messageIoTP = JSON.parse(iotpContext.message)\nvar timestampRead = (new Date(parseInt(iotpContext.timestamp))).toUTCString();\n\nmsg = {\n    \"iotp\": iotpContext,\n    \"appliance\":applianceContext,\n    \"user\":userContext,\n    \"payload\":{\n        \"deviceId\":messageIoTP.d.name, // device name\n        \"timestamp\": timestampRead, // time converted\n        \"recommendedAction\":\"Failure prod test iotp\",\n        \"eventType\":messageIoTP.d.faiulureType, // failure type\n        \"deviceType\":applianceContext.docs[0].applianceType, // appliance type\n        \"consumerEmail\": userContext[0].userDetail.hasOwnProperty('email')? userContext[0].userDetail.email : \"\"\n    }\n}\nvar msgRequestUser= {\n    \"method\":\"POST\",\n    \"url\":\"https://iot4esimulationengine.stage1.mybluemix.net/sendEmail\",\n    \"payload\":msg.payload\n    \n}\n\n return msgRequestUser;","outputs":1,"noerr":0,"x":252,"y":620,"wires":[["c3b850f5.4528","be900abe.ddbd2"]]},{"id":"78ef65a.6eef39c","type":"json","z":"43f06a3c.e79714","name":"","x":206,"y":560,"wires":[["5f34ef92.554328","4c4ddf49.82acc8"]]},{"id":"5f34ef92.554328","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":473,"y":559,"wires":[]},{"id":"c3b850f5.4528","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":523,"y":621,"wires":[]},{"id":"be900abe.ddbd2","type":"http request","z":"43f06a3c.e79714","name":"EmailRequest","method":"use","ret":"txt","url":"","tls":"","x":310,"y":693,"wires":[["824f0b33.e479a8"]]},{"id":"824f0b33.e479a8","type":"debug","z":"43f06a3c.e79714","name":"","active":true,"console":"false","complete":"true","x":505,"y":693,"wires":[]}]
+[
+  {
+    "id": "e474a801.d7c8a8",
+    "type": "http in",
+    "z": "c68dfa0b.83a798",
+    "name": "RTI",
+    "url": "/rti-alert",
+    "method": "post",
+    "swaggerDoc": "",
+    "x": 79,
+    "y": 142,
+    "wires": [
+      [
+        "f02968e1.8f4b28"
+      ]
+    ]
+  },
+  {
+    "id": "81390474.6aeba",
+    "type": "http response",
+    "z": "c68dfa0b.83a798",
+    "name": "RTI reponse node",
+    "x": 542,
+    "y": 141,
+    "wires": []
+  },
+  {
+    "id": "a1fc07e9.bf5868",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 502,
+    "y": 194,
+    "wires": []
+  },
+  {
+    "id": "f02968e1.8f4b28",
+    "type": "function",
+    "z": "c68dfa0b.83a798",
+    "name": "RTI Trigger Message",
+    "func": "// if iotp dont exist in the flow, create it\nvar iotpContext = flow.get('iotp')||{};\n// store the value back\nflow.set('iotp',msg.payload)\n\nmsg.payload = msg.payload.message\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 253,
+    "y": 142,
+    "wires": [
+      [
+        "81390474.6aeba",
+        "17d7022d.4b9d26"
+      ]
+    ]
+  },
+  {
+    "id": "17d7022d.4b9d26",
+    "type": "json",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "x": 126,
+    "y": 195,
+    "wires": [
+      [
+        "a1fc07e9.bf5868",
+        "45633492.73f5a4"
+      ]
+    ]
+  },
+  {
+    "id": "b7c6b591.d7262",
+    "type": "http request",
+    "z": "c68dfa0b.83a798",
+    "name": "RegistrationCall",
+    "method": "use",
+    "ret": "txt",
+    "url": "",
+    "tls": "",
+    "x": 237,
+    "y": 320,
+    "wires": [
+      [
+        "6704339a.ae346c",
+        "62af98.676d3868"
+      ]
+    ]
+  },
+  {
+    "id": "45633492.73f5a4",
+    "type": "function",
+    "z": "c68dfa0b.83a798",
+    "name": "Registration Call Appliance",
+    "func": "// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequest= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl+ \"v001/appliance/\" + msg.payload.d.name,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequest;",
+    "outputs": "1",
+    "noerr": 0,
+    "x": 262,
+    "y": 254,
+    "wires": [
+      [
+        "6b429253.7f607c",
+        "b7c6b591.d7262"
+      ]
+    ]
+  },
+  {
+    "id": "6b429253.7f607c",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 493,
+    "y": 253,
+    "wires": []
+  },
+  {
+    "id": "6704339a.ae346c",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 486,
+    "y": 319,
+    "wires": []
+  },
+  {
+    "id": "db362844.7fd898",
+    "type": "function",
+    "z": "c68dfa0b.83a798",
+    "name": "Registration Call User",
+    "func": "// if appliances dont exist in the flow, create it\nvar applianceContext = flow.get('appliance')||{};\n// store the value back\nflow.set('appliance',msg.payload)\n\n\n// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequestUser= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl +\"v001/user/\" + msg.payload.docs[0].userID,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestUser;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 228,
+    "y": 435,
+    "wires": [
+      [
+        "ccce6879.c3c608"
+      ]
+    ]
+  },
+  {
+    "id": "62af98.676d3868",
+    "type": "json",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "x": 213,
+    "y": 375,
+    "wires": [
+      [
+        "db362844.7fd898",
+        "f5de5e2e.f60578"
+      ]
+    ]
+  },
+  {
+    "id": "f5de5e2e.f60578",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 485,
+    "y": 376,
+    "wires": []
+  },
+  {
+    "id": "ccce6879.c3c608",
+    "type": "http request",
+    "z": "c68dfa0b.83a798",
+    "name": "RegistrationCall",
+    "method": "use",
+    "ret": "txt",
+    "url": "",
+    "tls": "",
+    "x": 223,
+    "y": 505,
+    "wires": [
+      [
+        "6a627d08.6e6654",
+        "78ef65a.6eef39c"
+      ]
+    ]
+  },
+  {
+    "id": "6a627d08.6e6654",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 472,
+    "y": 505,
+    "wires": []
+  },
+  {
+    "id": "4c4ddf49.82acc8",
+    "type": "function",
+    "z": "c68dfa0b.83a798",
+    "name": "Group information to send email",
+    "func": "// if user dont exist in the flow, create it\nvar userContext = flow.get('user')||{};\n// store the value back\nflow.set('user',msg.payload)\n\n\n//get the iotp and appliance flow values\nvar iotpContext = flow.get('iotp')||{};\nvar applianceContext = flow.get('appliance')||{};\n\nvar messageIoTP = JSON.parse(iotpContext.message)\nvar timestampRead = (new Date(parseInt(iotpContext.timestamp))).toUTCString();\n\nmsg = {\n    \"iotp\": iotpContext,\n    \"appliance\":applianceContext,\n    \"user\":userContext,\n    \"payload\":{\n        \"deviceId\":messageIoTP.d.name, // device name\n        \"timestamp\": timestampRead, // time converted\n        \"recommendedAction\":\"Failure prod test iotp\",\n        \"eventType\":messageIoTP.d.faiulureType, // failure type\n        \"deviceType\":applianceContext.docs[0].applianceType, // appliance type\n        \"consumerEmail\": userContext[0].userDetail.hasOwnProperty('email')? userContext[0].userDetail.email : \"\"\n    }\n}\nvar msgRequestUser= {\n    \"method\":\"POST\",\n    \"url\":\"https://iot4esimulationengine.stage1.mybluemix.net/sendEmail\",\n    \"payload\":msg.payload\n    \n}\n\n return msgRequestUser;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 252,
+    "y": 620,
+    "wires": [
+      [
+        "c3b850f5.4528",
+        "be900abe.ddbd2"
+      ]
+    ]
+  },
+  {
+    "id": "78ef65a.6eef39c",
+    "type": "json",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "x": 206,
+    "y": 560,
+    "wires": [
+      [
+        "5f34ef92.554328",
+        "4c4ddf49.82acc8"
+      ]
+    ]
+  },
+  {
+    "id": "5f34ef92.554328",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 473,
+    "y": 559,
+    "wires": []
+  },
+  {
+    "id": "c3b850f5.4528",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 523,
+    "y": 621,
+    "wires": []
+  },
+  {
+    "id": "be900abe.ddbd2",
+    "type": "http request",
+    "z": "c68dfa0b.83a798",
+    "name": "EmailRequest",
+    "method": "use",
+    "ret": "txt",
+    "url": "",
+    "tls": "",
+    "x": 310,
+    "y": 693,
+    "wires": [
+      [
+        "824f0b33.e479a8"
+      ]
+    ]
+  },
+  {
+    "id": "824f0b33.e479a8",
+    "type": "debug",
+    "z": "c68dfa0b.83a798",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 505,
+    "y": 693,
+    "wires": []
+  }
+]
