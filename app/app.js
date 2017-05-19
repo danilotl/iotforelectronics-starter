@@ -1332,99 +1332,102 @@ const manageSchemaBody = {
  }
 
 request({ // check rti mode
-   url: "https://" + iotpHttpHost+'/api/v0002',
-   auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
-   method: 'GET'
+	url: "https://" + iotpHttpHost+'/api/v0002',
+	auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+	method: 'GET'
  }, function (error, response, body) {
-	 if(error) {
-		 console.log('ERROR: ' + error);
-		 console.log("Error when try to call get api/v0002");
-	 }else{ // request success
-		 var body2 = JSON.parse(body)
-		 var rtiMode = body2.config.analytics.mode === "internal"? "rti2" : "rti"
-		 request({
-			  url: "https://" + iotpHttpHost+'/api/v0002/rti2/message/schema',
-				auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				json: manageSchemaBody
-			}, function (error, response, body) {
-				if(error) {
-					console.log('ERROR: ' + error);
-					console.log("Error when try to call rti manage schema");
-				}else{ // request success
+   if(error) {
+       console.log('ERROR: ' + error);
+       console.log("Error when try to call get api");
+   }else{ // request success
+     var body2 = JSON.parse(body)
+     console.log(body2.config.analytics.mode)
+     var rtiMode = body2.config.analytics.mode === "internal"? "rti2" : "rti"
 
-					const infoForAction = {
-						idSchema: body.id,
-						schemaName:body.name
-					}
-					const boilerName = VCAP_SERVICES["ibmiotforelectronics"][0].name.substring(0, VCAP_SERVICES["ibmiotforelectronics"][0].name.indexOf("-"));
+     request({
+         url: "https://" + iotpHttpHost+'/api/v0002/'+rtiMode+'/message/schema',
+         auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json'
+         },
+         json: manageSchemaBody
+     }, function (error, response, body) {
+       if(error) {
+           console.log('ERROR: ' + error);
+           console.log("Error when try to call rti manage schema");
+       }else{ // request success
+           const infoForAction = {
+               idSchema: body.id,
+               schemaName:body.name
+           }
+           const boilerName = VCAP_SERVICES["ibmiotforelectronics"][0].name.substring(0, VCAP_SERVICES["ibmiotforelectronics"][0].name.indexOf("-"));
 
-					const actionBody = {
-						"name":"Action trigger node-red",
-						"description":"this action will trigger the node-red created",
-						"type":"node-red",
-						"fields":{
-							"url": iotECredentials.registrationUrl.includes("stage1") ? "https://"+boilerName + ".stage1.mybluemix.net/api/rti-alert" : "https://"+boilerName + ".mybluemix.net/api/rti-alert",
-							"method":"POST",
-							"username":"",
-							"password":"",
-							"contentType":"application/json",
-							"body":"{\"timestamp\":\"{{timestamp}}\",\"orgId\":\"{{orgId}}\",\"deviceId\":\"{{deviceId}}\",\"ruleName\":\"{{ruleName}}\",\"ruleDescription\":\"{{ruleDescription}}\",\"ruleCondition\":\"{{ruleCondition}}\",\"message\":\"{{message}}\",\"ruleId\":\"{{ruleId}}\"}"
-						}
-					}
+           const actionBody = {
+               "name":"Action trigger node-red",
+               "description":"this action will trigger the node-red created",
+               "type":"node-red",
+               "fields":{
+                   "url": iotECredentials.registrationUrl.includes("stage1") ? "https://"+boilerName + ".stage1.mybluemix.net/api/rti-alert" : "https://"+boilerName + ".mybluemix.net/api/rti-alert",
+                   "method":"POST",
+                   "username":"",
+                   "password":"",
+                   "contentType":"application/json",
+                   "body":"{\"timestamp\":\"{{timestamp}}\",\"orgId\":\"{{orgId}}\",\"deviceId\":\"{{deviceId}}\",\"ruleName\":\"{{ruleName}}\",\"ruleDescription\":\"{{ruleDescription}}\",\"ruleCondition\":\"{{ruleCondition}}\",\"message\":\"{{message}}\",\"ruleId\":\"{{ruleId}}\"}"
+               }
+           }
 
-					request({
-						url: "https://" + iotpHttpHost+'/api/v0002/rti2/action',
-						auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						json: actionBody
-					}, function (error, response, body) {
-						if(error) {
-							console.log('ERROR: ' + error);
-							console.log("Error when try to call rti action");
-						}else{ // request success
-							infoForAction.idAction = body.id
 
-							const ruleBody = {
-								"name":"deviceRule",
-								"disabled":false,
-								"transforms":[],
-								"condition":"washingMachine.d.status==\"Failure\"",
-								"actions":[infoForAction.idAction],
-								"description":"this rule will be triggered when device status met failure",
-								"severity":1,
-								"messageSchemas":[infoForAction.idSchema]
+           request({
+               url: "https://" + iotpHttpHost+'/api/v0002/'+rtiMode+'/action',
+               auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               json: actionBody
+           }, function (error, response, body) {
+               if(error) {
+                 console.log('ERROR: ' + error);
+                 console.log("Error when try to call rti action");
+               }else{ // request success
+                 infoForAction.idAction = body.id
 
-							}
-							
-							request({
-								url: "https://" + iotpHttpHost+'/api/v0002/rti2/rule',
-								auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								json: ruleBody
-							}, function (error, response, body) {
-								if(error) {
-									console.log('ERROR: ' + error);
-									console.log("Error when try to call rti manage schema");
-								}else{ // request success
-									console.log("success")
-								}// else
-							}); // forth request /rule
-						}// else
-					}); // thrid request /action
-				}// else
-			});// second request /message/schema
-		} // else
-	})// api/v0002 request
+                 const ruleBody = {
+                     "name":"deviceRule",
+                     "disabled":false,
+                     "transforms":[],
+                     "condition":"washingMachine.d.status==\"Failure\"",
+                     "actions":[infoForAction.idAction],
+                     "description":"this rule will be triggered when device status met failure",
+                     "severity":1,
+                     "messageSchemas":[infoForAction.idSchema]
+
+                 }
+                 request({
+                     url: "https://" + iotpHttpHost+'/api/v0002/'+rtiMode+'/rule',
+                     auth: {username:iotfCredentials.apiKey, password:iotfCredentials.apiToken},
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     json: ruleBody
+                 }, function (error, response, body) {
+                     if(error) {
+                         console.log('ERROR: ' + error);
+                         console.log("Error when try to call rule");
+                     }else{ // request success
+                         console.log("success")
+
+                     }// else
+             }); // forth request /rule
+					 }// else
+				 }); // thrid request /action
+			 }// else
+		 });// second request /message/schema
+	 }// else
+ }); // api/v0002 request
+
 
 
 /********** END OF RTI CALLS ********/
