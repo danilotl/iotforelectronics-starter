@@ -143,6 +143,8 @@ var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
 if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
 	throw "Cannot get IoT4E credentials"
 var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+var iotEForRTI = VCAP_SERVICES["ibmiotforelectronics"][0];
+
 
 //IoT Platform Credentials
 var name = iotfCredentials["org"];
@@ -1361,7 +1363,11 @@ request({ // check rti mode
                idSchema: body.id,
                schemaName:body.name
            }
-           const boilerName = VCAP_SERVICES["ibmiotforelectronics"][0].name.substring(0, VCAP_SERVICES["ibmiotforelectronics"][0].name.indexOf("-"));
+
+					 var iotLabel = iotEForRTI.label.length + 1 // get the name of the service
+
+					 var lengthString = iotEForRTI.name.length - iotLabel;  // the length of the boiler+iot4e - the name of the iot4e service
+					 var boilerName = iotEForRTI.name.substring(0, lengthString); // get the string from 0 - boiler name
 
            const actionBody = {
                "name":"Action trigger node-red",
