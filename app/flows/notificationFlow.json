@@ -1,285 +1,489 @@
 [
-  {
-    "id": "e474a801.d7c8a8",
-    "type": "http in",
-    "z": "c68dfa0b.83a798",
-    "name": "RTI",
-    "url": "/rti-alert",
-    "method": "post",
-    "swaggerDoc": "",
-    "x": 79,
-    "y": 142,
-    "wires": [
-      [
-        "f02968e1.8f4b28"
-      ]
-    ]
-  },
-  {
-    "id": "81390474.6aeba",
-    "type": "http response",
-    "z": "c68dfa0b.83a798",
-    "name": "RTI reponse node",
-    "x": 542,
-    "y": 141,
-    "wires": []
-  },
-  {
-    "id": "a1fc07e9.bf5868",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 502,
-    "y": 194,
-    "wires": []
-  },
-  {
-    "id": "f02968e1.8f4b28",
-    "type": "function",
-    "z": "c68dfa0b.83a798",
-    "name": "RTI Trigger Message",
-    "func": "// if iotp dont exist in the flow, create it\nvar iotpContext = flow.get('iotp')||{};\n// store the value back\nflow.set('iotp',msg.payload)\n\nmsg.payload = msg.payload.message\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "x": 253,
-    "y": 142,
-    "wires": [
-      [
-        "81390474.6aeba",
-        "17d7022d.4b9d26"
-      ]
-    ]
-  },
-  {
-    "id": "17d7022d.4b9d26",
-    "type": "json",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "x": 126,
-    "y": 195,
-    "wires": [
-      [
-        "a1fc07e9.bf5868",
-        "45633492.73f5a4"
-      ]
-    ]
-  },
-  {
-    "id": "b7c6b591.d7262",
-    "type": "http request",
-    "z": "c68dfa0b.83a798",
-    "name": "RegistrationCall",
-    "method": "use",
-    "ret": "txt",
-    "url": "",
-    "tls": "",
-    "x": 237,
-    "y": 320,
-    "wires": [
-      [
-        "6704339a.ae346c",
-        "62af98.676d3868"
-      ]
-    ]
-  },
-  {
-    "id": "45633492.73f5a4",
-    "type": "function",
-    "z": "c68dfa0b.83a798",
-    "name": "Registration Call Appliance",
-    "func": "// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequest= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl+ \"v001/appliance/\" + msg.payload.d.name,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequest;",
-    "outputs": "1",
-    "noerr": 0,
-    "x": 262,
-    "y": 254,
-    "wires": [
-      [
-        "6b429253.7f607c",
-        "b7c6b591.d7262"
-      ]
-    ]
-  },
-  {
-    "id": "6b429253.7f607c",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 493,
-    "y": 253,
-    "wires": []
-  },
-  {
-    "id": "6704339a.ae346c",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 486,
-    "y": 319,
-    "wires": []
-  },
-  {
-    "id": "db362844.7fd898",
-    "type": "function",
-    "z": "c68dfa0b.83a798",
-    "name": "Registration Call User",
-    "func": "// if appliances dont exist in the flow, create it\nvar applianceContext = flow.get('appliance')||{};\n// store the value back\nflow.set('appliance',msg.payload)\n\n\n// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequestUser= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl +\"v001/user/\" + msg.payload.docs[0].userID,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestUser;",
-    "outputs": 1,
-    "noerr": 0,
-    "x": 228,
-    "y": 435,
-    "wires": [
-      [
-        "ccce6879.c3c608"
-      ]
-    ]
-  },
-  {
-    "id": "62af98.676d3868",
-    "type": "json",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "x": 213,
-    "y": 375,
-    "wires": [
-      [
-        "db362844.7fd898",
-        "f5de5e2e.f60578"
-      ]
-    ]
-  },
-  {
-    "id": "f5de5e2e.f60578",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 485,
-    "y": 376,
-    "wires": []
-  },
-  {
-    "id": "ccce6879.c3c608",
-    "type": "http request",
-    "z": "c68dfa0b.83a798",
-    "name": "RegistrationCall",
-    "method": "use",
-    "ret": "txt",
-    "url": "",
-    "tls": "",
-    "x": 223,
-    "y": 505,
-    "wires": [
-      [
-        "6a627d08.6e6654",
-        "78ef65a.6eef39c"
-      ]
-    ]
-  },
-  {
-    "id": "6a627d08.6e6654",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 472,
-    "y": 505,
-    "wires": []
-  },
-  {
-    "id": "4c4ddf49.82acc8",
-    "type": "function",
-    "z": "c68dfa0b.83a798",
-    "name": "Group information to send email",
-    "func": "// if user dont exist in the flow, create it\nvar userContext = flow.get('user')||{};\n// store the value back\nflow.set('user',msg.payload)\n\n\n//get the iotp and appliance flow values\nvar iotpContext = flow.get('iotp')||{};\nvar applianceContext = flow.get('appliance')||{};\n\nvar messageIoTP = JSON.parse(iotpContext.message)\nvar timestampRead = (new Date(parseInt(iotpContext.timestamp))).toUTCString();\n\nmsg = {\n    \"iotp\": iotpContext,\n    \"appliance\":applianceContext,\n    \"user\":userContext,\n    \"payload\":{\n        \"deviceId\":messageIoTP.d.name, // device name\n        \"timestamp\": timestampRead, // time converted\n        \"recommendedAction\":\"Failure prod test iotp\",\n        \"eventType\":messageIoTP.d.faiulureType, // failure type\n        \"deviceType\":applianceContext.docs[0].applianceType, // appliance type\n        \"consumerEmail\": userContext[0].userDetail.hasOwnProperty('email')? userContext[0].userDetail.email : \"\"\n    }\n}\nvar msgRequestUser= {\n    \"method\":\"POST\",\n    \"url\":\"https://iot4esimulationengine.stage1.mybluemix.net/sendEmail\",\n    \"payload\":msg.payload\n    \n}\n\n return msgRequestUser;",
-    "outputs": 1,
-    "noerr": 0,
-    "x": 252,
-    "y": 620,
-    "wires": [
-      [
-        "c3b850f5.4528",
-        "be900abe.ddbd2"
-      ]
-    ]
-  },
-  {
-    "id": "78ef65a.6eef39c",
-    "type": "json",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "x": 206,
-    "y": 560,
-    "wires": [
-      [
-        "5f34ef92.554328",
-        "4c4ddf49.82acc8"
-      ]
-    ]
-  },
-  {
-    "id": "5f34ef92.554328",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 473,
-    "y": 559,
-    "wires": []
-  },
-  {
-    "id": "c3b850f5.4528",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 523,
-    "y": 621,
-    "wires": []
-  },
-  {
-    "id": "be900abe.ddbd2",
-    "type": "http request",
-    "z": "c68dfa0b.83a798",
-    "name": "EmailRequest",
-    "method": "use",
-    "ret": "txt",
-    "url": "",
-    "tls": "",
-    "x": 310,
-    "y": 693,
-    "wires": [
-      [
-        "824f0b33.e479a8"
-      ]
-    ]
-  },
-  {
-    "id": "824f0b33.e479a8",
-    "type": "debug",
-    "z": "c68dfa0b.83a798",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 505,
-    "y": 693,
-    "wires": []
-  }
+    {
+        "id": "5071202d.bc255",
+        "type": "tab",
+        "label": "Notification"
+    },
+    {
+        "id": "9f86a958.5b435",
+        "type": "tab",
+        "label": "Pre-Registration Samples"
+    },
+    {
+        "id": "98ce0128.cf5a9",
+        "type": "http in",
+        "z": "5071202d.bc255",
+        "name": "RTI",
+        "url": "/rti-alert",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 70,
+        "y": 40,
+        "wires": [
+            [
+                "7109b13d.b73418"
+            ]
+        ]
+    },
+    {
+        "id": "92146aed.c3468",
+        "type": "http response",
+        "z": "5071202d.bc255",
+        "name": "RTI reponse node",
+        "x": 533,
+        "y": 39,
+        "wires": []
+    },
+    {
+        "id": "8d489e6c.8c575",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 493,
+        "y": 92,
+        "wires": []
+    },
+    {
+        "id": "7109b13d.b73418",
+        "type": "function",
+        "z": "5071202d.bc255",
+        "name": "RTI Trigger Message",
+        "func": "// if iotp dont exist in the flow, create it\nvar iotpContext = flow.get('iotp')||{};\n// store the value back\nflow.set('iotp',msg.payload)\n\nmsg.payload = msg.payload.message\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 244,
+        "y": 40,
+        "wires": [
+            [
+                "92146aed.c3468",
+                "2bde1ffa.0b9238"
+            ]
+        ]
+    },
+    {
+        "id": "2bde1ffa.0b9238",
+        "type": "json",
+        "z": "5071202d.bc255",
+        "name": "",
+        "x": 117,
+        "y": 93,
+        "wires": [
+            [
+                "8d489e6c.8c575",
+                "2bf34e63.fbc24a"
+            ]
+        ]
+    },
+    {
+        "id": "5b874a06.a41674",
+        "type": "http request",
+        "z": "5071202d.bc255",
+        "name": "RegistrationCall",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 228,
+        "y": 218,
+        "wires": [
+            [
+                "6d650dc9.3d0474",
+                "d8db4135.048bb"
+            ]
+        ]
+    },
+    {
+        "id": "2bf34e63.fbc24a",
+        "type": "function",
+        "z": "5071202d.bc255",
+        "name": "Registration Call Appliance",
+        "func": "// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequest= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl+ \"v001/appliance/\" + msg.payload.d.name,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequest;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 253,
+        "y": 152,
+        "wires": [
+            [
+                "e4ae3dbf.0dc0d8",
+                "5b874a06.a41674"
+            ]
+        ]
+    },
+    {
+        "id": "e4ae3dbf.0dc0d8",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 484,
+        "y": 151,
+        "wires": []
+    },
+    {
+        "id": "6d650dc9.3d0474",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 477,
+        "y": 217,
+        "wires": []
+    },
+    {
+        "id": "68da069f.e336b8",
+        "type": "function",
+        "z": "5071202d.bc255",
+        "name": "Registration Call User",
+        "func": "// if appliances dont exist in the flow, create it\nvar applianceContext = flow.get('appliance')||{};\n// store the value back\nflow.set('appliance',msg.payload)\n\n\n// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n// get the electronics\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\nvar msgRequestUser= {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl +\"v001/user/\" + msg.payload.docs[0].userID,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestUser;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 219,
+        "y": 333,
+        "wires": [
+            [
+                "2c5a2bde.055804"
+            ]
+        ]
+    },
+    {
+        "id": "d8db4135.048bb",
+        "type": "json",
+        "z": "5071202d.bc255",
+        "name": "",
+        "x": 204,
+        "y": 273,
+        "wires": [
+            [
+                "68da069f.e336b8",
+                "e338c9d7.bf11f"
+            ]
+        ]
+    },
+    {
+        "id": "e338c9d7.bf11f",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 476,
+        "y": 274,
+        "wires": []
+    },
+    {
+        "id": "2c5a2bde.055804",
+        "type": "http request",
+        "z": "5071202d.bc255",
+        "name": "RegistrationCall",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 214,
+        "y": 403,
+        "wires": [
+            [
+                "15d2baad.9b8d25",
+                "35ec8cad.e564d4"
+            ]
+        ]
+    },
+    {
+        "id": "15d2baad.9b8d25",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 463,
+        "y": 403,
+        "wires": []
+    },
+    {
+        "id": "e03e163b.7e631",
+        "type": "function",
+        "z": "5071202d.bc255",
+        "name": "Group information to send email",
+        "func": "// if user dont exist in the flow, create it\nvar userContext = flow.get('user')||{};\n// store the value back\nflow.set('user',msg.payload)\n\n\n//get the iotp and appliance flow values\nvar iotpContext = flow.get('iotp')||{};\nvar applianceContext = flow.get('appliance')||{};\n\nvar messageIoTP = JSON.parse(iotpContext.message)\nvar timestampRead = (new Date(parseInt(iotpContext.timestamp))).toUTCString();\n\nmsg = {\n    \"iotp\": iotpContext,\n    \"appliance\":applianceContext,\n    \"user\":userContext,\n    \"payload\":{\n        \"deviceId\":messageIoTP.d.name, // device name\n        \"timestamp\": timestampRead, // time converted\n        \"recommendedAction\":\"Failure prod test iotp\",\n        \"eventType\":messageIoTP.d.faiulureType, // failure type\n        \"deviceType\":applianceContext.docs[0].applianceType, // appliance type\n        \"consumerEmail\": userContext[0].userDetail.hasOwnProperty('email')? userContext[0].userDetail.email : \"\"\n    }\n}\nvar msgRequestUser= {\n    \"method\":\"POST\",\n    \"url\":\"https://iot4esimulationengine.stage1.mybluemix.net/sendEmail\",\n    \"payload\":msg.payload\n    \n}\n\n return msgRequestUser;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 243,
+        "y": 518,
+        "wires": [
+            [
+                "6147f6e.9516e08",
+                "e2014d8d.6657c"
+            ]
+        ]
+    },
+    {
+        "id": "35ec8cad.e564d4",
+        "type": "json",
+        "z": "5071202d.bc255",
+        "name": "",
+        "x": 197,
+        "y": 458,
+        "wires": [
+            [
+                "6fcae58c.85514c",
+                "e03e163b.7e631"
+            ]
+        ]
+    },
+    {
+        "id": "6fcae58c.85514c",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 464,
+        "y": 457,
+        "wires": []
+    },
+    {
+        "id": "6147f6e.9516e08",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 514,
+        "y": 519,
+        "wires": []
+    },
+    {
+        "id": "e2014d8d.6657c",
+        "type": "http request",
+        "z": "5071202d.bc255",
+        "name": "EmailRequest",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 301,
+        "y": 591,
+        "wires": [
+            [
+                "a13d667d.0e0b"
+            ]
+        ]
+    },
+    {
+        "id": "a13d667d.0e0b",
+        "type": "debug",
+        "z": "5071202d.bc255",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 496,
+        "y": 591,
+        "wires": []
+    },
+    {
+        "id": "5ea2f3a0.bc3394",
+        "type": "http in",
+        "z": "9f86a958.5b435",
+        "name": "Validate API",
+        "url": "/validate",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 100,
+        "wires": [
+            [
+                "4060d116.8ed81",
+                "e22c4b52.9229a8"
+            ]
+        ]
+    },
+    {
+        "id": "8e810fb1.c39d8",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "API details",
+        "info": "###### *What is this?*\n\nThis node will create a RESTful API that can\nbe used as a pre-registration action to validate\nappliance metadata.\n\n---\n\n###### *How do I use it?*\n\nIn your IoT for Electronics dashboard,\nyou should see a section called\n**\"Configure Appliance Registration\"**.\nConfigure the *Pre-registration* fields with\nthe following information:\n\n- **Method:** POST  \n- **URL:** https://<your_app_name>.mybluemix.net/api/validate\n\n**_Note:_** This API is not protected, so you\ncan leave the **_username_** and **_password_**\nfields blank.\n\n---\n\n###### *What now?*\n\nWhen you are registering an appliance,\na validation action will be triggered prior\nto the registration process. It will get the\nappliance metadata from Watson IoT Platform\nand will compare to the values you defined in\nthe response object (see\n**_Customize validations_** node for more info).\n\nIf all the attributes are successfully\nvalidated, then the registration process\ncontinues. If any of the given attributes\nfails during validation, the registration\nprocess is aborted.",
+        "x": 80,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "4060d116.8ed81",
+        "type": "function",
+        "z": "9f86a958.5b435",
+        "name": "Define validations",
+        "func": "msg.payload = {\n    \"validate\": {\n        \"deviceInfo\": {\n            \"manufacturer\": \"Swirlmore\",\n            \"fwVersion\": \"1.0.0\"\n        }\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "d5c49188.cf55",
+                "1c490ef8.90c129"
+            ]
+        ]
+    },
+    {
+        "id": "d5c49188.cf55",
+        "type": "http response",
+        "z": "9f86a958.5b435",
+        "name": "Send response",
+        "x": 620,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "1c490ef8.90c129",
+        "type": "debug",
+        "z": "9f86a958.5b435",
+        "name": "Debug response",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 630,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "8a3f9698.608be8",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "Customize validations",
+        "info": "###### Description\n\nWhen registering a single appliance\nyou can use specific attributes to validade,\nsuch as _Serial Number_, or _Appliance ID_.\n\nIf you are registering multiples appliance at\nonce, the validations defined here will be\nperformed for every appliance, so it makes sense\nto validate more generic attributes, such as\n_Appliance Type_, or _Model_.\n\n---\n\n###### Getting the appliance data\n\nThe appliance information that was initially\nsent to the registration process will be passed\nalong to this node in the **request body**, as\na **_JSON object_**. It will looks like\nsomething like this:\n\n```\n{\n    \"userID\": \"john\",\n    \"applianceID\": \"MY_APPLIANCE\"\n    \"applianceDetail\": {\n        // custom metadata\n    }\n}\n```\n**_Note:_** If you are registering multiple\nappliances at once, you will receive an\n**_array of objects_** in the **request body**.\n\n---\n\n###### Formatting the response\n\nWith the appliance information, you will be\nable to define what attributes you want to\nvalidate and format your response. You must\nsend a **_JSON object_** in the following\nformat:\n\n```\n{\n    \"validate\": {\n        \"deviceInfo\": {\n            // attributes keys and values\n        }\n    }\n}\n```",
+        "x": 360,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e22c4b52.9229a8",
+        "type": "debug",
+        "z": "9f86a958.5b435",
+        "name": "Debug request body",
+        "active": true,
+        "console": "false",
+        "complete": "req.body",
+        "x": 360,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e8e688f.243bff8",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "Response object",
+        "info": "###### Description\n\nHere you will find some sample responses you can\nuse as a reference to create your own.\n\n---\n\n###### Registering a single appliance\n\nValidate specific appliance attributes:\n\n```\n{\n    \"validate\": {\n        \"deviceInfo\": {\n            \"applianceType\": \"washingMachine\",\n            \"applianceID\": \"MY_APPLIANCE\",\n            \"serialNumber\": \"ABCD-1234-EFGH-5678\"\n            \n        }\n    }\n}\n```\n\n---\n\n###### Registering multiple appliances\n\nValidate more generic attributes, suitable\nfor every appliance being registered:\n\n```\n{\n    \"validate\": {\n        \"deviceInfo\": {\n            \"applianceType\": \"washingMachine\",\n            \"manufacturer\": \"Swirlmore\",\n            \"model\": \"wkw007ge\",\n            \"fwVersion\": \"1.0.0\"\n            \n        }\n    }\n}\n```\n\n---",
+        "x": 620,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "c3eccb1f.a237b8",
+        "type": "http in",
+        "z": "9f86a958.5b435",
+        "name": "Send Command API",
+        "url": "/sendCommand",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 320,
+        "wires": [
+            [
+                "28c0f0e7.fc469",
+                "948b1d41.697868"
+            ]
+        ]
+    },
+    {
+        "id": "79a66799.16a04",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "API details",
+        "info": "###### *What is this?*\n\nThis node will create a RESTful API that can\nbe used as a post-registration action to send\na command to the devices after registration.\n\n---\n\n###### *How do I use it?*\n\nIn your IoT for Electronics dashboard,\nyou should see a section called\n**\"Configure Appliance Registration\"**.\nConfigure the *Post-registration* fields with\nthe following information:\n\n- **Method:** POST  \n- **URL:** https://<your_app_name>.mybluemix.net/api/sendCommand\n\n**_Note:_** This API is not protected, so you\ncan leave the **_username_** and **_password_**\nfields blank.\n\n---\n\n###### *What now?*\n\nAfter the registration process, a command\nwill be sent using the MQTT protocol to all the\nappliances that were successfully registered\n(see **_Command details_** node for more\ninfo).",
+        "x": 80,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "28c0f0e7.fc469",
+        "type": "function",
+        "z": "9f86a958.5b435",
+        "name": "Define command",
+        "func": "msg.payload = {\n    \"command\": {\n        \"commandId\": \"startWashing\"\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "ddaef99f.cabf9",
+                "26bf8979.8e255e"
+            ]
+        ]
+    },
+    {
+        "id": "ddaef99f.cabf9",
+        "type": "http response",
+        "z": "9f86a958.5b435",
+        "name": "Send response",
+        "x": 620,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "26bf8979.8e255e",
+        "type": "debug",
+        "z": "9f86a958.5b435",
+        "name": "Debug response",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 630,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7a43c021.9992f8",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "Command details",
+        "info": "###### Description\n\nTo send a command to the appliances that were\nsuccessfully registered, you need to send a\n**_JSON object_** in the **response body** using\nthe following format:\n\n```\n{\n    \"command\": {\n        \"commandId\": <command name>,\n        \"command\": <payload message>\n    }\n}\n```\n\n**_Note:_** The payload is optional. Use it only\nif needed. ",
+        "x": 350,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "948b1d41.697868",
+        "type": "debug",
+        "z": "9f86a958.5b435",
+        "name": "Debug request body",
+        "active": true,
+        "console": "false",
+        "complete": "req.body",
+        "x": 360,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4b61d756.5e1448",
+        "type": "comment",
+        "z": "9f86a958.5b435",
+        "name": "Response object",
+        "info": "###### Description\n\nHere is a sample response you can use as a\nreference to create your own:\n\n```\n{\n    \"command\": {\n        commandId: \"startWashing\"\n    }\n}\n```",
+        "x": 620,
+        "y": 260,
+        "wires": []
+    }
 ]
