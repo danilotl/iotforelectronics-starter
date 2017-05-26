@@ -397,6 +397,7 @@
           case "End":
             var data = {status: "Working", currentCycle: "End"};
             updatePlatformStatus(data);
+            setTimeout(function(){updateStatus('Ready');},3000);
             break;
         }
     }
@@ -492,7 +493,6 @@
         $('.problem-machine-icons p').eq(3).removeClass("enabled");
         index = 0;
         playing = false;
-        setTimeout(updateStatus('Ready'),3000);
         resetProgress();
         $('#soundwave').attr('src', '../images/soundwave1.gif');
       }
