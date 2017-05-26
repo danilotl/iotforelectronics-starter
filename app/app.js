@@ -1370,8 +1370,8 @@ request({ // check rti mode
 					 var boilerName = iotEForRTI.name.substring(0, lengthString); // get the string from 0 - boiler name
 
            const actionBody = {
-               "name":"Action trigger node-red",
-               "description":"this action will trigger the node-red created",
+               "name":"Trigger IoT4E Notification",
+               "description":"This action triggers the IoT for Electronics Node-RED notification flow.",
                "type":"node-red",
                "fields":{
                    "url": iotECredentials.registrationUrl.includes("stage1") ? "https://"+boilerName + ".stage1.mybluemix.net/api/rti-alert" : "https://"+boilerName + ".mybluemix.net/api/rti-alert",
@@ -1400,12 +1400,17 @@ request({ // check rti mode
                  infoForAction.idAction = body.id
 
                  const ruleBody = {
-                     "name":"deviceRule",
+                     "name":"IoT for Electronics notification rule",
                      "disabled":false,
-                     "transforms":[],
-                     "condition":"washingMachine.d.status==\"Failure\"",
+                     "transforms":[{
+								        "duration": null,
+								        "name": "iot4eNotificationRule",
+								        "type": "DeliverOnChange",
+								        "parameters": "Rule, becomes, true, 0"
+								      }],
+                     "condition":"washingMachine.d.status==\"Failure\" OR washingMachine.d.currentCycle==\"End\"",
                      "actions":[infoForAction.idAction],
-                     "description":"this rule will be triggered when device status met failure",
+                     "description":"This is rule is triggered by failures or cycle completion.",
                      "severity":1,
                      "messageSchemas":[infoForAction.idSchema]
 
