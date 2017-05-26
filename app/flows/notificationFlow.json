@@ -13,12 +13,12 @@
     "id": "98ce0128.cf5a9",
     "type": "http in",
     "z": "5071202d.bc255",
-    "name": "IoT Platform Rule",
+    "name": "IoT Platform Rule API",
     "url": "/rti-alert",
     "method": "post",
     "swaggerDoc": "",
-    "x": 100,
-    "y": 40,
+    "x": 123.75,
+    "y": 116.25,
     "wires": [
       [
         "7109b13d.b73418"
@@ -30,20 +30,8 @@
     "type": "http response",
     "z": "5071202d.bc255",
     "name": "Rule Response Node",
-    "x": 602,
-    "y": 41,
-    "wires": []
-  },
-  {
-    "id": "8d489e6c.8c575",
-    "type": "debug",
-    "z": "5071202d.bc255",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 493,
-    "y": 92,
+    "x": 605.75,
+    "y": 117.25,
     "wires": []
   },
   {
@@ -54,8 +42,8 @@
     "func": "// if iotp doesn't exist in the flow, create it\nvar iotpContext = flow.get('iotp')||{};\n// store the value\nflow.set('iotp',msg.payload)\n\nmsg.payload = msg.payload.message\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 324,
-    "y": 40,
+    "x": 354.00000762939453,
+    "y": 117.50000095367432,
     "wires": [
       [
         "92146aed.c3468",
@@ -68,11 +56,10 @@
     "type": "json",
     "z": "5071202d.bc255",
     "name": "",
-    "x": 195,
-    "y": 93,
+    "x": 203.75000381469727,
+    "y": 168.00000286102295,
     "wires": [
       [
-        "8d489e6c.8c575",
         "2bf34e63.fbc24a"
       ]
     ]
@@ -86,8 +73,8 @@
     "ret": "txt",
     "url": "",
     "tls": "",
-    "x": 228,
-    "y": 218,
+    "x": 236.7500228881836,
+    "y": 291.7500066757202,
     "wires": [
       [
         "6d650dc9.3d0474",
@@ -103,8 +90,8 @@
     "func": "// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics service credentials\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\n// request to /v001/appliance/{applianceID}\nvar msgRequestAppliance = {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl+ \"v001/appliance/\" + msg.payload.d.name, //device id\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestAppliance;",
     "outputs": "1",
     "noerr": 0,
-    "x": 273,
-    "y": 152,
+    "x": 246.0000343322754,
+    "y": 234.0000057220459,
     "wires": [
       [
         "e4ae3dbf.0dc0d8",
@@ -116,24 +103,24 @@
     "id": "e4ae3dbf.0dc0d8",
     "type": "debug",
     "z": "5071202d.bc255",
-    "name": "",
+    "name": "Debug request body",
     "active": true,
     "console": "false",
     "complete": "true",
-    "x": 505,
-    "y": 152,
+    "x": 630.5000228881836,
+    "y": 233.5000057220459,
     "wires": []
   },
   {
     "id": "6d650dc9.3d0474",
     "type": "debug",
     "z": "5071202d.bc255",
-    "name": "",
+    "name": "Debug response",
     "active": true,
     "console": "false",
     "complete": "true",
-    "x": 477,
-    "y": 217,
+    "x": 549.2500076293945,
+    "y": 291.7500066757202,
     "wires": []
   },
   {
@@ -144,11 +131,12 @@
     "func": "// if appliance doesn't exist in the flow, create it\nvar applianceContext = flow.get('appliance')||{};\n// store the value\nflow.set('appliance',msg.payload)\n\n\n// get the env services\nvar process = JSON.parse(context.global.process.env.VCAP_SERVICES); \n\n// get the electronics credentials\nvar iotECredentials = process[\"ibmiotforelectronics\"][0][\"credentials\"];\n\n// basic auth\nvar encodedAuthorization = new Buffer(iotECredentials.apiKey+':'+iotECredentials.authToken).toString('base64');\n\n// request to /v001/user/{userID}\nvar msgRequestUser = {\n    \"method\":\"GET\",\n    \"url\": iotECredentials.registrationUrl +\"v001/user/\" + msg.payload.docs[0].userID,\n    \"headers\": {\n        'Authorization': 'Basic ' + encodedAuthorization,\n\t}\n}\nreturn msgRequestUser;",
     "outputs": 1,
     "noerr": 0,
-    "x": 249,
-    "y": 333,
+    "x": 249.00000762939453,
+    "y": 403.0000081062317,
     "wires": [
       [
-        "2c5a2bde.055804"
+        "2c5a2bde.055804",
+        "3c13c097.0934a"
       ]
     ]
   },
@@ -157,26 +145,13 @@
     "type": "json",
     "z": "5071202d.bc255",
     "name": "",
-    "x": 204,
-    "y": 273,
+    "x": 234.00000381469727,
+    "y": 343.0000066757202,
     "wires": [
       [
-        "68da069f.e336b8",
-        "e338c9d7.bf11f"
+        "68da069f.e336b8"
       ]
     ]
-  },
-  {
-    "id": "e338c9d7.bf11f",
-    "type": "debug",
-    "z": "5071202d.bc255",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 476,
-    "y": 274,
-    "wires": []
   },
   {
     "id": "2c5a2bde.055804",
@@ -187,8 +162,8 @@
     "ret": "txt",
     "url": "",
     "tls": "",
-    "x": 214,
-    "y": 403,
+    "x": 250.25000762939453,
+    "y": 461.75000858306885,
     "wires": [
       [
         "15d2baad.9b8d25",
@@ -200,12 +175,12 @@
     "id": "15d2baad.9b8d25",
     "type": "debug",
     "z": "5071202d.bc255",
-    "name": "",
+    "name": "Debug response",
     "active": true,
     "console": "false",
     "complete": "true",
-    "x": 463,
-    "y": 403,
+    "x": 542.5000076293945,
+    "y": 463.00000953674316,
     "wires": []
   },
   {
@@ -216,8 +191,8 @@
     "func": "// if user doesn't exist in the flow, create it\nvar userContext = flow.get('user')||{};\n// store the value\nflow.set('user',msg.payload)\n\n\n//get the iotp and appliance flow values\nvar iotpContext = flow.get('iotp')||{};\nvar applianceContext = flow.get('appliance')||{};\n\nvar messageIoTP = JSON.parse(iotpContext.message)\n// conver the timestamp into UTC time\nvar timestampRead = (new Date(parseInt(iotpContext.timestamp))).toUTCString();\n\n// get the event\nvar eventType = messageIoTP.d.faiulureType !== \"\" ? messageIoTP.d.failureType : messageIoTP.d.status\n\nmsg = {\n    \"iotp\": iotpContext,\n    \"appliance\":applianceContext,\n    \"user\":userContext,\n    \"payload\":{\n        \"deviceId\":messageIoTP.d.name, // device name\n        \"timestamp\": timestampRead, // time converted\n        \"recommendedAction\":\"Check your device for more information.\",\n        \"eventType\":eventType, // event type\n        \"deviceType\":applianceContext.docs[0].applianceType, // appliance type\n        \"consumerEmail\": userContext[0].userDetail.hasOwnProperty('email')? userContext[0].userDetail.email : \"\"\n    }\n}\nvar msgRequestUser= {\n    \"method\":\"POST\",\n    \"url\":\"https://iot4esimulationengine.stage1.mybluemix.net/sendEmail\",\n    \"payload\":msg.payload\n    \n}\n\n return msgRequestUser;",
     "outputs": 1,
     "noerr": 0,
-    "x": 233,
-    "y": 518,
+    "x": 278.00000762939453,
+    "y": 600.5000104904175,
     "wires": [
       [
         "6147f6e.9516e08",
@@ -230,37 +205,24 @@
     "type": "json",
     "z": "5071202d.bc255",
     "name": "",
-    "x": 197,
-    "y": 458,
+    "x": 250.7500228881836,
+    "y": 531.7500100135803,
     "wires": [
       [
-        "6fcae58c.85514c",
         "e03e163b.7e631"
       ]
     ]
   },
   {
-    "id": "6fcae58c.85514c",
-    "type": "debug",
-    "z": "5071202d.bc255",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "true",
-    "x": 464,
-    "y": 457,
-    "wires": []
-  },
-  {
     "id": "6147f6e.9516e08",
     "type": "debug",
     "z": "5071202d.bc255",
-    "name": "",
+    "name": "Debug request body",
     "active": true,
     "console": "false",
     "complete": "true",
-    "x": 514,
-    "y": 519,
+    "x": 560.2500114440918,
+    "y": 601.7500095367432,
     "wires": []
   },
   {
@@ -272,8 +234,8 @@
     "ret": "txt",
     "url": "",
     "tls": "",
-    "x": 301,
-    "y": 591,
+    "x": 262.2500228881836,
+    "y": 671.0000123977661,
     "wires": [
       [
         "a13d667d.0e0b"
@@ -284,12 +246,12 @@
     "id": "a13d667d.0e0b",
     "type": "debug",
     "z": "5071202d.bc255",
-    "name": "",
+    "name": "Debug response",
     "active": true,
     "console": "false",
     "complete": "true",
-    "x": 496,
-    "y": 591,
+    "x": 543.2500114440918,
+    "y": 670.7500114440918,
     "wires": []
   },
   {
@@ -484,6 +446,28 @@
     "info": "###### Description\n\nHere is a sample response you can use as a\nreference to create your own:\n\n```\n{\n    \"command\": {\n        commandId: \"startWashing\"\n    }\n}\n```",
     "x": 620,
     "y": 260,
+    "wires": []
+  },
+  {
+    "id": "3c13c097.0934a",
+    "type": "debug",
+    "z": "5071202d.bc255",
+    "name": "Debug request body",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 554.5000076293945,
+    "y": 401.75000762939453,
+    "wires": []
+  },
+  {
+    "id": "8f1edd93.a13d3",
+    "type": "comment",
+    "z": "5071202d.bc255",
+    "name": "Notification flow",
+    "info": "###### *What is this?*\n\nThis flow will recieve information for rule \ncreated in IoT Platform and will call \nIoT for Electronics APIs to know who is the\nowner of the device and the owner email, so\nwe can send an email with the following\ninformation:\n- **DeviceID** \n- **Time of action triggered**\n- **Event type**\n- **Device type**\n\n---\n",
+    "x": 371.25,
+    "y": 50,
     "wires": []
   }
 ]
