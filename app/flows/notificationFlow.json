@@ -461,13 +461,13 @@
     "wires": []
   },
   {
-    "id": "8f1edd93.a13d3",
-    "type": "comment",
-    "z": "5071202d.bc255",
-    "name": "Notification flow",
-    "info": "###### *What is this?*\n\nThis flow will recieve information for rule \ncreated in IoT Platform and will call \nIoT for Electronics APIs to know who is the\nowner of the device and the owner email, so\nwe can send an email with the following\ninformation:\n- **DeviceID** \n- **Time of action triggered**\n- **Event type**\n- **Device type**\n\n---\n",
-    "x": 371.25,
-    "y": 50,
-    "wires": []
+    "id":"8f1edd93.a13d3",
+    "type":"comment",
+    "z":"5071202d.bc255",
+    "name":"Notification flow",
+    "info":"###### *What is this?*\n\nThis flow is triggered by a specific \nchange in appliance status (such as a failure).\nThe type of change that can trigger \nthe flow is defined by a rule that is \ncreated in IoT Platform. The flow uses \nIoT for Electronics APIs to identify the \nowner of the appliance and the owner's email. \nIt then generates and sends an email \nnotification with the following information:\ninformation:\n- **DeviceID** \n- **Time of action triggered**\n- **Event type**\n- **Device type**\n\n---\n",
+    "x":371.25,
+    "y":50,
+    "wires":[]
   }
 ]
