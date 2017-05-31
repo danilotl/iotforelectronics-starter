@@ -236,8 +236,12 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 		console.log("doc userID and mca userID do not match")
 	}
 	*/
+
+	var version = "v001";
+
 	request({
-   		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+   	// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
 		json: userDocIn,
 		method: 'PUT',
 		headers: {
@@ -267,10 +271,14 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 createUser = function (username)
 {
 	console.log("inside createUser function");
+	var version = "v001";
+
+	console.log("AT THE CREATE USER function --->" + 'https://'+ application.application_uris[0] + '/' + version + '/users'+username)
 	//first see if the user exists
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ username),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ username),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'+username),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -297,7 +305,8 @@ createUser = function (username)
 				else { userDoc.userDetail = {}; }
 
 			request({
-   				url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+   			// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
+				url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
 				json: userDoc,
 				method: 'POST',
 				headers: {
@@ -341,8 +350,11 @@ app.post('/v001/users', authenticate, function(req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
+	var version = "v001";
+
 		request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/users',
+		// url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -425,8 +437,10 @@ app.post('/v001/appliances', authenticate, function (req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	delete bodyIn.version;
+	var version = "v001";
 	request({
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances',
+		// url: 'https://iotforelectronicstile.mybluemix.net/v001/appliances',
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -506,9 +520,12 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 /*******************************************/
 app.get('/v001/users/:userID', authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/users/'+ req.params.userID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ req.params.userID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/users' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -586,9 +603,12 @@ app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sess
 /*******************************************/
 app.get('/v001/user/:userID', authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -674,9 +694,12 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 /*******************************************/
 app.get('/v001/appliances/:userID', authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -760,9 +783,13 @@ app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, 
 /**************************************************/
 app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
+
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -842,8 +869,11 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
 /*****************************************************/
 app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, res)
 {
+	var version = "v001";
+
 		request({
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -914,9 +944,12 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
 /*****************************************************/
 app.delete("/v001/user/:userID", authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/user/'+ req.params.userID),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/user' + req.params.userID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -997,9 +1030,13 @@ app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {se
 /*======================================================*/
 app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, res)
 {
+	var version = "v001";
+
 	var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/sensors'),
+		// url: ('https://iotforelectronicstile.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events'),
+		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user' + req.params.userID + '/events'),
+
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -1185,7 +1222,8 @@ var body = {
 	   };
 var options =
 	{
-		url: ('https://iotforelectronicstile.stage1.mybluemix.net/deletedDocs'),
+		// url: ('https://iotforelectronicstile.mybluemix.net/deletedDocs'),
+		url: ('https://'+ application.application_uris[0] + '/deletedDocs'),
 		json: body,
 		method: 'POST',
 		headers: {
@@ -1468,7 +1506,8 @@ app.get('/validation', function(req, res)
 {
 	var options =
 	{
-		url: 'https://iotforelectronicstile.stage1.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
+		// url: 'https://iotforelectronicstile.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
+		url: ('https://'+ application.application_uris[0] + '/validation/' + iotETenant + '/' + iotEAuthToken + '/' + iotEApiKey),
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
