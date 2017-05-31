@@ -652,7 +652,7 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 		var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ username),
-		url: (iotECredentials.registrationUrl + version + '/users/'+username),
+		url: (iotECredentials.registrationUrl + version + '/users/'+userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -676,9 +676,9 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
         		//no user doc found, register this user
         		userDoc = {};
         		userDoc.orgID = currentOrgID;
-        		userDoc.userID = username;
+        		userDoc.userID = userID;
 
-				if (validateEmail(username)) { userDoc.userDetail = { "email":username}; }
+				if (validateEmail(userID)) { userDoc.userDetail = { "email":userID}; }
 				else { userDoc.userDetail = {}; }
 
 			request({
