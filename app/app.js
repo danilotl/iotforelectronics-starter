@@ -273,7 +273,7 @@ createUser = function (username)
 	console.log("inside createUser function");
 	var version = "v001";
 
-	console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users'+username)
+	console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users/'+username)
 	//first see if the user exists
 	var options =
 	{
@@ -288,6 +288,8 @@ createUser = function (username)
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
+			console.log("RESPONSE GET -> ")
+			console.log(response)
 	    if (!error && response.statusCode == 200) {
 	    	//we already have a user, so do nothing
         	console.log('User exists, wont create one.' + body);
@@ -317,6 +319,8 @@ createUser = function (username)
   				auth: {user:iotEApiKey, pass:iotEAuthToken}
 
 	    		}, function(error, response, body){
+						console.log("RESPONSE POST -> ")
+						console.log(response)
 	    			if(error) {
 	        			console.log('ERROR: ' + error);
 					console.log('BODY: ' + error);
