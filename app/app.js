@@ -241,7 +241,7 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
 
 	request({
    	// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
+		url: ( iotECredentials.registrationUrl + version + '/users'),
 		json: userDocIn,
 		method: 'PUT',
 		headers: {
@@ -273,12 +273,12 @@ createUser = function (username)
 	console.log("inside createUser function");
 	var version = "v001";
 
-	console.log("AT THE CREATE USER function --->" + 'https://'+ application.application_uris[0] + '/' + version + '/users'+username)
+	console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users'+username)
 	//first see if the user exists
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ username),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'+username),
+		url: (iotECredentials.registrationUrl + version + '/users'+username),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -306,7 +306,7 @@ createUser = function (username)
 
 			request({
    			// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-				url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
+				url: ( iotECredentials.registrationUrl + version + '/users'),
 				json: userDoc,
 				method: 'POST',
 				headers: {
@@ -354,7 +354,7 @@ app.post('/v001/users', authenticate, function(req, res)
 
 		request({
 		// url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users'),
+		url: ( iotECredentials.registrationUrl + version + '/users'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -440,7 +440,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 	var version = "v001";
 	request({
 		// url: 'https://iotforelectronicstile.mybluemix.net/v001/appliances',
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances'),
+		url: (iotECredentials.registrationUrl + version + '/appliances'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
@@ -525,7 +525,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ req.params.userID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/users' + req.params.userID),
+		url: (iotECredentials.registrationUrl + version + '/users' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -608,7 +608,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user' + req.params.userID),
+		url: (iotECredentials.registrationUrl + version + '/user' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -699,7 +699,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID),
+		url: (iotECredentials.registrationUrl + version + '/appliances' + req.params.userID),
 		method: 'GET',
 		headers: {
     				'Content-Type': 'application/json',
@@ -788,7 +788,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
+		url: (iotECredentials.registrationUrl + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
 
 		method: 'GET',
 		headers: {
@@ -873,7 +873,7 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 
 		request({
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
+		url: (iotECredentials.registrationUrl + version + '/appliances' + req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -949,7 +949,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/user' + req.params.userID),
+		url: (iotECredentials.registrationUrl + version + '/user' + req.params.userID),
 		method: 'DELETE',
 		headers: {
     				'Content-Type': 'application/json',
@@ -1035,7 +1035,7 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
 	var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events'),
-		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user' + req.params.userID + '/events'),
+		url: (iotECredentials.registrationUrl + version + '/ca/appliance/user' + req.params.userID + '/events'),
 
 		method: 'GET',
 		headers: {
@@ -1223,7 +1223,7 @@ var body = {
 var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/deletedDocs'),
-		url: ('https://'+ application.application_uris[0] + '/deletedDocs'),
+		url: (iotECredentials.registrationUrl + '/deletedDocs'),
 		json: body,
 		method: 'POST',
 		headers: {
@@ -1507,7 +1507,7 @@ app.get('/validation', function(req, res)
 	var options =
 	{
 		// url: 'https://iotforelectronicstile.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
-		url: ('https://'+ application.application_uris[0] + '/validation/' + iotETenant + '/' + iotEAuthToken + '/' + iotEApiKey),
+		url: (iotECredentials.registrationUrl+ '/validation/' + iotETenant + '/' + iotEAuthToken + '/' + iotEApiKey),
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
