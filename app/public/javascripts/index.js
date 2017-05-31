@@ -62,7 +62,7 @@ $(document).ready(function(){
       statusCode: {
         500: function(response){
           setTimeout(function(){
-            getDevices();
+            restartSimulator();
           }, 1000);
         }
       },
