@@ -645,71 +645,8 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
 	{
 		console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
-		// createUser(req.params.userID);
-		// res.status(200).send("called the function to check the user ID");
-
-
-		var options =
-	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ username),
-		url: (iotECredentials.registrationUrl + version + '/users/'+userID),
-		method: 'GET',
-		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
-  		},
-  		auth: {user:iotEApiKey, pass:iotEAuthToken}
-	};
-	request(options, function (error, response, body) {
-			console.log("RESPONSE GET -> ")
-			console.log(response)
-	    if (!error && response.statusCode == 200) {
-	    	//we already have a user, so do nothing
-        	res.status(200).send('User exists, wont create one.' + body);
-			//return;
-	    }else if (error){
-        	console.log("The request came back with an error: " + error);
-        	//return;
-			res.status(403).send("The request came back with an error: " + error);
-        	}else{
-        		//no user doc found, register this user
-        		userDoc = {};
-        		userDoc.orgID = currentOrgID;
-        		userDoc.userID = userID;
-
-				if (validateEmail(userID)) { userDoc.userDetail = { "email":userID}; }
-				else { userDoc.userDetail = {}; }
-
-			request({
-   			// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-				url: ( iotECredentials.registrationUrl + version + '/users'),
-				json: userDoc,
-				method: 'POST',
-				headers: {
-    						'Content-Type': 'application/json',
-    						'tenantID':iotETenant,
-    						'orgID':currentOrgID
-  				},
-  				auth: {user:iotEApiKey, pass:iotEAuthToken}
-
-	    		}, function(error, response, body){
-						console.log("RESPONSE POST -> ")
-						console.log(response)
-	    			if(error) {
-	        			console.log('ERROR: ' + error);
-					console.log('BODY: ' + error);
-					//return;
-					res.status(403).send("The create request came back with an error: " + error);
-    				} else {
-		        		console.log(response.statusCode, body);
-		        		res.status(200).send("The create request came back with success: " + body);
-				}
-    		   	});
-        	}
-        });
-
-
+		createUser(req.params.userID);
+		res.status(200).send("called the function to check the user ID");
 		return;
 	}
 
