@@ -146,9 +146,39 @@
       <section class="col-xs-12 col-md-10 content">
         <ul class="footer-links">
           <li><p><%= __('main_page.explore_more') %></p></li>
-          <li><h4><a class="link" href="<%= platformDashboard %>" target="_blank"><%= __('main_page.manage_devices') %></a></h4></li>
+          <li><h4><a class="link"  id="openIotPModal" target="_blank" ><%= __('main_page.manage_devices') %> ></a></h4></li>
+          <li><h4><a class="link" id="openNoderedModal" target="_blank" ><%= __('main_page.devices_node_red') %> > </a></h4></li>
         </ul>
       </section>
+    </div>
+    <div id="exploreMoreIoTP" class="linksModal">
+      <div class="modalDisplay">
+       <!-- clos button -->
+       <div class="closeDiv">
+         <span class="closeModal" onclick="document.getElementById('exploreMoreIoTP').style.display='none'">&times;</span>
+       </div>
+        <img class="col-xs-12 col-md-6 modal-imageLink" id="linkImage" src="/images/WatsonIoTPlatform.png">
+        <div class= "col-xs-12 col-md-6  textDescription">
+          <h2 class="linksTitle"><%= __('main_page.manage_devices') %></h2>
+          <p><%= __('main_page.iotp_description_part1') %><strong> <%= __('main_page.iot_platform') %></strong> <%= __('main_page.iotp_description_part2') %><strong> <%= __('main_page.iot_launch') %></strong></p>
+          <a href="https://console.stage1.bluemix.net/docs/starters/IotElectronics/iotelectronics_dashboard.html" target="_blank"><img src="/images/LearnMoreArrow.svg"/><%= __('main_page.docs') %></a>
+          <a href="<%= platformDashboard %>" target="_blank"><img src="/images/LearnMoreArrow.svg"/><%= __('main_page.bluemix_dashboard') %></a>
+        </div>
+      </div>
+    </div>
+    <div id="exploreMoreNodeRed" class="linksModal">
+    <div class="modalDisplay">
+     <div class="closeDiv">
+     <span class="closeModal" onclick="document.getElementById('exploreMoreNodeRed').style.display='none'">&times;</span>
+      </div>
+      <img class="col-xs-12 col-md-6 modal-imageLink" id="linkImage" src="/images/iot-electronics-notification.jpg">
+      <div class= "col-xs-12 col-md-6 textDescription">
+        <h2 class="linksTitle"><%= __('main_page.devices_node_red') %></h2>
+        <p><%= __('main_page.node_red_description') %></p>
+        <a href="https://console.stage1.bluemix.net/docs/starters/IotElectronics/iotelectronics_notifications.html#notifications" target="_blank"><img src="/images/LearnMoreArrow.svg"/><%= __('main_page.docs') %></a>
+        <a id="nodeRedLink"><img src="/images/LearnMoreArrow.svg"/><%= __('main_page.node_red_sample') %></a>
+      </div>
+    </div>
     </div>
   </footer>
 

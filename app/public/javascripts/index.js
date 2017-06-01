@@ -5,8 +5,8 @@
 *
 * (C) Copyright IBM Corp. 2016  All Rights Reserved.
 *
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
+* The source code for this program is not published or otherwise
+* divested of its trade secrets, irrespective of what has been
 * deposited with the U.S. Copyright Office.
 ********************************************************* {COPYRIGHT-END} **/
 
@@ -107,7 +107,7 @@ $(document).ready(function(){
           $('#addNewDeviceButton').prop('disabled', false);
           $('#addNewDeviceButton img').attr("src","../images/PlusWasher_en.svg");
          }
-         
+
          validateNoWasherMessage();
          validateAppExperienceWasherMessage();
          //analytics.track("IoT for Electronics -> Add Device", {});
@@ -200,6 +200,33 @@ $(document).ready(function(){
       installationSection.addClass('hidden');
     }
   }
+
+  // explore more modal iotp
+  $("#openIotPModal").click(function(e){
+    e.preventDefault();
+    $("#exploreMoreIoTP").css("display", "block");
+  });
+
+  // explore more modal node-red
+  $("#openNoderedModal").click(function(e){
+    e.preventDefault();
+    $("#exploreMoreNodeRed").css("display", "block");
+  });
+
+  $('.closeModal').click(function(e){
+    e.preventDefault();
+    $("#exploreMoreIoTP").css("display", "none");
+    $("#exploreMoreNodeRed").css("display", "none");
+  })
+
+  $('#nodeRedLink').click(function(e){
+    var windowUrl = window.location.href;
+    console.log("URL --> "+ windowUrl);
+    window.open(
+      './red',
+      '_blank'
+    );
+  })
 });
 
 function validateNoWasherMessage(){
