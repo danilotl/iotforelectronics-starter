@@ -1234,31 +1234,33 @@ function retryRequest(body, options)
 {
 	request(options, function (error, response, body) {
 		if (!error) {
-   			// Print out the response body
-   			console.log('***Response Status Code --->', response.statusCode);
-			if (response.statusCode === 404)
+ 			// Print out the response body
+ 			console.log('***Response Status Code --->', response.statusCode);
+			if (response.statusCode === 404 || response.statusCode === 308)
 			{
 				retryRequest();
 			}
-	    		}else{
-       			console.log("The request came back with an error: " + error);
-				console.log("Error code: " + error.statusCode);
-				console.log("Error message: " + error.message);
-        			return;
-      			}
+		}else{
+ 			console.log("The request came back with an error: " + error);
+			console.log("Error code: " + error.statusCode);
+			console.log("Error message: " + error.message);
+  		return;
+  	}
 	});
 };
 
-console.log('Body Values being sent in: ' + JSON.parse(JSON.stringify(body)));
+console.log('Body Values being sent in: ' + JSON.stringify(body));
 request(options, function (error, response, body) {
     if (!error) {
        	// Print out the response body
+				console.log('DELETED DOCS POST REQUEST', body);
        	console.log('***Response Status Code --->', response.statusCode);
-		if (response.statusCode === 404)
-		{
-			retryRequest();
+				if (response.statusCode === 404 || response.statusCode === 308)
+				{
+					console.log("will retry request")
+					retryRequest();
+				}
 			}
-	}
 });
 
 /*console.log('About to store IoTP Credentials');
