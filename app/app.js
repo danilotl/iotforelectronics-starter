@@ -144,6 +144,7 @@ if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
 	throw "Cannot get IoT4E credentials"
 var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
 var registrationURL = iotECredentials.registrationUrl.substring('http://'.length)
+console.log("REGISTRATION URL -> "+ registrationURL)
 //IoT Platform Credentials
 var name = iotfCredentials["org"];
 var orgId = iotfCredentials["org"];
@@ -1213,6 +1214,7 @@ app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, functio
 console.log('Creating doc to track deleted docs');
 //console.log('Deleted Docs API URL:', urlDel);
 console.log('About to store credentials into Cloudant.');
+console.log("FOR DELETED DOCS --> https://"+ registrationURL + 'deletedDocs')
 var body = {
 		"orgID":currentOrgID,
 		"apiKey":apiKey,
@@ -1223,7 +1225,7 @@ var body = {
 var options =
 	{
 		// url: ('https://iotforelectronicstile.mybluemix.net/deletedDocs'),
-		url: ('https://'+ registrationURL + '/deletedDocs'),
+		url: ('https://'+ registrationURL + 'deletedDocs'),
 		json: body,
 		method: 'POST',
 		headers: {
@@ -1289,7 +1291,7 @@ app.get('/validation', function(req, res)
 	var options =
 	{
 		// url: 'https://iotforelectronicstile.mybluemix.net/validation/' + iotETenant + '/' +  iotEAuthToken + '/' + iotEApiKey,
-		url: ('https://'+ registrationURL + '/validation/' + iotETenant + '/' + iotEAuthToken + '/' + iotEApiKey),
+		url: ('https://'+ registrationURL + 'validation/' + iotETenant + '/' + iotEAuthToken + '/' + iotEApiKey),
 		auth: iotEAuthToken + ':' + iotEApiKey,
 		method: 'GET',
 		headers: {
