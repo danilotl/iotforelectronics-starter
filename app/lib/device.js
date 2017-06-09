@@ -14,6 +14,16 @@ var cfenv = require('cfenv');
 var queue = require('seq-queue').createQueue(30000);
 var request = require('request');
 
+var VCAP_SERVICES = {};
+if(process.env.VCAP_SERVICES)
+	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
+
+var appIdCredentials = {};
+if(VCAP_SERVICES.hasOwnProperty('AppID')){
+	appIdCredentials = VCAP_SERVICES['AppID'][0]['credentials'];
+} else if(VCAP_SERVICES.hasOwnProperty('AdvancedMobileAccess')){
+	appIdCredentials = VCAP_SERVICES['AdvancedMobileAccess'][0]['credentials'];
+}
 
 var device = module.exports;
 
@@ -72,14 +82,10 @@ device.getQrCode = function(req, res){
 }
 
 device.QRcreds = function(req, res){
-	var VCAP_SERVICES = {};
-	if(process.env.VCAP_SERVICES)
-		VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
-
 	var appEnv = cfenv.getAppEnv();
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
-	var tenantId = VCAP_SERVICES['AppID'][0]['credentials'].tenantId;
+	var tenantId = appIdCredentials.tenantId;
 	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
 	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
@@ -101,7 +107,7 @@ device.getPlatformQRstring = function(req, res){
 	var appEnv = cfenv.getAppEnv();
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
-	var tenantId = VCAP_SERVICES['AppID'][0]['credentials'].tenantId;
+	var tenantId = appIdCredentials.tenantId;
 	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
 	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
@@ -279,7 +285,13 @@ device.del = function(req, res){
 device.renderUI = function(req, res){
 
 	simulationClient.getDeviceStatus(req.params.deviceID).then(function(data){
-		var status = 'appliance_page.' + data.attributes.status.toLowerCase();
+		var current = data.attributes.status;
+		var status = 'appliance_page.' + data.attributes.currentCycle.toLowerCase();
+
+		if(["Ready", "Failure", "Stopped"].indexOf(current) > -1){
+			status = 'appliance_page.' + current.toLowerCase();
+		}
+		
 		var acousticError = req.query.acousticError;
 
 		checkStatusAcoustic(function(response) {
