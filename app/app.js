@@ -1819,3 +1819,53 @@ function onError(error) {
 // app.use(function(req, res, next){
 //     res.status(404).send("This is not the URL you're looking for");
 // });
+
+// =========================================================================
+// web socket
+// =========================================================================
+const websocket = require('ws');
+
+// ======== websocket =============
+const wss = new websocket.Server({ server }, function(){
+	//console.log('create a websocket');
+	logger.info ('create a websocket');
+});
+
+wss.on('connection', function connection(ws, req) {
+  
+	//auth via APP ID
+
+	//generate new connection to IoTe
+	ClientOptions = {
+    	'headers': {
+        	'user' : req.headers.userid,
+        	//'Authorization' : 'Basic NTcyNWMzMGEtY2MxYS00YzVkLTgwYWQtZDhiMDE4NmNhNzQyOjk5MTk3Mzg0LTk1Y2YtNGJjMy1hNDQwLTJmNThlOGUwNDE0Ng=='
+			'auth' : {user:iotEApiKey, pass:iotEAuthToken}
+		}
+  	}
+  	wsclient = new websocket('ws://'+registrationURL, ClientOptions);
+  	wsclient.on('open', function() {
+    	logger.debug('open connection with REG');
+  	});
+  	wsclient.on('message', function incoming(message) {
+    	logger.debug('forward received from IoTe to mmobile: %s', message);
+    	ws.send(message);
+  	});
+  
+  	ws.on('message', function incoming(message) {
+    	logger.debug('forward received from mobile to IoTe: %s', message);
+		wsclient.send(message)
+  	});
+
+  	ws.on('close', function (code, reason) {
+		if (wsclient){
+			try{
+				wsclient.close();
+			}
+			catch (e){
+				//do nothing
+			}
+		}
+		wsclient = undefined;
+  	});
+});
