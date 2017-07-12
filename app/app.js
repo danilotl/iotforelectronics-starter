@@ -254,10 +254,10 @@ app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fal
     		if(error) {
         		console.log('ERROR: ' + error);
 			console.log('BODY: ' + error);
-        		res.status(500).send(response);
+        		res.status(500).send(error);
     		} else {
         		console.log(response.statusCode, body);
-        		res.status(200).send(response);
+        		res.status(200).send(body);
 		}});
 });
 
@@ -370,10 +370,10 @@ app.post('/v001/users', authenticate, function(req, res)
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(error);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(body);
 			}
 		});
 });
@@ -422,10 +422,10 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
     		if(error) {
         		console.log('ERROR: ' + error);
 			console.log('BODY: ' + error);
-        		res.status(response.statusCode).send(response);
+        		res.status(response.statusCode).send(error);
     		} else {
         		console.log(response.statusCode, body);
-        		res.status(response.statusCode).send(response);
+        		res.status(response.statusCode).send(body);
 		}});
 });
 
@@ -456,10 +456,10 @@ app.post('/v001/appliances', authenticate, function (req, res)
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(error);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(body);
 			}
 		});
 });
@@ -505,10 +505,10 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(error);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(body);
 			}
 		});
 });
@@ -541,11 +541,11 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -590,11 +590,11 @@ app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sess
 	    if (!error && response.statusCode == 200) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
         });
@@ -628,7 +628,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -684,7 +684,7 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -720,7 +720,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -771,7 +771,7 @@ app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, 
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -808,7 +808,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -857,7 +857,7 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
     });
@@ -887,10 +887,10 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(error);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(body);
 			}
 		});
 });
@@ -931,10 +931,10 @@ app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
 			if(error) {
 				console.log('ERROR: ' + error);
 				console.log('BODY: ' + error);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(error);
 			} else {
 				console.log(response.statusCode, body);
-				res.status(response.statusCode).send(response);
+				res.status(response.statusCode).send(body);
 			}
 		});
 });
@@ -964,11 +964,11 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -1012,11 +1012,11 @@ app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {se
 	    if (!error) {
         	// Print out the response body
         	console.log(body);
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -1055,7 +1055,7 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
         	});
@@ -1105,7 +1105,7 @@ app.get('/ca/appliance/user/:userID/sensors', passport.authenticate(APIStrategy.
 	    }else{
         	console.log("The request came back with an error: " + error);
         	//for now I'm giving this a 500 so that postman won't be left hanging.
-        	res.status(response.statusCode).send(response);
+        	res.status(response.statusCode).send(error);
         	return;
         	}
 
@@ -1819,3 +1819,53 @@ function onError(error) {
 // app.use(function(req, res, next){
 //     res.status(404).send("This is not the URL you're looking for");
 // });
+
+// =========================================================================
+// web socket
+// =========================================================================
+const websocket = require('ws');
+
+// ======== websocket =============
+const wss = new websocket.Server({ server }, function(){
+	//console.log('create a websocket');
+	logger.info ('create a websocket');
+});
+
+wss.on('connection', function connection(ws, req) {
+
+	//auth via APP ID
+
+	//generate new connection to IoTe
+	ClientOptions = {
+    	'headers': {
+        	'user' : req.headers.userid,
+        	//'Authorization' : 'Basic NTcyNWMzMGEtY2MxYS00YzVkLTgwYWQtZDhiMDE4NmNhNzQyOjk5MTk3Mzg0LTk1Y2YtNGJjMy1hNDQwLTJmNThlOGUwNDE0Ng=='
+			'auth' : {user:iotEApiKey, pass:iotEAuthToken}
+		}
+  	}
+  	wsclient = new websocket('ws://'+registrationURL, ClientOptions);
+  	wsclient.on('open', function() {
+    	logger.debug('open connection with REG');
+  	});
+  	wsclient.on('message', function incoming(message) {
+    	logger.debug('forward received from IoTe to mmobile: %s', message);
+    	ws.send(message);
+  	});
+
+  	ws.on('message', function incoming(message) {
+    	logger.debug('forward received from mobile to IoTe: %s', message);
+		wsclient.send(message)
+  	});
+
+  	ws.on('close', function (code, reason) {
+		if (wsclient){
+			try{
+				wsclient.close();
+			}
+			catch (e){
+				//do nothing
+			}
+		}
+		wsclient = undefined;
+  	});
+});
