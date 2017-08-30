@@ -3,7 +3,8 @@
     "version": "0.0.1",
     "description": "IoT4Electronics Server",
     "scripts": {
-        "start": "node app.js"
+        "start": "node run bluemix-with-contrast",
+        "bluemix-with-contrast": "npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js"
     },
     "dependencies": {
          "express": "~4.9.0",
@@ -42,8 +43,11 @@
          "basic-auth": "",
          "async":"",
          "bluemix-appid": "",
-         "express-session":"", 
+         "express-session":"",
          "pug":""
     },
-    "repository": {}
+    "repository": {},
+    "engines": {
+  		"node": "6.x.x"
+  	}
 }
