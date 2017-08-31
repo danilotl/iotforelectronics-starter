@@ -1,32 +1,20 @@
-/********************************************************* {COPYRIGHT-TOP} ***
-* IBM Confidential
-* OCO Source Materials
-* IoT for Electronics - SVL720160500
-*
-* (C) Copyright IBM Corp. 2016  All Rights Reserved.
-*
-* The source code for this program is not published or otherwise  
-* divested of its trade secrets, irrespective of what has been 
-* deposited with the U.S. Copyright Office.
-********************************************************* {COPYRIGHT-END} **/
-
 var iotApplicationClient = require("iotclient");
 
 var washingMachineIoTFClient = exports;
 
 // massage arrived callbacks
-//override with - function(deviceID, payload, format, payloadString, topic)
-//payload maybe null is format is other then json
+// override with - function(deviceID, payload, format, payloadString, topic)
+// payload maybe null is format is other then json
 washingMachineIoTFClient.statusReportMessageArrived = null;
 washingMachineIoTFClient.failureAlertMessageArrived = null;
 washingMachineIoTFClient.waterConsumptionMessageArrived = null;
 
-//device status callbacks
-//override with - function(id, payload)
+// device status callbacks
+// override with - function(id, payload)
 washingMachineIoTFClient.onwashingMachineConnected = null;
 washingMachineIoTFClient.onwashingMachineDisconnected = null;
 
-//sending messages      
+// sending messages      
 washingMachineIoTFClient.sendstartWashingMessage = function(deviceID) { 
     this.iotClient.publishDeviceCommand("washingMachine", deviceID, "startWashing", "json", JSON.stringify({}));
 };      

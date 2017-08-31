@@ -1,15 +1,3 @@
-/********************************************************* {COPYRIGHT-TOP} ***
-* IBM Confidential
-* OCO Source Materials
-* IoT for Electronics - SVL720160500
-*
-* (C) Copyright IBM Corp. 2016  All Rights Reserved.
-*
-* The source code for this program is not published or otherwise
-* divested of its trade secrets, irrespective of what has been
-* deposited with the U.S. Copyright Office.
-********************************************************* {COPYRIGHT-END} **/
-
 module.exports = simulationClient;
 var _ = require("underscore");
 var util = require('util');
@@ -686,9 +674,6 @@ function callSimulationEngineAPI(method, paths, body){
 	return callRestApi(uri, apiKey, apiToken, method, JSON.stringify(body));
 };
 
-
-
-
 function callRestApi(uri, apiKey, apiToken, method, body, expectedHttpCode, expectJsonContent){
 	expectedHttpCode = (expectedHttpCode) ? expectedHttpCode : 200;
 	expectJsonContent = (expectJsonContent) ? expectJsonContent : true;
@@ -780,18 +765,3 @@ function generateMacAddress(){
 process.on('uncaughtException', function(err){
   console.log('An error has occured.');
 });
-
-//get service credentials
-/*
-var userProviedServices = [0].credentials;
-var simulationCreds = null;
-if(VCAP_SERVICES["user-provided"]){
-	for (var i = 0; i < VCAP_SERVICES["user-provided"].length; i++) {
-		if(VCAP_SERVICES["user-provided"][i].name == 'DevicesSimulation'){
-			simulationCreds = VCAP_SERVICES["user-provided"][i].credentials;
-			break;
-		}
-	}
-}
-if(!simulationCreds)
-	throw new Error("cannot get  Devices-Simulation service credentials");*/

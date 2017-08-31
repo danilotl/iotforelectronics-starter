@@ -1,15 +1,3 @@
-/********************************************************* {COPYRIGHT-TOP} ***
-* IBM Confidential
-* OCO Source Materials
-* IoT for Electronics - SVL720160500
-*
-* (C) Copyright IBM Corp. 2016  All Rights Reserved.
-*
-* The source code for this program is not published or otherwise
-* divested of its trade secrets, irrespective of what has been
-* deposited with the U.S. Copyright Office.
-********************************************************* {COPYRIGHT-END} **/
-
 VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
 	VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES);
@@ -138,13 +126,6 @@ app.use('/', simulator);
 if(!VCAP_SERVICES || !VCAP_SERVICES["iotf-service"])
 	throw "Cannot get IoT-Foundation credentials"
 var iotfCredentials = VCAP_SERVICES["iotf-service"][0]["credentials"];
-
-//Get IoT for Electronics credentials
-if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
-	throw "Cannot get IoT4E credentials"
-var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
-var registrationURL = iotECredentials.registrationUrl.substring('https://'.length);
-var iotEForRTI = VCAP_SERVICES["ibmiotforelectronics"][0];
 //IoT Platform Credentials
 var name = iotfCredentials["org"];
 var orgId = iotfCredentials["org"];
@@ -153,61 +134,57 @@ var authToken = iotfCredentials["apiToken"];
 var apiURI = 'https://' + iotfCredentials["http_host"] + ':443/api/v0002';
 var iotpHttpHost = iotfCredentials["http_host"];
 
+//Get IoT for Electronics credentials
+if(!VCAP_SERVICES || !VCAP_SERVICES["ibmiotforelectronics"])
+	throw "Cannot get IoT4E credentials"
+var iotECredentials = VCAP_SERVICES["ibmiotforelectronics"][0]["credentials"];
+var registrationURL = iotECredentials.registrationUrl.substring('https://'.length);
+var iotEForRTI = VCAP_SERVICES["ibmiotforelectronics"][0];
 //IoT for Electronics Credentials
 var iotETenant = iotECredentials["tenantID"];
 var iotEAuthToken = iotECredentials["authToken"];
 var iotEApiKey = iotECredentials["apiKey"];
 
-/***************************************************************/
-//STEPHANIES'S CODE *************
-/***************************************************************/
-/***************************************************************/
-
-// SETUP CLOUDANT
-//Key whichispermandencellansp
-//Password a8ba75e7534498a85a9f0c11adbe11e09ae03177 //
+// Setup CloudantDB
 var services = JSON.parse(process.env.VCAP_SERVICES)
 var application = JSON.parse(process.env.VCAP_APPLICATION)
 var currentOrgID = iotfCredentials["org"];
 
 /***************************************************************/
-/* Set up AppID & passport                            */
+/* Set up AppID & passport                                     */
 /***************************************************************/
 const passport   = require('passport');
 const APIStrategy = require("bluemix-appid").APIStrategy;
-// The oauthServerUrl value can be obtained from Service Credentials
-// tab in the App ID Dashboard. You're not required to provide this argument if
-// your node.js application runs on Bluemix and is bound to the
-// App ID service instance. In this case App ID configuration will be obtained
-// using VCAP_SERVICES environment variable.
+
 passport.use(new APIStrategy());
 app.use(passport.initialize());
 
 const https = require('https');
 var authenticate = function(req,res,next)
 {
-		function unauthorized(res)
-		{
-			console.log('inside unauthorized function');
-			res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-			return res.status(401).end();
-		};
-		var user = basicAuth(req);
-		if (!user || !user.name || !user.pass || user.name != iotEApiKey || user.pass != iotEAuthToken)
-		{
-			console.log('inside !user if block - unauthorized')
-    		return unauthorized(res);
-  		}
-  		else
-  		{
-  			console.log("API validated.");
-  	  		return next();
-  		}
+	function unauthorized(res)
+	{
+		console.log('inside unauthorized function');
+		res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+		return res.status(401).end();
+	};
+	
+	var user = basicAuth(req);
+	if (!user || !user.name || !user.pass || user.name != iotEApiKey || user.pass != iotEAuthToken)
+	{
+		console.log('inside !user if block - unauthorized')
+    	return unauthorized(res);
+  	}
+  	else
+  	{
+  		console.log("API validated.");
+  	  	return next();
+  	}
 }
 
 
 /***************************************************************/
-/* Route to update 1 user document in Cloudant                 */
+/* Route to update a user document in Cloudant                 */
 /*					        	                               */
 /* Input: url params that contains the userID 		           */
 /* Returns:  404 for user not found, 200 for success           */
@@ -215,32 +192,13 @@ var authenticate = function(req,res,next)
 
 app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	// Get full appIdAuthorizationContext from request object
-	//var appIdAuthContext = req.appIdAuthorizationContext;
-	//appIdAuthContext.accessToken; // Raw access_token
-	//appIdAuthContext.accessTokenPayload; // Decoded access_token JSON
-	//appIdAuthContext.identityToken; // Raw identity_token
-	//appIdAuthContext.identityTokenPayload; // Decoded identity_token JSON
-
-	//var formData = req.body;
 	var userDocIn = JSON.parse(JSON.stringify(req.body));
 	userDocIn.orgID = currentOrgID;
-
-	//verify that userID coming in AppID matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (userDocIn.userID != req.user.id)
-	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.")
-		console.log("doc userID and mca userID do not match")
-	}
-	*/
 
 	var version = "v001";
 
 	request({
-   	// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-		url: ( 'https://'+ registrationURL + version + '/users'),
+   		url: ( 'https://'+ registrationURL + version + '/users'),
 		json: userDocIn,
 		method: 'PUT',
 		headers: {
@@ -273,16 +231,16 @@ createUser = function (username)
 	var version = "v001";
 
 	console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users/'+username)
-	//first see if the user exists
+	
+	//check if the user exists
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ username),
 		url: ('https://'+ registrationURL + version + '/users/'+username),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -290,24 +248,22 @@ createUser = function (username)
 			console.log("RESPONSE GET -> ")
 			console.log(response)
 	    if (!error && response.statusCode == 200) {
-	    	//we already have a user, so do nothing
-        	console.log('User exists, wont create one.' + body);
+	    	console.log('User exists, wont create one.' + body);
         	return;
 	    }else if (error){
         	console.log("The request came back with an error: " + error);
         	return;
-        	}else{
-        		//no user doc found, register this user
-        		userDoc = {};
-        		userDoc.orgID = currentOrgID;
-        		userDoc.userID = username;
+        }else{
+        	//no user doc found, register this user
+        	userDoc = {};
+        	userDoc.orgID = currentOrgID;
+        	userDoc.userID = username;
 
-				if (validateEmail(username)) { userDoc.userDetail = { "email":username}; }
-				else { userDoc.userDetail = {}; }
+			if (validateEmail(username)) { userDoc.userDetail = { "email":username}; }
+			else { userDoc.userDetail = {}; }
 
 			request({
-   			// 	url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
-				url: ( 'https://'+ registrationURL + version + '/users'),
+   				url: ( 'https://'+ registrationURL + version + '/users'),
 				json: userDoc,
 				method: 'POST',
 				headers: {
@@ -335,15 +291,10 @@ createUser = function (username)
 
 
 function validateEmail(email) {
-    // First check if any value was actually set
     if (email.length == 0) return false;
-    // Now validate the email format using Regex
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
     return re.test(email);
 }
-
-
-
 
 
 /*******************************************************/
@@ -356,14 +307,13 @@ app.post('/v001/users', authenticate, function(req, res)
 	var version = "v001";
 
 		request({
-		// url: 'https://iotforelectronicstile.mybluemix.net/v001/users',
 		url: ( 'https://'+ registrationURL + version + '/users'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -377,41 +327,20 @@ app.post('/v001/users', authenticate, function(req, res)
 			}
 		});
 });
+
 /***************************************************************/
-/* Route to add 1 user document to Cloudant.   (2)             */
+/* Route to add 1 user document    (2)                         */
 /*                                                             */
 /* Input: JSON structure that contains the userID, name,       */
 /*             address, and telephone			               */
 /***************************************************************/
 app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//var formData = req.body;
 	var formData = JSON.parse(JSON.stringify(req.body));
 	formData.orgID = currentOrgID;
 
-	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (formData.userID != req.user.id)
-	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.")
-		//might need a return here, needs test
-		//see if logic ^ works first before finishing this
-		console.log("doc userID and mca userID do not match")
-	}
-	*/
+	var version = "v001";
 
-	//redirect
-   	var version = "v001";
-   	// if (!formData.hasOwnProperty('version') || formData.version == null || formData.version == undefined)
-   	// {
-   	// 	version = "v001";
-   	// }
-   	// else
-   	// {
-   	// 	version = formData.version;
-   	// }
-   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users');
 	request({
    		url: 'https://'+ application.application_uris[0] + '/' + version + '/users',
 		json: formData,
@@ -421,16 +350,14 @@ app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: fa
     	}, function(error, response, body){
     		if(error) {
         		console.log('ERROR: ' + error);
-			console.log('BODY: ' + error);
+				console.log('BODY: ' + error);
         		res.status(response.statusCode).send(error);
     		} else {
         		console.log(response.statusCode, body);
         		res.status(response.statusCode).send(body);
-		}});
+			}
+		});
 });
-
-
-
 
 
 /******************************************************/
@@ -442,14 +369,13 @@ app.post('/v001/appliances', authenticate, function (req, res)
 	delete bodyIn.version;
 	var version = "v001";
 	request({
-		// url: 'https://iotforelectronicstile.mybluemix.net/v001/appliances',
 		url: ('https://'+ registrationURL + version + '/appliances'),
 		json: bodyIn,
 		method: 'POST',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -463,6 +389,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 			}
 		});
 });
+
 /***************************************************************/
 /* Route to add 1 appliance document to registration Cloudant.(3) */
 /*                                                             */
@@ -471,31 +398,12 @@ app.post('/v001/appliances', authenticate, function (req, res)
 /***************************************************************/
 app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//grab the body to pass on
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
+	var userID = bodyIn.userID;
+	bodyIn.orgID = currentOrgID;
 
-	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (bodyIn.userID != req.user.id)
-	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.");
-	}
-	*/
-   	var userID = bodyIn.userID;
-   	bodyIn.orgID = currentOrgID;
-
-   	//redirect
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-   	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
+	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances');
 	request({
 		url: 'https://'+ application.application_uris[0] + '/' + version + '/appliances',
 		json: bodyIn,
@@ -514,10 +422,6 @@ app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessio
 });
 
 
-
-
-
-
 /*******************************************/
 /* Version 1 GET /users/:userID            */
 /*******************************************/
@@ -527,29 +431,27 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/users/'+ req.params.userID),
 		url: ('https://'+ registrationURL + version + '/users/' + req.params.userID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
         	console.log(body);
         	res.status(response.statusCode).send(body);
-	    }else{
+		}
+		else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
+        }
 
-        	});
+    });
 });
 
 /***************************************************************/
@@ -560,26 +462,9 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 /***************************************************************/
 app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/users/' + userID);
-
+	
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/users/' + userID),
@@ -588,7 +473,6 @@ app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sess
 	};
 	request(options, function (error, response, body) {
 	    if (!error && response.statusCode == 200) {
-        	// Print out the response body
         	console.log(body);
         	res.status(response.statusCode).send(body);
 	    }else{
@@ -596,8 +480,8 @@ app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sess
         	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
-        });
+        }
+    });
 });
 
 
@@ -610,13 +494,12 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
 		url: ('https://'+ registrationURL + version + '/user/' + req.params.userID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -627,12 +510,11 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
         	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
+        }
 
-        	});
+    });
 });
 
 /***************************************************************/
@@ -649,27 +531,9 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 		return;
 	}
 
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
-
+	
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + userID),
@@ -686,9 +550,8 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
         	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
-
-        	});
+        }
+    });
 });
 
 
@@ -698,16 +561,14 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 app.get('/v001/appliances/:userID', authenticate, function (req, res)
 {
 	var version = "v001";
-
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID),
 		url: ('https://'+ registrationURL + version + '/appliances/' + req.params.userID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -719,12 +580,10 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
         	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
-
-        	});
+        }
+	});
 });
 
 /***************************************************************/
@@ -735,27 +594,10 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 
 app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.");
-		//might need a return here, needs test
-	}
-	*/
+	
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID);
-
+	
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID),
@@ -770,12 +612,11 @@ app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, 
         	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
+        }
 
-        	});
+    });
 });
 
 
@@ -787,16 +628,14 @@ app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, 
 app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, res)
 {
 	var version = "v001";
-
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
 		url: ('https://'+ registrationURLl + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -807,12 +646,10 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
         	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
-
-        	});
+        }
+	});
 });
 
 /****************************************************************************/
@@ -823,26 +660,8 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 
 app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID);
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID),
@@ -856,7 +675,6 @@ app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.ST
         	res.status(response.statusCode).json(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
         	}
@@ -873,14 +691,13 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 {
 	var version = "v001";
 
-		request({
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/appliances/'+ req.params.userID + '/' + req.params.applianceID),
+	request({
 		url: ('https://'+ registrationURL + version + '/appliances/' + req.params.userID + '/' + req.params.applianceID),
 		method: 'DELETE',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 		}, function(error, response, body){
@@ -892,37 +709,20 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 				console.log(response.statusCode, body);
 				res.status(response.statusCode).send(body);
 			}
-		});
+		}
+	);
 });
 
 /***************************************************************/
 /* Route to delete appliance records                           */
-/*    Internal API					       */
+/*    Internal API					                           */
 /***************************************************************/
 
 app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
 
-	//verify that userID coming in MCA matches doc userID
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID in request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID);
 	request({
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/appliances/' + userID + '/' + req.params.applianceID),
 		method: 'DELETE',
@@ -950,13 +750,12 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/user/'+ req.params.userID),
 		url: ('https://'+ registrationURL + version + '/user/' + req.params.userID),
 		method: 'DELETE',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+    		'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -967,12 +766,10 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
         	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
-        	}
-
-        	});
+        }
+	});
 });
 
 /**************************************************************************************** **/
@@ -982,25 +779,8 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 /*******************************************************************************************/
 app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.")
-		//might need a return here, needs test
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
 	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
 	var options =
 	{
@@ -1036,13 +816,12 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
 
 	var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/v001/ca/appliance/user/'+req.params.userID+'/events'),
 		url: ('https://'+ registrationURL + version + '/ca/appliance/user/' + req.params.userID + '/events'),
 		method: 'GET',
 		headers: {
-    				'Content-Type': 'application/json',
-    				'tenantID':iotETenant,
-    				'orgID':currentOrgID
+			'Content-Type': 'application/json',
+    		'tenantID':iotETenant,
+    		'orgID':currentOrgID
   		},
   		auth: {user:iotEApiKey, pass:iotEAuthToken}
 	};
@@ -1054,11 +833,11 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
         	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
         	}
-        	});
+		}
+	);
 });
 
 /***************************************************************/
@@ -1066,30 +845,10 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-
 app.get('/ca/appliance/user/:userID/sensors', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
 {
-	//make sure userID on params matches userID coming in thru MCA
-	/* AppID's anonomous login doesn't have user id, either at this monent (2017-04-03) set user id leads to mobile app crash.
-	Thus disable this validation till either AppId support cusotm login or fix setting uerid issue
-	if (req.params.userID != req.user.id)
-	{
-		res.status(500).send("User ID on request does not match MCA authenticated user.");
-		//might need a return here, needs test
-	}
-	*/
 	var userID = req.params.userID;
 	var version = "v001";
-	// if (!req.get('version') || req.get('version') == null || req.get('version') == undefined)
-	// {
-	// 	version = 'v001'
-	// }
-	// else
-	// {
-	// 	version = req.get('version');
-	// }
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/sensors');
-
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/ca/appliance/user/'+userID+'/sensors'),
@@ -1104,117 +863,27 @@ app.get('/ca/appliance/user/:userID/sensors', passport.authenticate(APIStrategy.
         	res.status(response.statusCode).send(body);
 	    }else{
         	console.log("The request came back with an error: " + error);
-        	//for now I'm giving this a 500 so that postman won't be left hanging.
         	res.status(response.statusCode).send(error);
         	return;
         	}
 
-        	});
-});
-
-
-
-
-
-
-
-
-/********************************************************************** **/
-/*End of Registration Integrator Code                                               */
-/********************************************************************** **/
-
-/*
- * CONRAD'S CODE
- */
-
-//Using hardcoded user repository
-var userRepository = {
-    "conrad":      { password: "12345" , displayName:"Conrad Kao"      , dob:"October 9, 1940"},
-    "john.lennon":      { password: "12345" , displayName:"John Lennon"      , dob:"October 9, 1940"},
-    "paul.mccartney":   { password: "67890" , displayName:"Paul McCartney"   , dob:"June 18, 1942"},
-    "ringo.starr":      { password: "abcde" , displayName:"Ringo Starr"      , dob: "July 7, 1940"},
-    "george.harrison":  { password: "fghij" , displayName: "George Harrison" , dob:"Feburary 25, 1943"}
-};
-
-var logger = log4js.getLogger("CustomIdentityProviderApp");
-logger.info("Starting up");
-
-app.post('/apps/:tenantId/:realmName/startAuthorization', jsonParser, function(req, res){
-    var tenantId = req.params.tenantId;
-    var realmName = req.params.realmName;
-    var headers = req.body.headers;
-
-    logger.debug("startAuthorization", tenantId, realmName, headers);
-
-    var responseJson = {
-        status: "challenge",
-        challenge: {
-            text: "Enter username and password"
-        }
-    };
-
-    res.status(200).json(responseJson);
-});
-
-app.post('/apps/:tenantId/:realmName/handleChallengeAnswer', jsonParser, function(req, res){
-    var tenantId = req.params.tenantId;
-    var realmName = req.params.realmName;
-    var challengeAnswer = req.body.challengeAnswer;
-
-    logger.debug("handleChallengeAnswer", tenantId, realmName, challengeAnswer);
-
-    var username = req.body.challengeAnswer["username"].replace(/\s+/g, '');
-    var password = req.body.challengeAnswer["password"];
-
-    var responseJson = { status: "failure" };
-
-    //add the following lines to add a new user (temporily) when the username is not existed.
-    if (userRepository[username] == null) {
-        userRepository[username]={password: password, displayName: username, dob:"December 31, 2016"};
-    }
-	//create a user doc in registration for this user if one doesn't already exist
-        createUser(username);
-    var userObject = userRepository[username];
-
-    if (userObject && userObject.password == password ){
-        logger.debug("Login success for userId ::", username);
-        responseJson.status = "success";
-        responseJson.userIdentity = {
-            userName: username,
-            displayName: userObject.displayName,
-            attributes: {
-                dob: userObject.dob
-            }
-        };
-
-    	} else {
-	        logger.debug("Login failure for userId ::", username);
-    	}
-
-    	res.status(200).json(responseJson);
+		}
+	);
 });
 
 
 /********************************************************************** **/
-/*Solution Integrator Code                                               */
+/* End of Registration Integrator Code                                   */
 /********************************************************************** **/
-  //Get RTI credentials
-// if(!VCAP_SERVICES || !VCAP_SERVICES["IoT Real-Time Insight"])
-//  	throw "Cannot get RTI credentials"
-// var rtiCredentials = VCAP_SERVICES["IoT Real-Time Insight"][0]["credentials"];
 
-//RTI Credentials
-//  var rtiApiKey = rtiCredentials["apiKey"];
-//  var rtiAuthToken = rtiCredentials["authToken"];
-//  var rtiBaseUrl = rtiCredentials["baseUrl"];
-//  var disabled = false;
 
-//Stephanie's deletedDoc Doc creation for Metering
-//And storing credentials
-console.log('Creating doc to track deleted docs');
-//console.log('Deleted Docs API URL:', urlDel);
-console.log('About to store credentials into Cloudant.');
-console.log("FOR DELETED DOCS --> https://"+ registrationURL + 'deletedDocs')
+
+
+/********************************************************************** **/
+/* Solution Integrator Code                                               */
+/********************************************************************** **/
+
+// Creating doc to track deleted docs and store credentials into Cloudant.
 var body = {
 		"orgID":currentOrgID,
 		"apiKey":apiKey,
@@ -1224,7 +893,6 @@ var body = {
 	   };
 var options =
 	{
-		// url: ('https://iotforelectronicstile.mybluemix.net/deletedDocs'),
 		url: ('https://'+ registrationURL + 'deletedDocs'),
 		json: body,
 		method: 'POST',
@@ -1265,7 +933,7 @@ request(options, function (error, response, body) {
 			}
 });
 
-/*********** CALLS TO CREATE SCHEMA/ACTION/RULE into RTI ******/
+/*********** Node-RED: CALLS TO CREATE SCHEMA/ACTION/RULE into RTI ******/
 
 const manageSchemaBody = {
 	"name":"washingMachine",
@@ -1489,25 +1157,9 @@ request({ // check rti mode
 
 
 
-/********** END OF RTI CALLS ********/
+/********** Node-RED: END OF RTI CALLS ********/
 
-/*console.log('About to store IoTP Credentials');
-var url = 'https://iotforelectronicstile.stage1.mybluemix.net/credentials' + '/' +  currentOrgID + '/' +  apiKey + '/' +  authToken + '/' +  iotpHttpHost + '/' +  iotEAuthToken + '/' + iotEApiKey;
-console.log('Credentials API URL:', url);
-request
-  .get(url, {timeout: 3000})
-  .on('response', function(response){
-  	//console.log('Response Object --->', response);
-  	console.log('Response Status Code --->', response.statusCode);
-    console.log('Response received.');
-  })
-  .on('error', function(error){
-    if(error.code === 'ETIMEDOUT')
-      console.log('Request timed out.');
-    else
-      console.log(error);
-  });
-*/
+
 /***************************************************************/
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
@@ -1541,34 +1193,11 @@ app.get('/validation', function(req, res)
 /* Route to send the IoTP credentials to the tile again        */
 /* 									                           */
 /***************************************************************/
-// app.get('*', function(req, res)
-// {
-// 	console.log('About to store IoTP Credentials');
-//     var url = ['https://iotforelectronicstile.stage1.mybluemix.net/credentials', currentOrgID, apiKey, authToken, iotpHttpHost, iotEAuthToken,iotEApiKey].join('/');
-// 	console.log('Credentials API URL:', url);
-// 	request
-//   	.get(url, {timeout: 3000})
-//   	.on('response', function(response){
-//   		console.log('***Response received: ' + response.message);
-//     	console.log('Response received.');
-//   	})
-//   	.on('error', function(error){
-//     	if(error.code === 'ETIMEDOUT')
-//       		console.log('Request timed out.');
-//     	else
-//       		console.log(error);
-//   	});
-// });
-
-// //var iotePass = ioteCredentials["password"];
 
 //IoT Platform Device Types
 var	iotpDevId = "washingMachine";
 var	iotpDescription = "IoT4E Washing Machine";
 var	iotpClassId = "Device"
-
-// //RTI Message Schema Info
-// //var	rtiSchemaName = "Electronics";
 
 // //IoT Platform Config Creation Method.
   var iotpPost = function iotpPost (path, json) {
@@ -1636,41 +1265,6 @@ var iotpDeviceType = iotpPost('/device/types',{
 	"classId": "Device"
 });
 
-// //IoT Platform device creation call
-// //var iotpDeviceType = iotpPost('/device/types/washingMachine/devices',{
-// //  //"id": "d:abc123:myType:myDevice",
-// //  "typeId": "washingMachine",
-// //  "deviceId": "washingMachineElec"
-// //});
-
-//RTI data source creation call
-/*var rtiSource = rtiPost('/message/source',{
-	"name": name,
-	"orgId": orgId,
-	"apiKey": apiKey,
-	"authToken": authToken,
-	"disabled": disabled})
-		.then(function(json) {
-			console.log('RTI Source Return: ' + JSON.stringify(json));
-			var sourceValues = JSON.parse(JSON.stringify(json));
-			console.log('RTI Source ID: ' + sourceValues.id);
-			//RTI schema creation call
-			  var rtiSchema = rtiPost('/message/schema',{
-			  	"name": "Electronics",
-			  	"format": "JSON",
-			  	"items": []})
-			  .then(function(json){
-			  	console.log('RTI Schema Return: ' + JSON.stringify(json));
-			  	var schemaValues = JSON.parse(JSON.stringify(json));
-				//RTI route creation call
-				  var rtiRoute = rtiPost('/message/route',{
-				  	"sourceId": sourceValues.id,
-				  	"deviceType": "washingMachine",
-				  	"eventType": "+",
-				  	"schemaId": schemaValues.id});
-			  });
-});*/
-
 
 console.log('IoT4E Credentials: ' + iotETenant);
 /********************************************************************** **/
@@ -1681,9 +1275,6 @@ console.log('IoT4E Credentials: ' + iotETenant);
 //global IoT-Foundation connectors
 washingMachineIoTFClient = require('./mqtt/washingMachineIoTFClient');
 washingMachineIoTFClient.connectToBroker(iotfCredentials);
-
-//var app = express();
-
 //Enable reverse proxy support in Express. This causes the
 //the "X-Forwarded-Proto" header field to be trusted so its
 //value can be used to determine the protocol. See
@@ -1816,56 +1407,3 @@ function onError(error) {
 	}
 }
 
-// app.use(function(req, res, next){
-//     res.status(404).send("This is not the URL you're looking for");
-// });
-
-// =========================================================================
-// web socket
-// =========================================================================
-const websocket = require('ws');
-
-// ======== websocket =============
-const wss = new websocket.Server({ server }, function(){
-	//console.log('create a websocket');
-	logger.info ('create a websocket');
-});
-
-wss.on('connection', function connection(ws, req) {
-
-	//auth via APP ID
-
-	//generate new connection to IoTe
-	ClientOptions = {
-    	'headers': {
-        	'user' : req.headers.userid,
-        	//'Authorization' : 'Basic NTcyNWMzMGEtY2MxYS00YzVkLTgwYWQtZDhiMDE4NmNhNzQyOjk5MTk3Mzg0LTk1Y2YtNGJjMy1hNDQwLTJmNThlOGUwNDE0Ng=='
-			'auth' : {user:iotEApiKey, pass:iotEAuthToken}
-		}
-  	}
-  	wsclient = new websocket('ws://'+registrationURL, ClientOptions);
-  	wsclient.on('open', function() {
-    	logger.debug('open connection with REG');
-  	});
-  	wsclient.on('message', function incoming(message) {
-    	logger.debug('forward received from IoTe to mmobile: %s', message);
-    	ws.send(message);
-  	});
-
-  	ws.on('message', function incoming(message) {
-    	logger.debug('forward received from mobile to IoTe: %s', message);
-		wsclient.send(message)
-  	});
-
-  	ws.on('close', function (code, reason) {
-		if (wsclient){
-			try{
-				wsclient.close();
-			}
-			catch (e){
-				//do nothing
-			}
-		}
-		wsclient = undefined;
-  	});
-});

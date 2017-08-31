@@ -1,21 +1,9 @@
-/********************************************************* {COPYRIGHT-TOP} ***
-* IBM Confidential
-* OCO Source Materials
-* IoT for Electronics - SVL720160500
-*
-* (C) Copyright IBM Corp. 2016  All Rights Reserved.
-*
-* The source code for this program is not published or otherwise
-* divested of its trade secrets, irrespective of what has been
-* deposited with the U.S. Copyright Office.
-********************************************************* {COPYRIGHT-END} **/
-
 var express = require('express');
 var router = express.Router();
 var appEnv = require("cfenv").getAppEnv();
 var request = require('request');
 
-/* GET home page. */
+/* GET home page */
 router.get('/', function(req, res) {
 
 	var platformDashboard = 'https://new-console.stage1.ng.bluemix.net/apps/' + appEnv['app'].application_id + '?paneId=connected-objects';
@@ -40,8 +28,7 @@ router.get('/contact', function(req, res) {
 
 router.post('/contact', function(req, res){
 	request({
-   	// 	url: 'https://simulationengine-uss-stg-iot4e.electronics.internetofthings.ibmcloud.com/contact',
-		url: 'https://iot4esimulationengine.stage1.mybluemix.net/contact',
+   		url: 'https://iot4esimulationengine.stage1.mybluemix.net/contact',
 		json: req.body,
 		method: 'POST',
 		headers: {
