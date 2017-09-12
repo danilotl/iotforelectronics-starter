@@ -49,7 +49,7 @@
           } else {
             timeAgo = (dateDiff / oneDay).toFixed(1) + " days ago";
           }
-          var releaseInfo = "An updated version IoT for Electronics Starter (" + release.tag_name + ") was released " + timeAgo + ". See ";
+          var releaseInfo = "An updated IoT for Electronics Starter (" + release.tag_name + ") was released " + timeAgo + ". See ";
           $("#githubupdatelabel").show();
           $("#githubupdatelabel").text(releaseInfo);
           $("#githubupdatelabel").css('color', 'red');
