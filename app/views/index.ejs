@@ -27,10 +27,10 @@
           'Content-Type' : 'application/json'
         }
       });
-      $.getJSON("https://api.github.com/repos/conradkao/iote-mobile/releases/latest").done(function (release) {
+      $.getJSON("https://api.github.com/repos/IoT4E/iotforelectronics-starter/releases/latest").done(function (release) {
         var asset = release.assets[0];
         var downloadCount = 0;
-        var currentBuildId = "v1.0.2";
+        var currentBuildId = "v0.0.0";
         //var latestBuildId = release.id ? release.id:0;
         var latestBuildId = release.tag_name ? release.tag_name : latestBuildId;       
         if (currentBuildId>=latestBuildId) {
