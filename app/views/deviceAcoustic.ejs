@@ -246,12 +246,12 @@
           switch(failureType){
             case 'Strong vibration':
               failureIndex = 1;
-              text = "150";
+              text = 150;
               obj['vibration'] = text;
               break;
             case 'Water leak':
               failureIndex = 2;
-              text = "30";
+              text = 30;
               obj['waterPressure'] = text;
               break;
               case 'Noise':
@@ -261,11 +261,12 @@
 
 
           if(failureType != 'Noise'){
-            var data = JSON.parse(JSON.stringify(obj));
+            var data = JSON.stringify(obj);
             $.ajax({
               url: '/washingMachine/<%= deviceId %>/setAttributes',
               type: 'PUT',
               data: data,
+              contentType: "application/json",
               success: function() {
                 $('.washer-content .washer-text p strong').eq(0).text("<%= __('appliance_page.failure') %>");
                 if(failureIndex > 0){
@@ -301,13 +302,14 @@
         $.ajax({
           url: '/washingMachine/<%= deviceId %>/setAttributes',
           type: 'PUT',
-          data: {
+          data: JSON.stringify({
             status: "Ready",
             currentCycle: "Stopped",
             failureType: "",
-            vibration: "80",
-            waterPressure: "70"
-          }
+            vibration: 80,
+            waterPressure: 70
+          }),
+          contentType: "application/json"
         });
       });
       // Delete Washer
@@ -424,8 +426,8 @@
       $.ajax({
         url: '/washingMachine/<%= deviceId %>/setAttributes',
         type: 'PUT',
-        contentType: 'application/json',
-        data: data
+        data: data,
+        contentType: "application/json"
       });
     }
 
