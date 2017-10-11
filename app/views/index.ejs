@@ -240,6 +240,7 @@
   </script>
   <script src="/javascripts/index.js"></script>
   
+  <c:if test="${medalliaMeta.enabled and not empty medalliaMeta.script}">
   <script>
 	  window.IBM_Meta = {
       offeringId: “IoT Connected Products”,
@@ -261,6 +262,7 @@
 	};
 </script>
 <script type="text/javascript" src="https://nebula-cdn.kampyle.com/we/28600/onsite/embed.js" async></script>
+</c:if>
 
 </body>
 </html>
