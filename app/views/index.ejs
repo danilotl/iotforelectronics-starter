@@ -242,7 +242,7 @@
   
   <c:if test="${medalliaMeta.enabled and not empty medalliaMeta.script}">
   <script>
-	  window.IBM_Meta = {
+	  window.IBM_Meta = $.extend(window.IBM_Meta || {}, {
       offeringId: “IoT Connected Products”,
       offeringName: “IoT for Connected Products”,
       highLevelOfferingName: “IoT for Connected Products”,
@@ -259,7 +259,7 @@
       quarterlyIntercept: “heavy”,
       triggerIntercept: “heavy”,
       noQuarantine: "yes"
-	};
+	});
 </script>
 <script type="text/javascript" src="https://nebula-cdn.kampyle.com/we/28600/onsite/embed.js" async></script>
 </c:if>
