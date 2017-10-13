@@ -153,6 +153,7 @@ var currentOrgID = iotfCredentials["org"];
 //steph test
 function getUserInfo(){
 	var data = req.user();
+	console.log('user data: ' + JSON.stringify(data));
 	return JSON.stringify(data);
 }
 
