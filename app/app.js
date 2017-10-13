@@ -150,7 +150,7 @@ var services = JSON.parse(process.env.VCAP_SERVICES)
 var application = JSON.parse(process.env.VCAP_APPLICATION)
 var currentOrgID = iotfCredentials["org"];
 
-getUserInfo();
+//getUserInfo();
 //steph test
 function getUserInfo(){
 	var data = req.user();
