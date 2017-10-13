@@ -152,11 +152,11 @@ var currentOrgID = iotfCredentials["org"];
 
 //getUserInfo();
 //steph test
-app.use(function getUserInfo(req, res, next)){
+app.use(function getUserInfo(req, res, next){
 	var data = req.user();
 	console.log('user data: ' + JSON.stringify(data));
 	return JSON.stringify(data);
-}
+});
 
 /***************************************************************/
 /* Set up AppID & passport                                     */
