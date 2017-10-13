@@ -150,14 +150,6 @@ var services = JSON.parse(process.env.VCAP_SERVICES)
 var application = JSON.parse(process.env.VCAP_APPLICATION)
 var currentOrgID = iotfCredentials["org"];
 
-//getUserInfo();
-//steph test
-app.use(function getUserInfo(req, res, next){
-	var data = req.user();
-	console.log('user data: ' + JSON.stringify(data));
-	return JSON.stringify(data);
-});
-
 /***************************************************************/
 /* Set up AppID & passport                                     */
 /***************************************************************/
