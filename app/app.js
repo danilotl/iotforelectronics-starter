@@ -26,7 +26,7 @@ module.exports = app;
 // eslint-disable-next-line global-require
 const bluemixExpressSession = require('@console/console-platform-express-session');
 
-bluemixExpressSession.initialize(app);
+//bluemixExpressSession.initialize(app);
 
 var path            = require('path'),
     favicon         = require('serve-favicon'),
