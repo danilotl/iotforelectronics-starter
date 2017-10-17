@@ -4,7 +4,9 @@
     "description": "IoT4Electronics Server",
     "scripts": {
         "start": "node run bluemix-with-contrast",
-        "bluemix-with-contrast": "npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js"
+        "bluemix-with-contrast": "npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js",
+        "config-set":"npm config set @console:registry https://dev-console-npm.stage1.ng.bluemix.net/",
+        "addUser":"npm adduser --registry https://dev-console-npm.stage1.ng.bluemix.net/"
     },
     "dependencies": {
          "express": "~4.9.0",
