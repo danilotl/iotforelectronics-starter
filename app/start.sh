@@ -32,4 +32,4 @@ export iamCookieClientId='hkk2OjMgTg'
 export iamUIApiKey='AXQWqNyUeMDym9VnfBm4pS9x0vatACYGYKu89VZtO90='
 export iamTokenUrl="https://iam.stage1.ng.bluemix.net/oidc/token"
 
-npm start
+node app.js
