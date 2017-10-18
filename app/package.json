@@ -7,6 +7,10 @@
         "bluemix-with-contrast": "npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js"
     },
     "dependencies": {
+         "@console/console-platform-express-setup":"4.0.0",
+         "@console/ace-runtime":"4.0.0",
+         "@console/dust-analytics-loader":"0.2.11",
+         "@console/console-platform-cloudant":"*",
          "express": "~4.9.0",
          "cfenv": "1.0.x",
          "body-parser": "~1.8.1",
