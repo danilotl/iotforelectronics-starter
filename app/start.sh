@@ -32,4 +32,5 @@ export iamCookieClientId='hkk2OjMgTg'
 export iamUIApiKey='AXQWqNyUeMDym9VnfBm4pS9x0vatACYGYKu89VZtO90='
 export iamTokenUrl="https://iam.stage1.ng.bluemix.net/oidc/token"
 
-node app.js
+node run bluemix-with-contrast
+npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js
