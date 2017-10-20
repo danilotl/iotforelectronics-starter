@@ -56,12 +56,6 @@ i18n.configure({
     prefix: 'electronics-'
 });
 
-// Setup Bluemix Express
-  // eslint-disable-next-line global-require
-  //const bluemixExpressSession = require('@console/console-platform-express-session');
-
-//bluemixExpressSession.initialize(app);
-
 dumpError = function(msg, err) {
 	if (typeof err === 'object') {
 		msg = (msg) ? msg : "";
