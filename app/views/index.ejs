@@ -28,6 +28,12 @@
     });
   
     function GetLatestReleaseInfo() {
+
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", "/version", false ); // false for synchronous request
+      xmlHttp.send( null );
+      var currentBuildId = xmlHttp.responseText
+
       $.ajaxSetup({
         headers : {
           'Authorization' : '',

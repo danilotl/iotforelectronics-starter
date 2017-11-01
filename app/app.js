@@ -182,6 +182,14 @@ var authenticate = function(req,res,next)
   	}
 }
 
+/*******************************************/
+/* Version 1 GET /version            */
+/*******************************************/
+app.get('/version', function (req, res)
+{
+	let pjson = require('./package.json');
+	res.status(200).send(pjson.version);
+});
 
 /***************************************************************/
 /* Route to update a user document in Cloudant                 */

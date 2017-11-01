@@ -1,6 +1,6 @@
 {
     "name": "iot4electronics",
-    "version": "0.0.1",
+    "version": "v1.2.4",
     "description": "IoT4Electronics Server",
     "scripts": {
         "start": "node run bluemix-with-contrast",
