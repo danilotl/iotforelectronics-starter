@@ -237,8 +237,8 @@ createUser = function (username)
 {
 	console.log("inside createUser function");
 	var version = "v001";
-
-	console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users/'+username)
+	//commenting out PI below
+	//console.log("AT THE CREATE USER function --->" +  iotECredentials.registrationUrl + version + '/users/'+username)
 	
 	//check if the user exists
 	var options =
@@ -533,7 +533,8 @@ app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {sessi
 {
 	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
 	{
-		console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
+		//commenting out PI below
+		//console.log('Enter the process to check if the user exist and create the user. user id is='+req.params.userID);
 		createUser(req.params.userID);
 		res.status(200).send("called the function to check the user ID");
 		return;
@@ -789,7 +790,8 @@ app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {se
 {
 	var userID = req.params.userID;
 	var version = "v001";
-	console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
+	//commenting out PI below
+	//console.log('url: ' +  'https://'+ application.application_uris[0] + '/' + version + '/user/' + userID);
 	var options =
 	{
 		url: ('https://'+ application.application_uris[0] + '/' + version + '/user/' + userID),
@@ -926,8 +928,8 @@ function retryRequest(body, options)
   	}
 	});
 };
-
-console.log('Body Values being sent in: ' + JSON.stringify(body));
+//commenting out below - auth key and token are in body
+//console.log('Body Values being sent in: ' + JSON.stringify(body));
 request(options, function (error, response, body) {
     if (!error) {
        	// Print out the response body
