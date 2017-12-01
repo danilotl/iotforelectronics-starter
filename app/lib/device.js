@@ -2,6 +2,7 @@ var qr = require('qr-image');
 var cfenv = require('cfenv');
 var queue = require('seq-queue').createQueue(30000);
 var request = require('request');
+let pjson = require('../package.json');
 
 var VCAP_SERVICES = {};
 if(process.env.VCAP_SERVICES)
@@ -75,11 +76,15 @@ device.QRcreds = function(req, res){
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
 	var tenantId = appIdCredentials.tenantId;
-	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
-	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	//var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
+	//var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	var key = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].apiKey;
+	var token = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].authToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
-	var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
-	var registration_api_version = "v003";
+	//var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
+	//var registration_api_version = "v003";
+	var mqtt_host = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].registrationUrl;
+	var registration_api_version = pjson.version;
 
 	var text = ['1', org, route, tenantId, key, token, name, mqtt_host, registration_api_version].join(',');
 
@@ -97,11 +102,15 @@ device.getPlatformQRstring = function(req, res){
 	var org = VCAP_SERVICES['iotf-service'][0]['credentials'].org;
 	var route = appEnv.url;
 	var tenantId = appIdCredentials.tenantId;
-	var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
-	var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	//var key = VCAP_SERVICES['iotf-service'][0]['credentials'].apiKey;
+	//var token = VCAP_SERVICES['iotf-service'][0]['credentials'].apiToken;
+	var key = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].apiKey;
+	var token = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].authToken;
 	var name = VCAP_SERVICES['iotf-service'][0].name;
-	var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
-	var registration_api_version = "v003";
+	//var mqtt_host = VCAP_SERVICES['iotf-service'][0]['credentials'].mqtt_host;
+	//var registration_api_version = "v003";
+	var mqtt_host = VCAP_SERVICES['ibm-iot-for-electronics'][0]['credentials'].registrationUrl;
+	var registration_api_version = pjson.version;
 
 	var text = ['1', org, route, tenantId, key, token, name, mqtt_host, registration_api_version].join(',');
 

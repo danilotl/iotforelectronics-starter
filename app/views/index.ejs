@@ -43,9 +43,9 @@
       $.getJSON("https://api.github.com/repos/IoT4E/iotforelectronics-starter/releases/latest").done(function (release) {
         var asset = release.assets[0];
         var downloadCount = 0;
-        var currentBuildId = "v0.0.0";
+        //var currentBuildId = "v0.0.0";
         //var latestBuildId = release.id ? release.id:0;
-        var latestBuildId = release.tag_name ? release.tag_name : latestBuildId;       
+        var latestBuildId = release.tag_name ? release.tag_name : currentBuildId;       
         if (currentBuildId>=latestBuildId) {
           $("#githubupdatelabel").show();
           $("#githubupdatelabel").text("IoT for Electronics Starter (" + currentBuildId +")");

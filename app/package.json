@@ -1,7 +1,7 @@
 {
     "name": "iot4electronics",
-    "version": "v1.2.4",
-    "description": "IoT4Electronics Server",
+    "version": "v1.3.0",
+    "description": "IoT4Electronics Starter",
     "scripts": {
         "start": "node run bluemix-with-contrast",
         "bluemix-with-contrast": "npm install /home/vcap/app/contrast/node-contrast-0.10.18.tgz && node-contrast -c /home/vcap/app/contrast/contrast.json app.js"
