@@ -150,6 +150,9 @@ var services = JSON.parse(process.env.VCAP_SERVICES)
 var application = JSON.parse(process.env.VCAP_APPLICATION)
 var currentOrgID = iotfCredentials["org"];
 
+//check if AppId is bind with this service
+var isAppIdEnabled = VCAP_SERVICES["AppID"] ? true : false;
+
 /***************************************************************/
 /* Set up AppID & passport                                     */
 /***************************************************************/
@@ -182,6 +185,16 @@ var authenticate = function(req,res,next)
   	}
 }
 
+var appIdValidation = function (req, res, next) {
+	if (isAppIdEnabled) {
+		console.log('AppId is enabled');
+		passport.authenticate(APIStrategy.STRATEGY_NAME, { session: false })(req, res, next);
+	} else {
+		console.log('AppId is disabled');
+		next();
+	}
+}
+
 /*******************************************/
 /* Version 1 GET /version            */
 /*******************************************/
@@ -198,7 +211,7 @@ app.get('/version', function (req, res)
 /* Returns:  404 for user not found, 200 for success           */
 /***************************************************************/
 
-app.put('/users', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.put('/users', appIdValidation, function(req, res)
 {
 	var userDocIn = JSON.parse(JSON.stringify(req.body));
 	userDocIn.orgID = currentOrgID;
@@ -342,7 +355,7 @@ app.post('/v001/users', authenticate, function(req, res)
 /* Input: JSON structure that contains the userID, name,       */
 /*             address, and telephone			               */
 /***************************************************************/
-app.post("/users", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.post("/users", appIdValidation, function(req, res)
 {
 	var formData = JSON.parse(JSON.stringify(req.body));
 	formData.orgID = currentOrgID;
@@ -404,7 +417,7 @@ app.post('/v001/appliances', authenticate, function (req, res)
 /* Input: JSON structure that contains the userID, applianceID,*/
 /*             serial number, manufacturer, and model          */
 /***************************************************************/
-app.post('/appliances', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.post('/appliances', appIdValidation, function(req, res)
 {
 	var bodyIn = JSON.parse(JSON.stringify(req.body));
 	var userID = bodyIn.userID;
@@ -468,7 +481,7 @@ app.get('/v001/users/:userID', authenticate, function (req, res)
 /* Input: url params that contains the userID 			 */
 /* Returns: 200 for found user, 404 for user not found         */
 /***************************************************************/
-app.get('/users/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get('/users/:userID', appIdValidation, function(req, res)
 {
 	var userID = req.params.userID;
 	var version = "v001";
@@ -529,7 +542,7 @@ app.get('/v001/user/:userID', authenticate, function (req, res)
 /* Route to show one user doc using Cloudant Query             */
 /* Takes a userID in the url params                            */
 /***************************************************************/
-app.get('/user/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get('/user/:userID', appIdValidation, function(req, res)
 {
 	if (req.query['createUser'] && req.query['createUser'].toLowerCase() =='true')
 	{
@@ -601,7 +614,7 @@ app.get('/v001/appliances/:userID', authenticate, function (req, res)
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
 
-app.get('/appliances/:userID', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get('/appliances/:userID', appIdValidation, function(req, res)
 {
 	
 	var userID = req.params.userID;
@@ -667,7 +680,7 @@ app.get('/v001/appliances/:userID/:applianceID', authenticate, function (req, re
 /* Input: Query string with userID and optional applianceID    				*/
 /****************************************************************************/
 
-app.get("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get("/appliances/:userID/:applianceID", appIdValidation, function(req, res)
 {
 	var userID = req.params.userID;
 	var version = "v001";
@@ -727,7 +740,7 @@ app.del("/v001/appliances/:userID/:applianceID", authenticate, function (req, re
 /*    Internal API					                           */
 /***************************************************************/
 
-app.del("/appliances/:userID/:applianceID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.del("/appliances/:userID/:applianceID", appIdValidation, function(req, res)
 {
 
 	var userID = req.params.userID;
@@ -786,7 +799,7 @@ app.delete("/v001/user/:userID", authenticate, function (req, res)
 /* Need to delete the appliance documents as well from our db  							   */
 /* If we created them on the platform, delete from platform (NOT for experimental)         */
 /*******************************************************************************************/
-app.delete("/user/:userID", passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.delete("/user/:userID", appIdValidation, function(req, res)
 {
 	var userID = req.params.userID;
 	var version = "v001";
@@ -855,7 +868,7 @@ app.get('/v001/ca/appliance/user/:userID/sensors', authenticate, function (req, 
 /*       													   */
 /* Input: Query string with userID and optional applianceID    */
 /***************************************************************/
-app.get('/ca/appliance/user/:userID/sensors', passport.authenticate(APIStrategy.STRATEGY_NAME, {session: false}), function(req, res)
+app.get('/ca/appliance/user/:userID/sensors', appIdValidation, function(req, res)
 {
 	var userID = req.params.userID;
 	var version = "v001";
