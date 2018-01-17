@@ -1,6 +1,6 @@
 {
     "name": "iot4electronics",
-    "version": "v1.3.0",
+    "version": "v1.4.0",
     "description": "IoT4Electronics Starter",
     "scripts": {
         "start": "node run bluemix-with-contrast",
